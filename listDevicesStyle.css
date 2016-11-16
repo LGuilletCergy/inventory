@@ -1,0 +1,76 @@
+/**
+ * Initially developped for :
+ * Université de Cergy-Pontoise
+ * 33, boulevard du Port
+ * 95011 Cergy-Pontoise cedex
+ * FRANCE
+ *
+ * The inventory module is used to list the devices available in a room
+ *
+ * @package    mod_inventory
+ * @author     Laurent Guillet
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ *
+ * File : listDevicesStyle.css
+ * Define the stylesheet of listDevices.php
+ *
+ */
+
+.linesingledevice
+{
+    border: solid 0.5px;
+    padding: 10px;
+}
+
+#listdevice
+{
+    width: 100%;
+}
+
+.devicebuttons
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+}
+
+.namedevice
+{
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.infodevice 
+{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.boxwithmargin
+{
+    margin-right: 10px;
+}
+
+.isworking
+{
+    margin-right: 10px;
+    color: red;
+}
+
+.headercommentary
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.editbutton
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex: 1;
+}

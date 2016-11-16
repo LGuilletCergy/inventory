@@ -1,0 +1,25 @@
+/**
+ * Initially developped for :
+ * Université de Cergy-Pontoise
+ * 33, boulevard du Port
+ * 95011 Cergy-Pontoise cedex
+ * FRANCE
+ *
+ * The inventory module is used to list the devices available in a room
+ *
+ * @package    mod_inventory
+ * @author     Laurent Guillet
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ *
+ * File : listRoomsStyle.php
+ * Define the stylesheet of listRooms.php
+ *
+ */
+
+#listRooms
+{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
