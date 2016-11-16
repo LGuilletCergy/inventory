@@ -196,7 +196,6 @@ if ($delete == 1) {
         } else if ($table == "fieldsfromeditdevicetype") {
             $deleted = deletemultiplefields($arraykey, $DB);
         }
-        // DELETE Rajouter des fonctions au fur et à mesure.
 
         if ($deleted != -1) {
 
