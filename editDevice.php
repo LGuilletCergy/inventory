@@ -62,17 +62,25 @@ $cm = get_coursemodule_from_id('inventory', $moduleid);
 $inventory = $DB->get_record('inventory', array('id' => $cm->instance), '*', MUST_EXIST);
 
 $context = context_module::instance($moduleid);
+require_course_login($course, true, $cm);
 
 // Header code.
 $PAGE->set_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
+if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
+    $PAGE->set_pagelayout('popup');
+    $PAGE->set_title($course->shortname.': '.$inventory->name);
+    $PAGE->set_heading($course->fullname);
+} else {
+    $PAGE->set_title($course->shortname.': '.$inventory->name);
+    $PAGE->set_heading($course->fullname);
+    $PAGE->set_activity_record($inventory);
+}
+
 // Navigation node.
 $editurl = new moodle_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
-
-$PAGE->navbar->add(get_string('general', 'inventory'));
-$PAGE->navbar->add($inventory->name, new moodle_url('/mod/inventory/view.php', array('id' => $moduleid)));
 
 //Get buildind and room id
 $currentrecord = $DB->get_record('inventory_room', array('id' => $roomid));

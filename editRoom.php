@@ -81,7 +81,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 // Navigation node.
 $editurl = new moodle_url('/mod/inventory/editroom.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'buildingid' => $buildingid));;
 
-$PAGE->navbar->add($inventory->name, new moodle_url('/mod/inventory/view.php', array('id' => $moduleid)));
 $PAGE->navbar->add($DB->get_record('inventory_building', array('id' => $buildingid))->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $buildingid)));
 
 if($editmode == 0) {

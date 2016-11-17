@@ -82,7 +82,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 
 // Navigation node.
 $editurl = new moodle_url('/mod/inventory/editdevicetype.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid, 'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid, 'source' => $source, 'currentstep' => $currentstep));
-$PAGE->navbar->add($inventory->name, new moodle_url('/mod/inventory/view.php', array('id' => $moduleid)));
 
 require_capability('mod/inventory:edit', $context);
 

@@ -338,7 +338,7 @@ if ($export != true || $listroomsid == null) {
     $listRoomsidinurl = http_build_query(array('listRoomsid' => $listRoomsid));
     $encodedlistRoomsidinurl = urlencode($listRoomsidinurl);
 
-    //echo "<a href='listRooms.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;building=$building&amp;categoryselected=$categoryselected&amp;export=true&amp;listroomsid=$encodedlistRoomsidinurl'><button>".get_string('exportroomsascsv','inventory')."</button></a>";
+    echo "<a href='listRooms.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;building=$building&amp;categoryselected=$categoryselected&amp;export=true&amp;listroomsid=$encodedlistRoomsidinurl'><button>".get_string('exportroomsascsv','inventory')."</button></a>";
     $strlastmodified = get_string("lastmodified");
     echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
 
