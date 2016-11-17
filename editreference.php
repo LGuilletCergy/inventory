@@ -134,18 +134,10 @@ $formdata['roomid'] = $roomid;
 
 if ($editmodereference == 1) {
 
-    $formdata = new stdClass;
-    $formdata->blockid = $blockid;
-    $formdata->moduleid = $moduleid;
-    $formdata->courseid = $courseid;
-    $formdata->idreference = $idreference;
-    $formdata->editmodereference = $editmodereference;
-    $formdata->id = $id;
-    $formdata->name = $currentrecord->name;
-    $formdata->brand = $brandid;
-    $formdata->roomid = $roomid;
-    $formdata->categoryid = $categoryid;
-    $formdata->editmode = $editmode;
+    $formdata['idreference'] = $idreference;
+    $formdata['id'] = $id;
+    $formdata['name'] = $currentrecord->name;
+    $formdata['brand'] = $brandid;
 
     $listrecordbrand =$DB->get_records('inventory_reference', array('brandid' => $brandid));
 
@@ -177,7 +169,7 @@ if ($editmodereference == 1) {
     file_prepare_draft_area($draftitemid, $contextmodule->id, 'mod_inventory', 'manuelreference', $idreference,
                             array('maxbytes' => 0, 'maxfiles' => 1));
 
-    $formdata->manuel = $draftitemid;
+    $formdata['manuel'] = $draftitemid;
 }
 
 $mform->set_data($formdata);

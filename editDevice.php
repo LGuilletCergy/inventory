@@ -129,18 +129,12 @@ $formdata['referenceid'] = 1;
 
 if ($editmode == 1) {
 
-    $formdata = new stdClass;
-    $formdata->blockid = $blockid;
-    $formdata->moduleid = $moduleid;
-    $formdata->courseid = $courseid;
-    $formdata->editmode = $editmode;
-    $formdata->roomid = $roomid;
-    $formdata->referenceid = $currentreference->id;
-    $formdata->categoryid = $categoryid;
-    $formdata->type = $DB->get_record('inventory_devicecategory', array('id' => $categoryid))->name;
-    $formdata->id = $id;
-    $formdata->reference = $currentreference->id;
-    $formdata->brand = $brandid;
+
+    $formdata['referenceid'] = $currentreference->id;
+    $formdata['type'] = $DB->get_record('inventory_devicecategory', array('id' => $categoryid))->name;
+    $formdata['id'] = $id;
+    $formdata['reference'] = $currentreference->id;
+    $formdata['brand'] = $brandid;
     
 
     $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
@@ -154,11 +148,11 @@ if ($editmode == 1) {
             $oldlongtext['text'] = $currentvalue->value;
             $oldlongtext['format'] = $currentvalue->format;
             $formfieldname = 'numerofield'.$field->id;
-            $formdata->$formfieldname = $oldlongtext;
+            $formdata[$formfieldname] = $oldlongtext;
         } else {
 
             $formfieldname = 'numerofield'.$field->id;
-            $formdata->$formfieldname = $currentvalue->value;
+            $formdata[$formfieldname] = $currentvalue->value;
         }
     }
 
@@ -172,14 +166,14 @@ if ($editmode == 1) {
     file_prepare_draft_area($draftitemid, $contextmodule->id, 'mod_inventory', 'manuel', $id,
                             array('maxbytes' => 0, 'maxfiles' => 1));
 
-    $formdata->manuel = $draftitemid;
+    $formdata['manuel'] = $draftitemid;
 
     if ($currentrecord->isworking == "Oui") {
 
-        $formdata->isworking  = 0;
+        $formdata['isworking']  = 0;
     } else {
 
-        $formdata->isworking  = 1;
+        $formdata['isworking']  = 1;
     }
 }
 

@@ -102,22 +102,13 @@ $formdata['editmode'] = $editmode;
 
 if ($editmode == 1) {
 
-    if (empty($formdata->id)) {
-        $formdata = new stdClass;
-        $formdata->id = null;
-    }
-
-    $formdata->blockid = $blockid;
-    $formdata->moduleid = $moduleid;
-    $formdata->courseid = $courseid;
-    $formdata->editmode = $editmode;
-    $formdata->id = $id;
+    $formdata['id'] = $id;
     $currentrecord = $DB->get_record('inventory_building', array('id' => $id));
-    $formdata->name = $currentrecord->name;
-    $formdata->city = $currentrecord->city;
-    $formdata->department = $currentrecord->department;
-    $formdata->address = $currentrecord->address;
-    $formdata->phone = $currentrecord->phone;
+    $formdata['name'] = $currentrecord->name;
+    $formdata['city'] = $currentrecord->city;
+    $formdata['department'] = $currentrecord->department;
+    $formdata['address'] = $currentrecord->address;
+    $formdata['phone'] = $currentrecord->phone;
 
     global $USER;
     $fs = get_file_storage();
@@ -129,7 +120,7 @@ if ($editmode == 1) {
     file_prepare_draft_area($draftitemid, $contextmodule->id, 'mod_inventory', 'image', $id,
                             array('maxbytes' => 0, 'maxfiles' => 1));
 
-    $formdata->image = $draftitemid;
+    $formdata['image'] = $draftitemid;
 }
 $mform->set_data($formdata);
 
