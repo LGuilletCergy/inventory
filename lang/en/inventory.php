@@ -145,3 +145,5 @@ $string['inventory:reportfailure'] = 'Report the failure of a device';
 $string['deleteelement'] = 'Delete an element from the database';
 $string['adddevice'] = 'Add a device';
 $string['failure'] = 'Equipment is not working';
+$string['csvtitle'] = 'List of devices in rooms';
+$string['exportroomsascsv'] = 'Export the devices of selected rooms in a csv file';

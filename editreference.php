@@ -62,6 +62,7 @@ $cm = get_coursemodule_from_id('inventory', $moduleid);
 $inventory = $DB->get_record('inventory', array('id' => $cm->instance), '*', MUST_EXIST);
 
 $context = context_module::instance($moduleid);
+require_course_login($course, true, $cm);
 
 
 // Header code.

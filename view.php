@@ -39,10 +39,10 @@ require_once($CFG->dirroot.'/mod/inventory/locallib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
 echo '
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="listBuildingsStyle.css" />
-    </head>';
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="listBuildingsStyle.css" />
+</head>';
 
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID.
 $p       = optional_param('p', 0, PARAM_INT);  // Page instance ID.
@@ -184,7 +184,7 @@ foreach ($listebuilding as $key => $value) {
         </table>';
 }
 echo'
-    
+
 <table class=singleBuilding>
             <tr>
                 <td>';

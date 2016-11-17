@@ -145,3 +145,5 @@ $string['inventory:reportfailure'] = 'Signaler la panne d\'un appareil';
 $string['deleteelement'] = 'Supprimer des éléments de la base de données';
 $string['adddevice'] = 'Ajouter un équipement';
 $string['failure'] = 'En panne';
+$string['csvtitle'] = 'Liste des équipements dans les salles';
+$string['exportroomsascsv'] = 'Exporter les équipements des salles sélectionnées dans un fichier csv';
