@@ -131,7 +131,6 @@ $string['deleterule'] = 'Si l\'un des nouveaux champs est vide, il ne sera pas a
 $string['yes'] = 'Oui';
 $string['no'] = 'Non';
 $string['redirect'] = 'Retour à la page d\'origine';
-$string['general'] = 'Généralités';
 $string['buildingdata'] = 'Données du batiment';
 $string['roomdata'] = 'Données de la salle';
 $string['commentarydata'] = 'Données du commentaire';

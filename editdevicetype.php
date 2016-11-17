@@ -69,9 +69,18 @@ $PAGE->set_url('/mod/inventory/editdevicetype.php', array('courseid' => $coursei
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
+if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
+    $PAGE->set_pagelayout('popup');
+    $PAGE->set_title($course->shortname.': '.$inventory->name);
+    $PAGE->set_heading($course->fullname);
+} else {
+    $PAGE->set_title($course->shortname.': '.$inventory->name);
+    $PAGE->set_heading($course->fullname);
+    $PAGE->set_activity_record($inventory);
+}
+
 // Navigation node.
 $editurl = new moodle_url('/mod/inventory/editdevicetype.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid, 'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid, 'source' => $source, 'currentstep' => $currentstep));
-$PAGE->navbar->add(get_string('general', 'inventory'));
 $PAGE->navbar->add($inventory->name, new moodle_url('/mod/inventory/view.php', array('id' => $moduleid)));
 
 require_capability('mod/inventory:edit', $context);

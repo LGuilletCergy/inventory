@@ -131,7 +131,6 @@ $string['deleterule'] = 'If a field is empty, it will not be added to the device
 $string['yes'] = 'Yes';
 $string['no'] = 'No';
 $string['redirect'] = 'Redirect';
-$string['general'] = 'General';
 $string['buildingdata'] = 'Data of the building';
 $string['roomdata'] = 'Data of the room';
 $string['commentarydata'] = 'Data of the commentary';

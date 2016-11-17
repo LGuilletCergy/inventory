@@ -67,10 +67,19 @@ $PAGE->set_url('/mod/inventory/editroom.php', array('id' => $id, 'courseid' => $
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
+if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
+    $PAGE->set_pagelayout('popup');
+    $PAGE->set_title($course->shortname.': '.$inventory->name);
+    $PAGE->set_heading($course->fullname);
+} else {
+    $PAGE->set_title($course->shortname.': '.$inventory->name);
+    $PAGE->set_heading($course->fullname);
+    $PAGE->set_activity_record($inventory);
+}
+
 // Navigation node.
 $editurl = new moodle_url('/mod/inventory/editroom.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'buildingid' => $buildingid));;
 
-$PAGE->navbar->add(get_string('general', 'inventory'));
 $PAGE->navbar->add($inventory->name, new moodle_url('/mod/inventory/view.php', array('id' => $moduleid)));
 $PAGE->navbar->add($DB->get_record('inventory_building', array('id' => $buildingid))->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $buildingid)));
 
