@@ -31,7 +31,6 @@
 .devicebuttons
 {
     display: flex;
-    flex-wrap: wrap;
     justify-content: flex-end;
 
 }
@@ -73,4 +72,9 @@
     flex-wrap: wrap;
     justify-content: flex-end;
     flex: 1;
+}
+
+.deviceheader
+{
+    width: 100%;
 }

@@ -211,9 +211,28 @@ if ($delete == 1) {
 
 if ($delete == 2) {
 
-    //Transformer ça en un formulaire moodle afin d'avoir une vérification de la sesskey
+        if ($table == "buildings") {
 
-    echo get_string('confirmdelete', 'inventory');
+            echo get_string('confirmdeletebuilding', 'inventory');
+        } else if ($table == "rooms") {
+
+            echo get_string('confirmdeleteroom', 'inventory');
+        } else if ($table == "devices") {
+
+            echo get_string('confirmdeletedevice', 'inventory');
+        } else if ($table == "references") {
+
+            echo get_string('confirmdeletereference', 'inventory');
+        } else if ($table == "brandsfromdevice" || $table == "brandsfromreference") {
+
+            echo get_string('confirmdeletebrand', 'inventory');
+        } else if ($table == "devicecategory") {
+
+            echo get_string('confirmdeletedevicecategory', 'inventory');
+        } else if ($table == "fieldsfromeditdevicetype") {
+
+            echo get_string('confirmdeletefields', 'inventory');
+        }
 
     if ($arraykey != "") {
 

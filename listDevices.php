@@ -245,12 +245,51 @@ echo"
             echo"
             <div class=singledevice>
                 <td class=deviceinfo>
-                    <div class=namedevice>";
+                    <table class=deviceheader>
+                        <tr>
+                            <td>
+                                <div class=namedevice>";
 
-                        $devicecategory = $DB->get_record('inventory_devicecategory', array('id' => $categoryid));
-                        echo"$devicecategory->name";
-                        echo "
-                    </div>
+                                    $devicecategory = $DB->get_record('inventory_devicecategory', array('id' => $categoryid));
+                                    echo"$devicecategory->name";
+                                    echo "
+                                </div>
+                            </td>
+                            <td class=devicebuttons>";
+                                if(has_capability('mod/inventory:reportfailure', $context)) {
+
+                                    if (($devicecategory->linkforfailure != null && $devicecategory->linkforfailure != "") || ($devicecategory->textforfailure != null && $devicecategory->textforfailure != "")) {
+                                        if ($currentdevice->isworking == "Oui") {
+                                            echo "
+                                            <div class=boxwithmargin>
+                                                <a href='failureandreservation.php?id=$id&amp;key=$key&amp;mode=failure'><button>".get_string('reportfailure','inventory')."</button></a>
+                                            </div>";
+                                        }
+                                    }
+                                }
+
+                                if(has_capability('mod/inventory:edit', $context)) {
+
+                                    echo "
+                                    <div>
+                                        <a href='editDevice.php?id=$key&amp;courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;roomid=$room&amp;editmode=1&amp;categoryid=$categoryid'>";
+                                        echo '
+                                            <img src="../../pix/e/document_properties.png" alt="Edit Room" style="width:20px;height:20px;" />';
+                                        echo "
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href='deleteDatabaseElement.php?id=$cm->id&amp;key=$key&amp;table=devices&amp;room=$room&amp;sesskey=".sesskey()."'>";
+                                        echo'
+                                            <img src="../../pix/i/delete.png" alt="Delete Room" style="width:20px;height:20px;" />
+                                        </a>';
+                                    echo "
+                                    </div>";
+                                }
+                            echo "
+                            </td>
+                        </tr>
+                    </table>
                     <div class=infodevice>";
 
                         $referenceid = $currentdevice->refid;
@@ -346,40 +385,6 @@ echo"
                         }
                     echo "
                     </div>
-                </td>
-                <td class=devicebuttons>";
-
-                    if(has_capability('mod/inventory:reportfailure', $context)) {
-
-                        if (($devicecategory->linkforfailure != null && $devicecategory->linkforfailure != "") || ($devicecategory->textforfailure != null && $devicecategory->textforfailure != "")) {
-                            if ($currentdevice->isworking == "Oui") {
-                                echo "
-                                <div class=boxwithmargin>
-                                    <a href='failureandreservation.php?id=$id&amp;key=$key&amp;mode=failure'><button>".get_string('reportfailure','inventory')."</button></a>
-                                </div>";
-                            }
-                        }
-                    }
-
-                    if(has_capability('mod/inventory:edit', $context)) {
-
-                        echo "
-                        <div>
-                            <a href='editDevice.php?id=$key&amp;courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;roomid=$room&amp;editmode=1&amp;categoryid=$categoryid'>";
-                            echo '
-                                <img src="../../pix/e/document_properties.png" alt="Edit Room" style="width:20px;height:20px;" />';
-                            echo "
-                            </a>
-                        </div>
-                        <div>
-                            <a href='deleteDatabaseElement.php?id=$cm->id&amp;key=$key&amp;table=devices&amp;room=$room&amp;sesskey=".sesskey()."'>";
-                            echo'
-                                <img src="../../pix/i/delete.png" alt="Delete Room" style="width:20px;height:20px;" />
-                            </a>';
-                        echo "
-                        </div>";
-                    }
-                echo "
                 </td>
             </div>";
 
