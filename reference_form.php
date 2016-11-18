@@ -128,6 +128,8 @@ class reference_form extends moodleform {
 
 <script type='text/javascript'>
 
+    //If we change the brand, we need to change where the 'editBrand' and 'deleteBrand' buttons will lead us.
+
     function acquirereferences() {
 
         editbrandbutton = document.getElementById('id_editbrand');

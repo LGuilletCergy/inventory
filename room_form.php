@@ -37,6 +37,8 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.'); // It must be included from a Moodle page.
 }
 
+// Classic moodle form. While the room have commentaries, they are not edited here.
+
 require_once("{$CFG->libdir}/formslib.php");
 
 class room_form extends moodleform {

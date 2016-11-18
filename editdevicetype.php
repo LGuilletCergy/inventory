@@ -120,7 +120,6 @@ if ($editmode == 1) {
     $formdata['name'] = $currentrecord->name;
     $formdata['failurelink'] = $currentrecord->linkforfailure;
     $oldlongtext['text'] = $currentrecord->textforfailure;
-    $oldlongtext['format'] = $currentrecord->formattextforfailure;
     $formdata['failuretext'] = $oldlongtext;
 
     $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
@@ -213,7 +212,6 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         $submitteddatafailuretext = $submitteddata->failuretext;
         $devicetypedata['textforfailure'] = $submitteddatafailuretext['text'];
-        $devicetypedata['formattextforfailure'] = $submitteddatafailuretext['format'];
 
         $newfieldnumbers = $submitteddata->numnewfields;
 
@@ -329,7 +327,6 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         $submitteddatafailuretext = $submitteddata->failuretext;
         $devicetypedata['textforfailure'] = $submitteddatafailuretext['text'];
-        $devicetypedata['formattextforfailure'] = $submitteddatafailuretext['format'];
 
         $newfieldnumbers = $submitteddata->numnewfields;
 

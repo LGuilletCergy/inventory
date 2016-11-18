@@ -87,7 +87,7 @@ if ($export != true) {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
 
-
+    // If we are in all buildings, the navbar will redirect us there, otherwise, it will redirect us in the current building
 
     if ($building != 0) {
 
@@ -117,6 +117,8 @@ if ($export != true) {
     $formatoptions->context = $context;
     $content = format_text($content, $inventory->contentformat, $formatoptions);
     echo $OUTPUT->box($content, "generalbox center clearfix");
+
+    //We create a select box to select the category we want to display. Changing the category will call a Javascript function.
 
     echo "
 
@@ -154,6 +156,8 @@ if ($export != true) {
     </div>
     <div id=listRooms>';
 
+    //If we are in all buildings, we display all buildings. Otherwise, we'll display only the rooms of the current building
+
 
     if($building != 0) {
 
@@ -171,6 +175,9 @@ if ($export != true) {
     <form method=post action=listRooms.php?export=true>";
 
         foreach ($listbuildings as $buildingkey => $buildingvalue) {
+
+            // We check whether or not there is a room with the good category of device in this building.
+            // If not, we will not display the name of the building.
 
             $hasdevice = 0;
             $hasroom = 0;
@@ -197,6 +204,9 @@ if ($export != true) {
             }
 
             foreach ($listrooms as $key => $value) {
+
+                // We check whether or not this room have the good category of device.
+                // If not, we will not display the room.
 
                 $hasdevice = $DB->record_exists('inventory_device', array('categoryid' => $categoryselected, 'roomid' => $key));
 
@@ -234,6 +244,9 @@ if ($export != true) {
                                 </li>
                             </ul>
                         </td>";
+
+                        // If the category has an icon and the room have a device of this category, we will display the icon next to the name of the room.
+
                         foreach($listcategories as $category) {
 
                             $iconurl = "";
@@ -336,6 +349,8 @@ if ($export != true) {
         echo'
         </div>';
 
+        //If we are in 'allbuildings' or if we are not allowed to edit the database, we cannot add a new room.
+
 
         if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
             echo "<a href='editRoom.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;buildingid=$building&amp;editmode=0'><button>".get_string('addroom','inventory')."</button></a>";
@@ -347,6 +362,8 @@ if ($export != true) {
 
         $listRoomsidinurl = http_build_query(array('listRoomsid' => $listRoomsid));
         $encodedlistRoomsidinurl = urlencode($listRoomsidinurl);
+
+        // If we are not allowed to export the csv, the button to do that will not be displayed.
 
         if(has_capability('mod/inventory:edit', $context)) {
 
@@ -367,6 +384,8 @@ if ($export != true) {
     echo $OUTPUT->footer();
 } else {
 
+    //To display the csv, we need an entirely new page without html
+
     if ($p) {
         if (!$inventory = $DB->get_record('inventory', array('id' => $p))) {
             print_error('invalidaccessparameter');
@@ -382,9 +401,13 @@ if ($export != true) {
 
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
+    //Just in case, we check whether or not we are allowed to be here.
+
     require_course_login($course, true, $cm);
     $context = context_module::instance($cm->id);
     require_capability('mod/inventory:edit', $context);
+
+    //If we are in all buildings, we need to check all rooms
 
 
     if($building != 0) {
@@ -395,6 +418,8 @@ if ($export != true) {
 
         $listrooms = $DB->get_records('inventory_room');
     }
+
+    //If the checkbox of this room was selected, we add this room to the list of room to print in the csv file.
 
     $listroomsid = array();
 
@@ -411,6 +436,8 @@ if ($export != true) {
         }
 
     }
+
+    // If the user tried to export without selecting at least a room, we redirect him to the page without the exportmode activated.
 
     if ($listroomsid != null) {
 
@@ -492,6 +519,8 @@ function exportcsv(array $listRoomsid) {
 ?>
 
 <script type='text/javascript'>
+
+    // If we change categories, we reload the page with the new category id as argument.
 
     function categoryChanged() {
 

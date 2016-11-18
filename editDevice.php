@@ -146,7 +146,6 @@ if ($editmode == 1) {
         if($field->type == "longtext") {
 
             $oldlongtext['text'] = $currentvalue->value;
-            $oldlongtext['format'] = $currentvalue->format;
             $formfieldname = 'numerofield'.$field->id;
             $formdata[$formfieldname] = $oldlongtext;
         } else {
@@ -271,11 +270,9 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
                 $submitteddatanumerofield = $submitteddata->$numerofield;
 
                 $valuedata['value'] = $submitteddatanumerofield['text'];
-                $valuedata['format'] = $submitteddatanumerofield['format'];
             } else if($field->type == "shorttext") {
 
                 $valuedata['value'] = $submitteddata->$numerofield;
-                $valuedata['format'] = null;
             }
 
             if ($DB->record_exists('inventory_devicevalue', array('id' => $currentvalue->id))) {
@@ -345,11 +342,9 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
                 $submitteddatanumerofield = $submitteddata->$numerofield;
 
                 $valuedata['value'] = $submitteddatanumerofield['text'];
-                $valuedata['format'] = $submitteddatanumerofield['format'];
             } else if($field->type == "shorttext") {
 
                 $valuedata['value'] = $submitteddata->$numerofield;
-                $valuedata['format'] = null;
             }
 
             $valueid = $DB->insert_record('inventory_devicevalue', $valuedata);

@@ -108,6 +108,8 @@ echo $OUTPUT->box($content, "generalbox center clearfix");
 
 $listebuilding = $DB->get_records('inventory_building');
 
+//We display all buildings. Clicking on a building will display the rooms in this building
+
 echo '
 <div id=buildings>';
 foreach ($listebuilding as $key => $value) {
@@ -120,6 +122,9 @@ foreach ($listebuilding as $key => $value) {
                 <td>';
                     echo "
                         <a href='listRooms.php?id=$id&amp;building=$key'>";
+
+                        // We get the image of this building by taking the name from the database and we fetch the url with get_file.
+
                         $fs = get_file_storage();
                         $contextmodule = context_module::instance($id);
                         $filename = $listebuilding[$key]->imagename;
@@ -147,6 +152,9 @@ foreach ($listebuilding as $key => $value) {
                 <td>";
 
                 $context = context_module::instance($cm->id);
+
+                // We display the edit and remove buttons only if the user has edit rights.
+
                 if(has_capability('mod/inventory:edit', $context)) {
 
                     echo "
@@ -183,8 +191,10 @@ foreach ($listebuilding as $key => $value) {
             </tr>
         </table>';
 }
-echo'
 
+//We add the 'AllBuildings' building. Clicking on it will display a list of all rooms in all the buildings.
+
+echo'
 <table class=singleBuilding>
             <tr>
                 <td>';
@@ -207,6 +217,10 @@ echo'
 
 echo'
     </div>';
+
+
+// If we can edit the database, we can see these buttons.
+// They allow us to add a new building and to manage the type of devices.
 
 
 if(has_capability('mod/inventory:edit', $context)) {

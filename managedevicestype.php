@@ -82,9 +82,13 @@ if (!isset($options['printheading']) || !empty($options['printheading'])) {
     echo $OUTPUT->heading(format_string(get_string('managedevicestype', 'inventory')), 2);
 }
 
+// We can only come here if we can edit the database.
+
 require_capability('mod/inventory:edit', $context);
 
 $listcategories = $DB->get_records('inventory_devicecategory');
+
+//We display all current categories with buttons to edit or delete them.
 
 $numelemcolonne = 0;
 echo '
@@ -141,6 +145,8 @@ if ($numelemcolonne != 0) {
 
 echo'
 </div>';
+
+// We add a button to add a new type of device.
 
 echo"<a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;editmode=0&amp;source=managedevicestype'><button>".get_string('adddevicetype','inventory')."</button></a>";
 

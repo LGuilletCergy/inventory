@@ -111,11 +111,9 @@ $currentroom = $DB->get_record('inventory_room', array('id' => $room));
 if ($mode == "public") {
 
     $oldlongtext['text'] = $currentroom->publiccommentary;
-    $oldlongtext['format'] = $currentroom->publiccommentaryformat;
 } else {
 
     $oldlongtext['text'] = $currentroom->privatecommentary;
-    $oldlongtext['format'] = $currentroom->privatecommentaryformat;
 }
 
 $formdata['commentary'] = $oldlongtext;
@@ -167,9 +165,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $submitteddataeditor = $submitteddata->commentary;
 
         $finaldata['publiccommentary'] = $submitteddataeditor['text'];
-        $finaldata['publiccommentaryformat'] = $submitteddataeditor['format'];
         $finaldata['privatecommentary'] = $currentroom->privatecommentary;
-        $finaldata['privatecommentaryformat'] = $currentroom->privatecommentaryformat;
 
         $attachmentdata['isprivate'] = 0;
         $filearea = "publicattachment";
@@ -179,9 +175,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $submitteddataeditor = $submitteddata->commentary;
 
         $finaldata['privatecommentary'] = $submitteddataeditor['text'];
-        $finaldata['privatecommentaryformat'] = $submitteddataeditor['format'];
         $finaldata['publiccommentary'] = $currentroom->publiccommentary;
-        $finaldata['publiccommentaryformat'] = $currentroom->publiccommentaryformat;
 
         $attachmentdata['isprivate'] = 1;
         $filearea = "privateattachment";
