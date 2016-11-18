@@ -71,19 +71,23 @@ require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
 // Header code.
-$PAGE->set_url('/mod/inventory/editcommentary.php', array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'room' => $room, 'mode' => $mode));
+$PAGE->set_url('/mod/inventory/editcommentary.php',
+        array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'room' => $room, 'mode' => $mode));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
 // Navigation node.
-$editurl = new moodle_url('/mod/inventory/editcommentary.php', array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'room' => $room, 'mode' => $mode));
+$editurl = new moodle_url('/mod/inventory/editcommentary.php',
+        array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'room' => $room, 'mode' => $mode));
 
-//Get buildind and room id
+// Get buildind and room id.
 $currentrecord = $DB->get_record('inventory_room', array('id' => $room));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentrecord->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $room)));
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+        array('id' => $id, 'building' => $currentbuilding->id)));
+$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php',
+        array('id' => $id, 'room' => $room)));
 $PAGE->navbar->add(get_string('editcommentary', 'inventory'), $editurl);
 
 require_capability('mod/inventory:edit', $context);
@@ -124,11 +128,11 @@ $usercontext = context_user::instance($USER->id);
 $contextmodule = context_module::instance($id);
 $draftitemid = file_get_submitted_draft_itemid('attachment');
 
-if($mode == "public") {
+if ($mode == "public") {
 
     file_prepare_draft_area($draftitemid, $contextmodule->id, 'mod_inventory', 'publicattachment', $room,
             array());
-    
+
 } else {
 
     file_prepare_draft_area($draftitemid, $contextmodule->id, 'mod_inventory', 'privateattachment', $room,
@@ -160,7 +164,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     $finaldata['name'] = $currentroom->name;
     $finaldata['isamphi'] = $currentroom->isamphi;
 
-    if($mode == "public") {
+    if ($mode == "public") {
 
         $submitteddataeditor = $submitteddata->commentary;
 
@@ -190,10 +194,11 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     $usercontext = context_user::instance($USER->id);
     $contextmodule = context_module::instance($id);
 
-    $listoldattachments = $DB->get_records('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => $attachmentdata['isprivate']));
+    $listoldattachments = $DB->get_records('inventory_attachmentroom',
+            array('roomid' => $room, 'isprivate' => $attachmentdata['isprivate']));
     $listattachment = $fs->get_area_files($usercontext->id, 'user', 'draft', $submitteddata->attachment, 'id');
 
-    foreach($listoldattachments as $oldattachment) {
+    foreach ($listoldattachments as $oldattachment) {
 
         $oldattachementname = $oldattachment->name;
 
@@ -201,32 +206,32 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listattachment as $attachment) {
 
-            if ($attachment->get_filename()!= ".") {
+            if ($attachment->get_filename() != ".") {
                 $attachmentname = $attachment->get_filename();
             }
 
-            if($oldattachementname == $attachmentname) {
+            if ($oldattachementname == $attachmentname) {
 
                 $delete = 0;
             }
         }
 
-        if($delete == 1) {
+        if ($delete == 1) {
 
-            // Prepare file record object
+            // Prepare file record object.
             $fileinfo = array(
                 'component' => 'mod_inventory',
-                'filearea' => $filearea,     // usually = table name
-                'itemid' => $room,               // usually = ID of row in table
-                'contextid' => $contextmodule->id, // ID of context
-                'filepath' => '/',           // any path beginning and ending in /
-                'filename' => $oldattachementname); // any filename
+                'filearea' => $filearea,     // Usually = table name.
+                'itemid' => $room,               // Usually = ID of row in table.
+                'contextid' => $contextmodule->id, // ID of context.
+                'filepath' => '/',           // Any path beginning and ending in /.
+                'filename' => $oldattachementname); // Any filename.
 
-            // Get file
+            // Get file.
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                     $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-            // Delete it if it exists
+            // Delete it if it exists.
             if ($file) {
                 $file->delete();
             }
@@ -238,7 +243,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
     foreach ($listattachment as $attachment) {
 
-        if ($attachment->get_filename()!= ".") {
+        if ($attachment->get_filename() != ".") {
             $attachmentname = $attachment->get_filename();
 
             $attachmentdata['name'] = $attachmentname;
@@ -246,9 +251,11 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
             file_save_draft_area_files($submitteddata->attachment, $contextmodule->id, 'mod_inventory', $filearea,
                    $room, array());
 
-            if($DB->record_exists('inventory_attachmentroom', array('roomid' => $room, 'name' => $attachmentname, 'isprivate' => $attachmentdata->isprivate))) {
+            if ($DB->record_exists('inventory_attachmentroom',
+                    array('roomid' => $room, 'name' => $attachmentname, 'isprivate' => $attachmentdata->isprivate))) {
 
-                $currentattachment = $DB->get_record('inventory_attachmentroom', array('roomid' => $room, 'name' => $attachmentname, 'isprivate' => $attachmentdata->isprivate));
+                $currentattachment = $DB->get_record('inventory_attachmentroom',
+                        array('roomid' => $room, 'name' => $attachmentname, 'isprivate' => $attachmentdata->isprivate));
 
                 $attachmentdata['id'] = $currentattachment->id;
 
@@ -258,7 +265,6 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
                 $DB->insert_record('inventory_attachmentroom', $attachmentdata);
             }
         }
-        
     }
 
     if (!$fileid) {

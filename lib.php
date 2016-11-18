@@ -134,7 +134,8 @@ function inventory_add_instance($data, $mform = null) {
 
     if ($mform and !empty($data->inventory['itemid'])) {
         $draftitemid = $data->inventory['itemid'];
-        $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_inventory', 'content', 0, inventory_get_editor_options($context), $data->content);
+        $data->content = file_save_draft_area_files($draftitemid, $context->id,
+                'mod_inventory', 'content', 0, inventory_get_editor_options($context), $data->content);
         $DB->update_record('inventory', $data);
     }
 
@@ -218,7 +219,8 @@ function inventory_get_coursemodule_info($coursemodule) {
     $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
     $width  = empty($options['popupwidth']) ? 620 : $options['popupwidth'];
     $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
-    $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
+    $wh = "width=$width,height=$height,toolbar=no,location=no,"
+            . "menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
     $info->onclick = "window.open('$fullurl', '', '$wh'); return false;";
 
     return $info;
@@ -273,7 +275,9 @@ function inventory_get_file_info($browser, $areas, $course, $cm, $context, $file
 
     $fs = get_file_storage();
 
-    if ($filearea === 'content' || $filearea === 'image' || $filearea === 'manuel' || $filearea === 'manuelreference' || $filearea === 'icon' || $filearea === 'publicattachment' || $filearea === 'privateattachment') {
+    if ($filearea === 'content' || $filearea === 'image' || $filearea === 'manuel' ||
+            $filearea === 'manuelreference' || $filearea === 'icon' ||
+            $filearea === 'publicattachment' || $filearea === 'privateattachment') {
         $filepath = is_null($filepath) ? '/' : $filepath;
         $filename = is_null($filename) ? '.' : $filename;
 
@@ -287,7 +291,8 @@ function inventory_get_file_info($browser, $areas, $course, $cm, $context, $file
             }
         }
         require_once("$CFG->dirroot/mod/inventory/locallib.php");
-        return new inventory_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
+        return new inventory_content_file_info($browser, $context, $storedfile,
+                $urlbase, $areas[$filearea], true, true, true, false);
     }
 
     // Note: inventory_intro handled in file_browser automatically.
@@ -322,7 +327,9 @@ function inventory_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
         return false;
     }
 
-    if ($filearea !== 'content' && $filearea!== 'image' && $filearea!== 'manuel' && $filearea!== 'manuelreference' && $filearea!== 'icon' && $filearea!== 'publicattachment' && $filearea!== 'privateattachment') {
+    if ($filearea !== 'content' && $filearea !== 'image' && $filearea !== 'manuel' &&
+            $filearea !== 'manuelreference' && $filearea !== 'icon' &&
+            $filearea !== 'publicattachment' && $filearea !== 'privateattachment') {
         // Intro is handled automatically in pluginfile.php.
         return false;
     }
@@ -358,7 +365,8 @@ function inventory_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
                 if ($inventory->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE) {
                     return false;
                 }
-                if (!$file = resourcelib_try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_inventory', 'content', 0)) {
+                if (!$file = resourcelib_try_file_migration('/'.$relativepath,
+                        $cm->id, $cm->course, 'mod_inventory', 'content', 0)) {
                     return false;
                 }
                 // File migrate - update flag.
@@ -369,13 +377,13 @@ function inventory_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
             // Finally send the file.
             send_stored_file($file, null, 0, $forcedownload, $options);
         }
-    } else if ($filearea == 'image' || $filearea == 'manuel' || $filearea == 'manuelreference' || $filearea == 'icon' || $filearea == 'publicattachment' || $filearea == 'privateattachment') {
+    } else if ($filearea == 'image' || $filearea == 'manuel' || $filearea == 'manuelreference' ||
+            $filearea == 'icon' || $filearea == 'publicattachment' || $filearea == 'privateattachment') {
 
         if ($filearea == 'privateattachment' && !has_capability('mod/inventory:edit', $context)) {
 
             return false;
         }
-
 
         // Leave this line out if you set the itemid to null in make_pluginfile_url (set $itemid to 0 instead).
         $itemid = array_shift($args); // The first item in the $args array.
@@ -386,9 +394,9 @@ function inventory_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
         // Extract the filename / filepath from the $args array.
         $filename = array_pop($args); // The last item in the $args array.
         if (!$args) {
-            $filepath = '/'; // $args is empty => the path is '/'
+            $filepath = '/'; // ...$args is empty => the path is '/'.
         } else {
-            $filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
+            $filepath = '/'.implode('/', $args).'/'; // ...$args contains elements of the filepath.
         }
 
         // Retrieve the file from the Files API.
@@ -434,7 +442,9 @@ function inventory_export_contents($cm, $baseurl) {
         $file['filename']     = $fileinfo->get_filename();
         $file['filepath']     = $fileinfo->get_filepath();
         $file['filesize']     = $fileinfo->get_filesize();
-        $file['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_inventory/content/'.$inventory->revision.$fileinfo->get_filepath().$fileinfo->get_filename(), true);
+        $file['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl,
+                '/'.$context->id.'/mod_inventory'
+                . '/content/'.$inventory->revision.$fileinfo->get_filepath().$fileinfo->get_filename(), true);
         $file['timecreated']  = $fileinfo->get_timecreated();
         $file['timemodified'] = $fileinfo->get_timemodified();
         $file['sortorder']    = $fileinfo->get_sortorder();
@@ -451,7 +461,8 @@ function inventory_export_contents($cm, $baseurl) {
     $pagefile['filename']     = $filename;
     $pagefile['filepath']     = '/';
     $pagefile['filesize']     = 0;
-    $pagefile['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_inventory/content/' . $filename, true);
+    $pagefile['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl,
+            '/'.$context->id.'/mod_inventory/content/' . $filename, true);
     $pagefile['timecreated']  = null;
     $pagefile['timemodified'] = $inventory->timemodified;
     // Make this file as main file.
@@ -527,11 +538,4 @@ function inventory_view($inventory, $course, $cm, $context) {
     // Completion.
     $completion = new completion_info($course);
     $completion->set_module_viewed($cm);
-}
-
-function inventory_extend_navigation($inventorynode, $course, $module, $cm) {
-
-    //$nav->add("test");
-
-    //$inventorynode->add("test");
 }

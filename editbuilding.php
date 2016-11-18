@@ -63,7 +63,9 @@ $context = context_module::instance($moduleid);
 require_course_login($course, true, $cm);
 
 // Header code.
-$PAGE->set_url('/mod/inventory/editbuilding.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode));
+$PAGE->set_url('/mod/inventory/editbuilding.php',
+        array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
+            'moduleid' => $moduleid, 'editmode' => $editmode));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
@@ -80,9 +82,11 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 
 // Navigation node.
-$editurl = new moodle_url('/mod/inventory/editbuilding.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode));
+$editurl = new moodle_url('/mod/inventory/editbuilding.php',
+        array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
+            'moduleid' => $moduleid, 'editmode' => $editmode));
 
-if($editmode == 0) {
+if ($editmode == 0) {
     $PAGE->navbar->add(get_string('addbuilding', 'inventory'), $editurl);
 } else {
     $PAGE->navbar->add(get_string('editbuilding', 'inventory'), $editurl);
@@ -150,7 +154,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listimages as $image) {
 
-            if ($image->get_filename()!= ".") {
+            if ($image->get_filename() != ".") {
                 $imagename = $image->get_filename();
             }
         }
@@ -163,24 +167,24 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $finaldata['phone'] = $submitteddata->phone;
         $finaldata['imagename'] = $imagename;
 
-        //Avant l'update_record, on récupère le nom de l'ancienne image et on delete l'URL
+        // Before update_record we get the name of the old image and we delete the url.
 
         $oldimagename = $currentrecord->imagename;
 
-        // Prepare file record object
+        // Prepare file record object.
         $fileinfo = array(
             'component' => 'mod_inventory',
-            'filearea' => 'image',     // usually = table name
-            'itemid' => $key,               // usually = ID of row in table
-            'contextid' => $contextmodule->id, // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => $oldimagename); // any filename
+            'filearea' => 'image',     // Usually = table name.
+            'itemid' => $key,               // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $oldimagename); // Any filename.
 
-        // Get file
+        // Get file.
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-        // Delete it if it exists
+        // Delete it if it exists.
         if ($file) {
             $file->delete();
         }
@@ -200,7 +204,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listimages as $image) {
 
-            if ($image->get_filename()!= ".") {
+            if ($image->get_filename() != ".") {
                 $imagename = $image->get_filename();
             }
         }

@@ -56,36 +56,50 @@ class device_form extends moodleform {
         $roomid = $this->_customdata['roomid'];
         $editmode = $this->_customdata['editmode'];
         $referenceid = $this->_customdata['referenceid'];
-        
+
         $mform->addElement('header', 'addfileheader', get_string('devicedata', 'inventory'));
 
         $mform->addElement('text', 'type', get_string('type', 'inventory'), 'disabled');
 
-        $tablebrands =  $DB->get_records_menu('inventory_brand', array('categoryid' => $categoryid), 'id', 'id, name');
+        $tablebrands = $DB->get_records_menu('inventory_brand', array('categoryid' => $categoryid), 'id', 'id, name');
 
-        $addbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=0&idbrand=$brandid&source=editdevice";
-        $editbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=1&idbrand=$brandid&source=editdevice";
-        $deletebrandurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&oldid=$id&editmode=$editmode&categoryid=$categoryid&room=$roomid&key=$brandid&table=brandsfromdevice&sesskey=".sesskey();
+        $addbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
+                . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=0&idbrand=$brandid&source=editdevice";
+        $editbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
+                . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=1&idbrand=$brandid&source=editdevice";
+        $deletebrandurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&"
+                . "oldid=$id&editmode=$editmode&categoryid=$categoryid&room=$roomid&"
+                . "key=$brandid&table=brandsfromdevice&sesskey=".sesskey();
 
         $brandarray = array();
         $brandarray[] =& $mform->createElement('select', 'brand', '', $tablebrands, array('onchange' => 'acquirereferences();'));
-        $brandarray[] =& $mform->createElement('button', 'addbrand', get_string('addbrand', 'inventory'), array ('onclick' => "location.href='$addbrandurl'"));
-        $brandarray[] =& $mform->createElement('button', 'editbrand', get_string('editbrand', 'inventory'), array ('onclick' => "location.href='$editbrandurl'"));
-        $brandarray[] =& $mform->createElement('button', 'deletebrand', get_string('deletebrand', 'inventory'), array ('onclick' => "location.href='$deletebrandurl'"));
+        $brandarray[] =& $mform->createElement('button', 'addbrand', get_string('addbrand', 'inventory'),
+                array ('onclick' => "location.href='$addbrandurl'"));
+        $brandarray[] =& $mform->createElement('button', 'editbrand', get_string('editbrand', 'inventory'),
+                array ('onclick' => "location.href='$editbrandurl'"));
+        $brandarray[] =& $mform->createElement('button', 'deletebrand', get_string('deletebrand', 'inventory'),
+                array ('onclick' => "location.href='$deletebrandurl'"));
         $mform->addGroup($brandarray, 'brandarray', get_string('choosebrand', 'inventory'), array(''), false);
-        
-        $tablereferences =  $DB->get_records_menu('inventory_reference', array('brandid' => $brandid), 'id', 'id, name');
 
-            
-        $addreferenceurl = "editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodereference=0&idreference=$referenceid";
-        $editreferenceurl = "editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodereference=1&idreference=$referenceid";
-        $deletereferenceurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&oldid=$id&editmode=$editmode&categoryid=$categoryid&room=$roomid&key=$referenceid&table=references&sesskey=".sesskey();
+        $tablereferences = $DB->get_records_menu('inventory_reference', array('brandid' => $brandid), 'id', 'id, name');
+
+        $addreferenceurl = "editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
+                . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodereference=0&idreference=$referenceid";
+        $editreferenceurl = "editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
+                . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodereference=1&idreference=$referenceid";
+        $deletereferenceurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&oldid=$id&"
+                . "editmode=$editmode&categoryid=$categoryid&room=$roomid&"
+                . "key=$referenceid&table=references&sesskey=".sesskey();
 
         $referencearray = array();
-        $referencearray[] =& $mform->createElement('select', 'reference', '', $tablereferences, array('onchange' => 'changereference();'));
-        $referencearray[] =& $mform->createElement('button', 'addreference', get_string('addreference', 'inventory'), array ('onclick' => "location.href='$addreferenceurl'"));
-        $referencearray[] =& $mform->createElement('button', 'editreference', get_string('editreference', 'inventory'), array ('onclick' => "location.href='$editreferenceurl'"));
-        $referencearray[] =& $mform->createElement('button', 'deletereference', get_string('deletereference', 'inventory'), array ('onclick' => "location.href='$deletereferenceurl'"));
+        $referencearray[] =& $mform->createElement('select', 'reference', '', $tablereferences,
+                array('onchange' => 'changereference();'));
+        $referencearray[] =& $mform->createElement('button', 'addreference', get_string('addreference', 'inventory'),
+                array ('onclick' => "location.href='$addreferenceurl'"));
+        $referencearray[] =& $mform->createElement('button', 'editreference', get_string('editreference', 'inventory'),
+                array ('onclick' => "location.href='$editreferenceurl'"));
+        $referencearray[] =& $mform->createElement('button', 'deletereference', get_string('deletereference', 'inventory'),
+                array ('onclick' => "location.href='$deletereferenceurl'"));
         $mform->addGroup($referencearray, 'referencearray', get_string('choosereference', 'inventory'), array(''), false);
 
         $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
@@ -146,7 +160,6 @@ class device_form extends moodleform {
         $mform->setType('sesskey', PARAM_TEXT);
 
         $mform->disable_form_change_checker();
-
 
         $this->add_action_buttons();
     }
@@ -217,13 +230,19 @@ class device_form extends moodleform {
         stringeditbrand = document.getElementsByName('stringeditbrand').item(0).value;
         stringdeletebrand = document.getElementsByName('stringdeletebrand').item(0).value;
 
-        urleditbrand = "editbrand.php?courseid=" + courseid + "&blockid=" + blockid + "&moduleid=" + moduleid + "&id=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&roomid=" + roomid + "&editmodebrand=1&idbrand=" + brandid + "&source=editdevice";
+        urleditbrand = "editbrand.php?courseid=" + courseid + "&blockid=" + blockid + "&moduleid=" + moduleid + "&id=" +
+                id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&roomid=" + roomid + "&editmodebrand=1&idbrand=" +
+                brandid + "&source=editdevice";
 
-        editbrandbutton.outerHTML = '<input onclick=location.href="' + urleditbrand + '" name=editbrand value="' + stringeditbrand + '" type=button id=id_editbrand />';
+        editbrandbutton.outerHTML = '<input onclick=location.href="' + urleditbrand + '" name=editbrand value="' +
+                stringeditbrand + '" type=button id=id_editbrand />';
 
-        urldeletebrand = "deleteDatabaseElement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" + moduleid + "&oldid=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&room=" + roomid + "&key=" + brandid +"&table=brandsfromdevice&sesskey=" + sesskey;
+        urldeletebrand = "deleteDatabaseElement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" +
+                moduleid + "&oldid=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&room=" +
+                roomid + "&key=" + brandid +"&table=brandsfromdevice&sesskey=" + sesskey;
 
-        deletebrandbutton.outerHTML = '<input onclick=location.href="' + urldeletebrand + '" name=editbrand value="' + stringdeletebrand + '" type=button id=id_deletebrand />';
+        deletebrandbutton.outerHTML = '<input onclick=location.href="' + urldeletebrand + '" name=editbrand value="' +
+                stringdeletebrand + '" type=button id=id_deletebrand />';
     }
 
     function changereference() {
@@ -250,12 +269,18 @@ class device_form extends moodleform {
         stringeditreference = document.getElementsByName('stringeditreference').item(0).value;
         stringdeletereference = document.getElementsByName('stringdeletereference').item(0).value;
 
-        urleditreference = "editreference.php?courseid=" + courseid + "&blockid=" + blockid + "&moduleid=" + moduleid + "&id=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&roomid=" + roomid + "&editmodereference=1&idreference=" + referenceid;
+        urleditreference = "editreference.php?courseid=" + courseid + "&blockid=" + blockid + "&moduleid=" +
+                moduleid + "&id=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&roomid=" +
+                roomid + "&editmodereference=1&idreference=" + referenceid;
 
-        editreferencebutton.outerHTML = '<input onclick=location.href="' + urleditreference + '" name=editreference value="' + stringeditreference + '" type=button id=id_editreference />';
+        editreferencebutton.outerHTML = '<input onclick=location.href="' + urleditreference + '" name=editreference value="' +
+                stringeditreference + '" type=button id=id_editreference />';
 
-        urldeletereference = "deleteDatabaseElement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" + moduleid + "&oldid=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&room=" + roomid + "&key=" + referenceid +"&table=references&sesskey=" + sesskey;
+        urldeletereference = "deleteDatabaseElement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" +
+                moduleid + "&oldid=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid +
+                "&room=" + roomid + "&key=" + referenceid +"&table=references&sesskey=" + sesskey;
 
-        deletereferencebutton.outerHTML = '<input onclick=location.href="' + urldeletereference + '" name=deletereference value="' + stringdeletereference + '" type=button id=id_deletereference />';
+        deletereferencebutton.outerHTML = '<input onclick=location.href="' + urldeletereference + '" name=deletereference value="' +
+                stringdeletereference + '" type=button id=id_deletereference />';
     }
 </script>

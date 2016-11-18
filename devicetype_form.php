@@ -46,14 +46,13 @@ class devicetype_form extends moodleform {
         global $DB;
 
         $mform =& $this->_form;
-        
+
         $categoryid = $this->_customdata['categoryid'];
         $editmode = $this->_customdata['editmode'];
 
         $mform->addElement('header', 'addfileheader', get_string('devicetypedata', 'inventory'));
 
         $mform->addElement('text', 'name', get_string('name', 'inventory'));
-
 
         $mform->addElement('text', 'failurelink', get_string('failurelink', 'inventory'));
 
@@ -64,7 +63,6 @@ class devicetype_form extends moodleform {
         $i = 1;
 
         foreach ($listfields as $field) {
-
 
             $oldfieldsarray = array();
 
@@ -86,7 +84,7 @@ class devicetype_form extends moodleform {
 
         $repeatoptions = array();
 
-        if($editmode == 0) {
+        if ($editmode == 0) {
 
             $numrepeatgroupinitial = 1;
         } else {

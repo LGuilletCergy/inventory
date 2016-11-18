@@ -66,7 +66,10 @@ require_course_login($course, true, $cm);
 
 
 // Header code.
-$PAGE->set_url('/mod/inventory/editreference.php', array('idreference' => $idreference, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmodereference' => $editmodereference, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
+$PAGE->set_url('/mod/inventory/editreference.php',
+        array('idreference' => $idreference, 'courseid' => $courseid, 'blockid' => $blockid,
+            'moduleid' => $moduleid, 'editmodereference' => $editmodereference,
+            'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
@@ -81,22 +84,35 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 
 // Navigation node.
-$editurl = new moodle_url('/mod/inventory/editreference.php', array('idreference' => $idreference, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmodereference' => $editmodereference, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
+$editurl = new moodle_url('/mod/inventory/editreference.php',
+        array('idreference' => $idreference, 'courseid' => $courseid, 'blockid' => $blockid,
+            'moduleid' => $moduleid, 'editmodereference' => $editmodereference, 'roomid' => $roomid,
+            'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
 
-//Get buildind and room id
+// Get buildind and room id.
 $currentroom = $DB->get_record('inventory_room', array('id' => $roomid));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid)));
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+        array('id' => $moduleid, 'building' => $currentbuilding->id)));
+$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+        array('id' => $moduleid, 'room' => $roomid)));
 
-if($editmode == 0) {
-    $PAGE->navbar->add(get_string('adddevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
+if ($editmode == 0) {
+    $PAGE->navbar->add(get_string('adddevice', 'inventory'),
+            new moodle_url('/mod/inventory/editDevice.php',
+                    array('courseid' => $courseid, 'blockid' => $blockid,
+                        'moduleid' => $moduleid, 'roomid' => $roomid,
+                        'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
 } else {
-    $PAGE->navbar->add(get_string('editdevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
+    $PAGE->navbar->add(get_string('editdevice', 'inventory'),
+            new moodle_url('/mod/inventory/editDevice.php',
+                    array('courseid' => $courseid, 'blockid' => $blockid,
+                        'moduleid' => $moduleid, 'roomid' => $roomid,
+                        'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
 }
 
-if($editmodereference == 0) {
+if ($editmodereference == 0) {
     $PAGE->navbar->add(get_string('addreference', 'inventory'), $editurl);
 } else {
     $PAGE->navbar->add(get_string('editreference', 'inventory'), $editurl);
@@ -115,13 +131,19 @@ if ($editmodereference == 1) {
         if (!$moduleid) {
             $moduleid = 1;
         }
-        $courseurl = new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
+        $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+                array('courseid' => $courseid, 'blockid' => $blockid,
+                    'moduleid' => $moduleid, 'roomid' => $roomid,
+                    'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
         redirect($courseurl);
     }
 }
 
 
-$mform = new reference_form(null, array('categoryid' => $categoryid, 'brandid' => $brandid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'courseid' => $courseid, 'editmode' => $editmode, 'roomid' => $roomid, 'id' => $id, 'idreference' => $idreference, 'editmodereference' => $editmodereference));
+$mform = new reference_form(null, array('categoryid' => $categoryid, 'brandid' => $brandid,
+    'blockid' => $blockid, 'moduleid' => $moduleid, 'courseid' => $courseid,
+    'editmode' => $editmode, 'roomid' => $roomid, 'id' => $id, 'idreference' => $idreference,
+    'editmodereference' => $editmodereference));
 $formdata['blockid'] = $blockid;
 $formdata['moduleid'] = $moduleid;
 $formdata['courseid'] = $courseid;
@@ -139,7 +161,7 @@ if ($editmodereference == 1) {
     $formdata['name'] = $currentrecord->name;
     $formdata['brand'] = $brandid;
 
-    $listrecordbrand =$DB->get_records('inventory_reference', array('brandid' => $brandid));
+    $listrecordbrand = $DB->get_records('inventory_reference', array('brandid' => $brandid));
 
     foreach ($listrecordbrand as $recordkey => $recordvalue) {
 
@@ -174,12 +196,14 @@ if ($editmodereference == 1) {
 
 $mform->set_data($formdata);
 
-// Three possible states
+// Three possible states.
 if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;
     }
-    $courseurl = new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
+    $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+            array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+                'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
     redirect($courseurl);
 } else if ($submitteddata = $mform->get_data()) { // Second scenario : the form was validated.
 
@@ -204,31 +228,31 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listmanuel as $manuel) {
 
-            if ($manuel->get_filename()!= ".") {
+            if ($manuel->get_filename() != ".") {
                 $manuelname = $manuel->get_filename();
             }
         }
 
         $referencedata['documentation'] = $manuelname;
 
-        //Avant l'update_record, on récupère le nom de l'ancien manuel et on delete l'URL
+        // Before update_record, we get the name of the old manual and we delete the URL.
 
         $oldmanuelname = $currentrecord->documentation;
 
-        // Prepare file record object
+        // Prepare file record object.
         $fileinfo = array(
             'component' => 'mod_inventory',
-            'filearea' => 'manuelreference',     // usually = table name
-            'itemid' => $key,               // usually = ID of row in table
-            'contextid' => $contextmodule->id, // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => $oldmanuelname); // any filename
+            'filearea' => 'manuelreference',     // Usually = table name.
+            'itemid' => $key,               // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $oldmanuelname); // Any filename.
 
-        // Get file
+        // Get file.
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-        // Delete it if it exists
+        // Delete it if it exists.
         if ($file) {
             $file->delete();
         }
@@ -251,7 +275,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listmanuel as $manuel) {
 
-            if ($manuel->get_filename()!= ".") {
+            if ($manuel->get_filename() != ".") {
                 $manuelname = $manuel->get_filename();
             }
         }
@@ -268,7 +292,9 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         print_error('databaseerror', 'inventory');
     } else {
 
-        $courseurl = new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
+        $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+                array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+                    'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
         redirect($courseurl);
     }
 }
@@ -279,7 +305,7 @@ echo $OUTPUT->header();
 
 $stop = 0;
 
-$listrecordbrands =$DB->get_records('inventory_reference', array('brandid' => $brandid));
+$listrecordbrands = $DB->get_records('inventory_reference', array('brandid' => $brandid));
 
 foreach ($listrecordbrands as $recordkey => $recordvalue) {
 
@@ -294,16 +320,22 @@ foreach ($listrecordbrands as $recordkey => $recordvalue) {
     }
 }
 
-if($stop == 1) {
+if ($stop == 1) {
 
     if ($source == "editdevice") {
 
-        $courseurl = new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
+        $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+                array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+                    'roomid' => $roomid, 'categoryid' => $categoryid,
+                    'id' => $id, 'editmode' => $editmode));
     } else if ($source == "editreference") {
 
-        $courseurl = new moodle_url('/mod/inventory/editreference.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode, 'idreference' => $idreference, 'editmodereference' => $editmodereference));
-    }
-    else {
+        $courseurl = new moodle_url('/mod/inventory/editreference.php',
+                array('courseid' => $courseid, 'blockid' => $blockid,
+                    'moduleid' => $moduleid, 'roomid' => $roomid,
+                    'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode,
+                    'idreference' => $idreference, 'editmodereference' => $editmodereference));
+    } else {
 
         $courseurl = new moodle_url('/mod/inventory/view.php', array('id' => $moduleid));
 

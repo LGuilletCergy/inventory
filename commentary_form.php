@@ -67,7 +67,6 @@ class commentary_form extends moodleform {
         $mform->addElement('hidden', 'mode');
         $mform->setType('mode', PARAM_TEXT);
 
-
         $this->add_action_buttons();
     }
 }

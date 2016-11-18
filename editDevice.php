@@ -65,7 +65,8 @@ $context = context_module::instance($moduleid);
 require_course_login($course, true, $cm);
 
 // Header code.
-$PAGE->set_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
+$PAGE->set_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
+    'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
@@ -80,16 +81,19 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 
 // Navigation node.
-$editurl = new moodle_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
+$editurl = new moodle_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
+    'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
 
-//Get buildind and room id
+// Get buildind and room id.
 $currentrecord = $DB->get_record('inventory_room', array('id' => $roomid));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentrecord->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid)));
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+        array('id' => $moduleid, 'building' => $currentbuilding->id)));
+$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php',
+        array('id' => $moduleid, 'room' => $roomid)));
 
-if($editmode == 0) {
+if ($editmode == 0) {
     $PAGE->navbar->add(get_string('adddevice', 'inventory'), $editurl);
 } else {
     $PAGE->navbar->add(get_string('editdevice', 'inventory'), $editurl);
@@ -117,7 +121,9 @@ if ($editmode == 1) {
 }
 
 
-$mform = new device_form(null, array('categoryid' => $categoryid, 'brandid' => $brandid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'courseid' => $courseid, 'editmode' => $editmode, 'roomid' => $roomid, 'id' => $id, 'referenceid' => $referenceid));
+$mform = new device_form(null, array('categoryid' => $categoryid, 'brandid' => $brandid, 'blockid' => $blockid,
+    'moduleid' => $moduleid, 'courseid' => $courseid, 'editmode' => $editmode, 'roomid' => $roomid,
+    'id' => $id, 'referenceid' => $referenceid));
 $formdata['blockid'] = $blockid;
 $formdata['moduleid'] = $moduleid;
 $formdata['courseid'] = $courseid;
@@ -129,13 +135,11 @@ $formdata['referenceid'] = 1;
 
 if ($editmode == 1) {
 
-
     $formdata['referenceid'] = $currentreference->id;
     $formdata['type'] = $DB->get_record('inventory_devicecategory', array('id' => $categoryid))->name;
     $formdata['id'] = $id;
     $formdata['reference'] = $currentreference->id;
     $formdata['brand'] = $brandid;
-    
 
     $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 
@@ -143,7 +147,7 @@ if ($editmode == 1) {
 
         $currentvalue = $DB->get_record('inventory_devicevalue', array('deviceid' => $id, 'fieldid' => $field->id));
 
-        if($field->type == "longtext") {
+        if ($field->type == "longtext") {
 
             $oldlongtext['text'] = $currentvalue->value;
             $formfieldname = 'numerofield'.$field->id;
@@ -217,31 +221,31 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listmanuel as $manuel) {
 
-            if ($manuel->get_filename()!= ".") {
+            if ($manuel->get_filename() != ".") {
                 $manuelname = $manuel->get_filename();
             }
         }
 
         $devicedata['documentation'] = $manuelname;
 
-        //Avant l'update_record, on récupère le nom de l'ancien manuel et on delete l'URL
+        // Before update_record, we retrieve the name of the old manual and we delete the url.
 
         $oldmanuelname = $currentrecord->documentation;
 
-        // Prepare file record object
+        // Prepare file record object.
         $fileinfo = array(
             'component' => 'mod_inventory',
-            'filearea' => 'manuel',     // usually = table name
-            'itemid' => $key,               // usually = ID of row in table
-            'contextid' => $contextmodule->id, // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => $oldmanuelname); // any filename
+            'filearea' => 'manuel',     // Usually = table name.
+            'itemid' => $key,               // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $oldmanuelname); // Any filename.
 
-        // Get file
+        // Get file.
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-        // Delete it if it exists
+        // Delete it if it exists.
         if ($file) {
             $file->delete();
         }
@@ -259,18 +263,19 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
             $fieldid = $field->id;
 
-            $currentvalue = $DB->get_record('inventory_devicevalue', array('fieldid' => $fieldid, 'deviceid' => $submitteddata->id));
+            $currentvalue = $DB->get_record('inventory_devicevalue',
+                    array('fieldid' => $fieldid, 'deviceid' => $submitteddata->id));
 
             $valuedata['id'] = $currentvalue->id;
             $valuedata['fieldid'] = $fieldid;
             $numerofield = 'numerofield'.$field->id;
-            
-            if($field->type == "longtext") {
+
+            if ($field->type == "longtext") {
 
                 $submitteddatanumerofield = $submitteddata->$numerofield;
 
                 $valuedata['value'] = $submitteddatanumerofield['text'];
-            } else if($field->type == "shorttext") {
+            } else if ($field->type == "shorttext") {
 
                 $valuedata['value'] = $submitteddata->$numerofield;
             }
@@ -288,7 +293,6 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
                 print_error('databaseerror', 'inventory');
             }
         }
-        
     } else {
 
         $devicedata['roomid'] = $submitteddata->roomid;
@@ -305,7 +309,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listmanuel as $manuel) {
 
-            if ($manuel->get_filename()!= ".") {
+            if ($manuel->get_filename() != ".") {
                 $manuelname = $manuel->get_filename();
             }
         }
@@ -319,7 +323,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
             $devicedata['isworking'] = "Non";
         }
-        
+
         $deviceid = $DB->insert_record('inventory_device', $devicedata);
 
         file_save_draft_area_files($submitteddata->manuel, $contextmodule->id, 'mod_inventory', 'manuel',
@@ -335,14 +339,13 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
             $valuedata['fieldid'] = $fieldid;
             $numerofield = 'numerofield'.$field->id;
-            
 
-            if($field->type == "longtext") {
+            if ($field->type == "longtext") {
 
                 $submitteddatanumerofield = $submitteddata->$numerofield;
 
                 $valuedata['value'] = $submitteddatanumerofield['text'];
-            } else if($field->type == "shorttext") {
+            } else if ($field->type == "shorttext") {
 
                 $valuedata['value'] = $submitteddata->$numerofield;
             }

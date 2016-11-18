@@ -47,5 +47,6 @@ if ($ADMIN->fulltree) {
         $defaultdisplayoptions, $displayoptions));
 
     // Modedit defaults.
-    $settings->add(new admin_setting_heading('inventorymodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
+    $settings->add(new admin_setting_heading('inventorymodeditdefaults',
+            get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 }

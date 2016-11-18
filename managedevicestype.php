@@ -64,7 +64,8 @@ $context = context_module::instance($cm->id);
 
 $PAGE->set_url('/mod/inventory/view.php', array('id' => $cm->id));
 
-$PAGE->navbar->add(get_string('managedevicestype', 'inventory'), new moodle_url('/mod/inventory/managedevicestype.php', array('id' => $cm->id)));
+$PAGE->navbar->add(get_string('managedevicestype', 'inventory'),
+        new moodle_url('/mod/inventory/managedevicestype.php', array('id' => $cm->id)));
 
 $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
 
@@ -88,7 +89,7 @@ require_capability('mod/inventory:edit', $context);
 
 $listcategories = $DB->get_records('inventory_devicecategory');
 
-//We display all current categories with buttons to edit or delete them.
+// We display all current categories with buttons to edit or delete them.
 
 $numelemcolonne = 0;
 echo '
@@ -116,14 +117,16 @@ foreach ($listcategories as $key => $value) {
             </ul>
         </td>
         <td>
-            <a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;editmode=1&amp;categoryid=$key&amp;source=managedevicestype'>";
+            <a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+                . "moduleid=$cm->id&amp;editmode=1&amp;categoryid=$key&amp;source=managedevicestype'>";
             echo'
                 <img src="../../pix/e/document_properties.png" alt="Edit category" style="width:20px;height:20px;" />
             </a>
         </td>
         <td>';
             echo "
-            <a href='deleteDatabaseElement.php?id=$id&amp;table=devicecategory&amp;key=$key&amp;sesskey=".sesskey()."'>";
+            <a href='deleteDatabaseElement.php?id=$id&amp;"
+                    . "table=devicecategory&amp;key=$key&amp;sesskey=".sesskey()."'>";
             echo'
                 <img src="../../pix/i/delete.png" alt="Delete category" style="width:20px;height:20px;" />
             </a>
@@ -146,9 +149,11 @@ if ($numelemcolonne != 0) {
 echo'
 </div>';
 
-// We add a button to add a new type of device.
+// We add a button to create a new type of device.
 
-echo"<a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;editmode=0&amp;source=managedevicestype'><button>".get_string('adddevicetype','inventory')."</button></a>";
+echo"<a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+        . "editmode=0&amp;"
+        . "source=managedevicestype'><button>".get_string('adddevicetype', 'inventory')."</button></a>";
 
 
 $strlastmodified = get_string("lastmodified");

@@ -66,7 +66,11 @@ require_course_login($course, true, $cm);
 
 
 // Header code.
-$PAGE->set_url('/mod/inventory/editdevicetype.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid, 'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid, 'source' => $source, 'currentstep' => $currentstep));
+$PAGE->set_url('/mod/inventory/editdevicetype.php',
+        array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+            'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid,
+            'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid,
+            'source' => $source, 'currentstep' => $currentstep));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
@@ -81,24 +85,36 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 
 // Navigation node.
-$editurl = new moodle_url('/mod/inventory/editdevicetype.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid, 'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid, 'source' => $source, 'currentstep' => $currentstep));
+$editurl = new moodle_url('/mod/inventory/editdevicetype.php',
+        array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+            'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid,
+            'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid,
+            'source' => $source, 'currentstep' => $currentstep));
 
 require_capability('mod/inventory:edit', $context);
 
-if($source == "listDevices") {
+if ($source == "listDevices") {
 
-    //Get buildind and room id
+    // Get buildind and room id.
     $currentrecord = $DB->get_record('inventory_room', array('id' => $roomid));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentrecord->buildingid));
 
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid)));
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+            array('id' => $moduleid, 'building' => $currentbuilding->id)));
+    $PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php',
+            array('id' => $moduleid, 'room' => $roomid)));
 } else {
 
-    $PAGE->navbar->add(get_string('managedevicestype', 'inventory'), new moodle_url('/mod/inventory/managedevicestype.php', array('id' => $cm->id)));
+    $PAGE->navbar->add(get_string('managedevicestype', 'inventory'),
+            new moodle_url('/mod/inventory/managedevicestype.php', array('id' => $cm->id)));
 }
 
-$PAGE->navbar->add(get_string('editdevicetype', 'inventory'), new moodle_url('/mod/inventory/editdevicetype.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid, 'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid, 'source' => $source, 'currentstep' => $currentstep)));
+$PAGE->navbar->add(get_string('editdevicetype', 'inventory'),
+        new moodle_url('/mod/inventory/editdevicetype.php',
+                array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+                    'id' => $id, 'editmode' => $editmode, 'roomid' => $roomid, 'deviceid' => $deviceid,
+                    'editmodedevice' => $editmodedevice, 'categoryid' => $categoryid,
+                    'source' => $source, 'currentstep' => $currentstep)));
 
 if ($editmode == 1) {
 
@@ -146,7 +162,7 @@ if ($editmode == 1) {
 
     file_prepare_draft_area($draftitemid, $contextmodule->id, 'mod_inventory', 'icon', $categoryid,
                             array('maxfiles' => 1));
-    
+
     $formdata['icon'] = $draftitemid;
 
     $formdata['categoryid'] = $categoryid;
@@ -160,11 +176,11 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $moduleid = 1;
     }
 
-    if($source=="listDevices") {
+    if ($source == "listDevices") {
 
         $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid));
         redirect($courseurl);
-    } else if($source=="managedevicestype") {
+    } else if ($source == "managedevicestype") {
 
         $courseurl = new moodle_url('/mod/inventory/managedevicestype.php', array('id' => $moduleid));
         redirect($courseurl);
@@ -173,12 +189,14 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $courseurl = new moodle_url('/mod/inventory/view.php', array('id' => $moduleid));
         redirect($courseurl);
     }
-} else if($mform->no_submit_button_pressed()) {
-    
-    //you need this section if you have a 'submit' button on your form
-    //which performs some kind of subaction on the form and not a full
-    //form submission.
-    
+} else if ($mform->no_submit_button_pressed()) {
+
+    /*
+     * You need this section if you have a 'submit' button on your form
+     * which performs some kind of subaction on the form and not a full
+     * form submission.
+     */
+
 } else if ($submitteddata = $mform->get_data()) { // Second scenario : the form was validated.
 
     $submitteddata->uploadedat = time();
@@ -198,7 +216,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listicons as $icon) {
 
-            if ($icon->get_filename()!= ".") {
+            if ($icon->get_filename() != ".") {
                 $iconname = $icon->get_filename();
             }
         }
@@ -215,24 +233,24 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         $newfieldnumbers = $submitteddata->numnewfields;
 
-        //Avant l'update_record, on récupère le nom de l'ancienne icone et on delete l'URL
+        // Before update_record, we get the name of the old icon and we delete the url.
 
         $oldiconname = $currentrecord->iconname;
 
-        // Prepare file record object
+        // Prepare file record object.
         $fileinfo = array(
             'component' => 'mod_inventory',
-            'filearea' => 'icon',     // usually = table name
-            'itemid' => $key,               // usually = ID of row in table
-            'contextid' => $contextmodule->id, // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => $oldiconname); // any filename
+            'filearea' => 'icon',     // Usually = table name.
+            'itemid' => $key,               // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $oldiconname); // Any filename.
 
-        // Get file
+        // Get file.
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-        // Delete it if it exists
+        // Delete it if it exists.
         if ($file) {
             $file->delete();
         }
@@ -283,7 +301,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         for ($i = 0; $i < $newfieldnumbers; $i++) {
 
-            if($submitteddata->repeatarray[$i]['field'] != "") {
+            if ($submitteddata->repeatarray[$i]['field'] != "") {
 
                 $fielddata['name'] = $submitteddata->repeatarray[$i]['field'];
 
@@ -302,7 +320,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
                     print_error('databaseerror', 'inventory');
                 }
             }
-        }        
+        }
     } else {
 
         global $USER;
@@ -314,7 +332,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         foreach ($listicons as $icon) {
 
-            if ($icon->get_filename()!= ".") {
+            if ($icon->get_filename() != ".") {
                 $iconname = $icon->get_filename();
             }
         }
@@ -334,7 +352,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         $categoryid = $DB->insert_record('inventory_devicecategory', $devicetypedata);
 
-        //Add undefined brand to this category
+        // Add undefined brand to this category.
 
         $newbranddata['name'] = "undefined";
         $newbranddata['contact'] = "undefined";
@@ -347,7 +365,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
             print_error('databaseerror', 'inventory');
         }
 
-        //Add undefined reference to this brand
+        // Add undefined reference to this brand.
 
         $newreference['name'] = "undefined";
         $newreference['brandid'] = $brandid;
@@ -366,7 +384,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         for ($i = 0; $i < $newfieldnumbers; $i++) {
 
-            if($submitteddata->repeatarray[$i]['field'] != "") {
+            if ($submitteddata->repeatarray[$i]['field'] != "") {
 
                 $fielddata['name'] = $submitteddata->repeatarray[$i]['field'];
 
@@ -384,22 +402,22 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
                     print_error('databaseerror', 'inventory');
                 }
-            }   
-        }   
+            }
+        }
     }
-    
+
     if (!$categoryid) {
 
         print_error('databaseerror', 'inventory');
     } else {
 
-        if($fieldstodelete == "" || $fieldstodelete == null) {
-        
-            if($source=="listDevices") {
+        if ($fieldstodelete == "" || $fieldstodelete == null) {
+
+            if ($source == "listDevices") {
 
                 $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid));
                 redirect($courseurl);
-            } else if($source=="managedevicestype") {
+            } else if ($source == "managedevicestype") {
 
                 $courseurl = new moodle_url('/mod/inventory/managedevicestype.php', array('id' => $moduleid));
                 redirect($courseurl);
@@ -414,7 +432,9 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
             $encodedarraykey = urlencode($arraykey);
 
-            $deletebrandurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&oldid=$id&editmode=$editmode&categoryid=$categoryid&key=0&table=fieldsfromeditdevicetype&arraykey=$encodedarraykey&sesskey=".sesskey();
+            $deletebrandurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&"
+                    . "id=$moduleid&oldid=$id&editmode=$editmode&categoryid=$categoryid&"
+                    . "key=0&table=fieldsfromeditdevicetype&arraykey=$encodedarraykey&sesskey=".sesskey();
             redirect($deletebrandurl);
         }
     }

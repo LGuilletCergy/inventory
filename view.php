@@ -97,7 +97,8 @@ if (!empty($options['printintro'])) {
     }
 }
 
-$content = file_rewrite_pluginfile_urls($inventory->content, 'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
+$content = file_rewrite_pluginfile_urls($inventory->content,
+        'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
 $formatoptions = new stdClass;
 $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
@@ -108,7 +109,7 @@ echo $OUTPUT->box($content, "generalbox center clearfix");
 
 $listebuilding = $DB->get_records('inventory_building');
 
-//We display all buildings. Clicking on a building will display the rooms in this building
+// We display all buildings. Clicking on a building will display the rooms in this building.
 
 echo '
 <div id=buildings>';
@@ -123,24 +124,27 @@ foreach ($listebuilding as $key => $value) {
                     echo "
                         <a href='listRooms.php?id=$id&amp;building=$key'>";
 
-                        // We get the image of this building by taking the name from the database and we fetch the url with get_file.
+                        // We get the image of this building by taking the name from the database
+                        // and we fetch the url with get_file.
 
                         $fs = get_file_storage();
                         $contextmodule = context_module::instance($id);
                         $filename = $listebuilding[$key]->imagename;
                         $fileinfo = array(
                                 'component' => 'mod_inventory',
-                                'filearea' => 'image',     // usually = table name
-                                'itemid' => $key,               // usually = ID of row in table
-                                'contextid' => $contextmodule->id, // ID of context
-                                'filepath' => '/',           // any path beginning and ending in /
-                                'filename' => $filename); // any filename
+                                'filearea' => 'image',     // Usually = table name.
+                                'itemid' => $key,               // Usually = ID of row in table.
+                                'contextid' => $contextmodule->id, // ID of context.
+                                'filepath' => '/',           // Any path beginning and ending in /.
+                                'filename' => $filename); // Any filename.
                         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
                         if ($file) {
 
-                            $url = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                            $url = moodle_url::make_pluginfile_url($file->get_contextid(),
+                                    $file->get_component(), $file->get_filearea(), $file->get_itemid(),
+                                    $file->get_filepath(), $file->get_filename());
                         } else {
 
                             $url = "";
@@ -155,14 +159,15 @@ foreach ($listebuilding as $key => $value) {
 
                 // We display the edit and remove buttons only if the user has edit rights.
 
-                if(has_capability('mod/inventory:edit', $context)) {
+                if (has_capability('mod/inventory:edit', $context)) {
 
                     echo "
                     <table class=iconesBuilding>
                         <tr>
                             <td>";
                             echo "
-                                <a href='deleteDatabaseElement.php?id=$cm->id&amp;key=$key&amp;table=buildings&amp;sesskey=".sesskey()."'>";
+                                <a href='deleteDatabaseElement.php?id=$cm->id&amp;"
+                                    . "key=$key&amp;table=buildings&amp;sesskey=".sesskey()."'>";
                                 echo '
                                     <img src="../../pix/i/delete.png" alt="Delete" style="width:20px;height:20px;" />
                                 </a>
@@ -171,7 +176,8 @@ foreach ($listebuilding as $key => $value) {
                         <tr>
                             <td>';
                             echo "
-                                <a href='editbuilding.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;id=$key&amp;editmode=1'>";
+                                <a href='editbuilding.php?courseid=$course->id&amp;"
+                                    . "blockid=$cm->p&amp;moduleid=$cm->id&amp;id=$key&amp;editmode=1'>";
                                 echo '
                                     <img src="../../pix/e/document_properties.png" alt="Edit" style="width:20px;height:20px;" />
                                 </a>
@@ -192,7 +198,7 @@ foreach ($listebuilding as $key => $value) {
         </table>';
 }
 
-//We add the 'AllBuildings' building. Clicking on it will display a list of all rooms in all the buildings.
+// We add the 'AllBuildings' building. Clicking on it will display a list of all rooms in all the buildings.
 
 echo'
 <table class=singleBuilding>
@@ -222,9 +228,9 @@ echo'
 // If we can edit the database, we can see these buttons.
 // They allow us to add a new building and to manage the type of devices.
 
-
-if(has_capability('mod/inventory:edit', $context)) {
-    echo "<a href='editbuilding.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;id=0&amp;editmode=0'><button>".get_string('addbuilding', 'inventory')."</button></a>
+if (has_capability('mod/inventory:edit', $context)) {
+    echo "<a href='editbuilding.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+            . "id=0&amp;editmode=0'><button>".get_string('addbuilding', 'inventory')."</button></a>
     <a href='managedevicestype.php?id=$id'><button>".get_string('managedevicestype', 'inventory')."</button></a>
     ";
 }

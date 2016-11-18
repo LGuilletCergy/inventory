@@ -64,7 +64,9 @@ $context = context_module::instance($moduleid);
 require_course_login($course, true, $cm);
 
 // Header code.
-$PAGE->set_url('/mod/inventory/editroom.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'buildingid' => $buildingid));
+$PAGE->set_url('/mod/inventory/editroom.php',
+        array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+            'editmode' => $editmode, 'buildingid' => $buildingid));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
 
@@ -79,11 +81,14 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 
 // Navigation node.
-$editurl = new moodle_url('/mod/inventory/editroom.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'editmode' => $editmode, 'buildingid' => $buildingid));;
+$editurl = new moodle_url('/mod/inventory/editroom.php',
+        array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+            'editmode' => $editmode, 'buildingid' => $buildingid));;
 
-$PAGE->navbar->add($DB->get_record('inventory_building', array('id' => $buildingid))->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $buildingid)));
+$PAGE->navbar->add($DB->get_record('inventory_building', array('id' => $buildingid))->name,
+        new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $buildingid)));
 
-if($editmode == 0) {
+if ($editmode == 0) {
     $PAGE->navbar->add(get_string('addroom', 'inventory'), $editurl);
 } else {
     $PAGE->navbar->add(get_string('editroom', 'inventory'), $editurl);
@@ -153,7 +158,8 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         print_error('databaseerror', 'inventory');
     } else {
 
-        $courseurl = new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $buildingid, 'vartest' => $vartest));
+        $courseurl = new moodle_url('/mod/inventory/listRooms.php',
+                array('id' => $moduleid, 'building' => $buildingid, 'vartest' => $vartest));
         redirect($courseurl);
     }
 }

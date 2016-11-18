@@ -45,6 +45,8 @@ $building = required_param('building', PARAM_INT);
 $categoryselected = optional_param('categoryselected', 0, PARAM_INT);
 $export = optional_param('export', false, PARAM_BOOL);
 
+// If we are not in export mode, we display the page.
+
 if ($export != true) {
 
     echo '
@@ -75,7 +77,8 @@ if ($export != true) {
     // Completion and trigger events.
     inventory_view($inventory, $course, $cm, $context);
 
-    $PAGE->set_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected));
+    $PAGE->set_url('/mod/inventory/listRooms.php',
+            array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected));
 
     $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
 
@@ -87,14 +90,19 @@ if ($export != true) {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
 
-    // If we are in all buildings, the navbar will redirect us there, otherwise, it will redirect us in the current building
+    // If we are in all buildings, the navbar will redirect us there, otherwise, it will redirect us in the current building.
 
     if ($building != 0) {
 
-        $PAGE->navbar->add($DB->get_record('inventory_building', array('id' => $building))->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected)));
+        $PAGE->navbar->add($DB->get_record('inventory_building',
+                array('id' => $building))->name,
+                new moodle_url('/mod/inventory/listRooms.php',
+                        array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected)));
     } else {
 
-        $PAGE->navbar->add(get_string('allbuildings', 'inventory'), new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected)));
+        $PAGE->navbar->add(get_string('allbuildings', 'inventory'),
+                new moodle_url('/mod/inventory/listRooms.php',
+                        array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected)));
     }
 
     echo $OUTPUT->header();
@@ -110,7 +118,8 @@ if ($export != true) {
         }
     }
 
-    $content = file_rewrite_pluginfile_urls($inventory->content, 'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
+    $content = file_rewrite_pluginfile_urls($inventory->content,
+            'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
     $formatoptions = new stdClass;
     $formatoptions->noclean = true;
     $formatoptions->overflowdiv = true;
@@ -118,7 +127,7 @@ if ($export != true) {
     $content = format_text($content, $inventory->contentformat, $formatoptions);
     echo $OUTPUT->box($content, "generalbox center clearfix");
 
-    //We create a select box to select the category we want to display. Changing the category will call a Javascript function.
+    // We create a select box to select the category we want to display. Changing the category will call a Javascript function.
 
     echo "
 
@@ -136,7 +145,7 @@ if ($export != true) {
 
             foreach ($listcategories as $category) {
 
-                if($categoryselected == $category->id) {
+                if ($categoryselected == $category->id) {
 
                     echo '
                     <option value='.$category->id.' selected=selected>'.$category->name.'</option>
@@ -156,10 +165,10 @@ if ($export != true) {
     </div>
     <div id=listRooms>';
 
-    //If we are in all buildings, we display all buildings. Otherwise, we'll display only the rooms of the current building
+    // If we are in all buildings, we display all buildings. Otherwise, we'll display only the rooms of the current building.
 
 
-    if($building != 0) {
+    if ($building != 0) {
 
         $listbuildings = $DB->get_records('inventory_building', array('id' => $building));
 
@@ -188,7 +197,7 @@ if ($export != true) {
 
                 $hasdevice = $DB->record_exists('inventory_device', array('categoryid' => $categoryselected, 'roomid' => $key));
 
-                if($hasdevice) {
+                if ($hasdevice) {
                     break;
                 }
             }
@@ -210,7 +219,7 @@ if ($export != true) {
 
                 $hasdevice = $DB->record_exists('inventory_device', array('categoryid' => $categoryselected, 'roomid' => $key));
 
-                if($categoryselected == 0 || $hasdevice) {
+                if ($categoryselected == 0 || $hasdevice) {
 
                     if ($numelemcolonne == 0) {
                         echo "
@@ -225,7 +234,7 @@ if ($export != true) {
                         <td>
                             <ul>
                                 <li class=singleRoom>";
-                                
+
                                     if (has_capability('mod/inventory:edit', $context)) {
 
                                         echo "
@@ -233,7 +242,7 @@ if ($export != true) {
                                     }
 
                                     echo "
-                                    <a href='listDevices.php?id=$id&amp;room=$key'>";
+                                    <a href='listdevices.php?id=$id&amp;room=$key'>";
 
                                         $roomtodisplay = $listrooms[$key]->name;
 
@@ -245,9 +254,10 @@ if ($export != true) {
                             </ul>
                         </td>";
 
-                        // If the category has an icon and the room have a device of this category, we will display the icon next to the name of the room.
+                        // If the category has an icon and the room have a device of this category,
+                        // we will display the icon next to the name of the room.
 
-                        foreach($listcategories as $category) {
+                        foreach ($listcategories as $category) {
 
                             $iconurl = "";
 
@@ -265,18 +275,18 @@ if ($export != true) {
                                     }
                                 }
 
-                                if($hascategory == 1) {
+                                if ($hascategory == 1) {
 
                                     $fs = get_file_storage();
                                     $contextmodule = context_module::instance($id);
                                     $filename = $category->iconname;
                                     $fileinfo = array(
                                             'component' => 'mod_inventory',
-                                            'filearea' => 'icon',     // usually = table name
-                                            'itemid' => $category->id,               // usually = ID of row in table
-                                            'contextid' => $contextmodule->id, // ID of context
-                                            'filepath' => '/',           // any path beginning and ending in /
-                                            'filename' => $filename); // any filename
+                                            'filearea' => 'icon',     // Usually = table name.
+                                            'itemid' => $category->id,               // Usually = ID of row in table.
+                                            'contextid' => $contextmodule->id, // ID of context.
+                                            'filepath' => '/',           // Any path beginning and ending in /.
+                                            'filename' => $filename); // Any filename.
                                     $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                                             $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
@@ -284,40 +294,47 @@ if ($export != true) {
 
                                     if ($file) {
 
-                                        $iconurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+                                        $iconurl = moodle_url::make_pluginfile_url($file->get_contextid(),
+                                                $file->get_component(), $file->get_filearea(), $file->get_itemid(),
+                                                $file->get_filepath(), $file->get_filename());
                                     } else {
 
                                         $iconurl = "";
                                     }
 
-                                    if($iconurl != "") {
+                                    if ($iconurl != "") {
                                         echo "
                                         <td>
-                                                <img src=$iconurl alt=$categoryname title=$categoryname style=width:20px;height:20px; />
+                                                <img src=$iconurl alt=$categoryname"
+                                                . " title=$categoryname style=width:20px;height:20px; />
                                         </td>
                                         ";
                                     }
                                 }
 
-                                if($iconurl == "") {
+                                if ($iconurl == "") {
                                         echo "
                                         <td />";
                                 }
                             }
                         }
-                        if(has_capability('mod/inventory:edit', $context)) {
+                        if (has_capability('mod/inventory:edit', $context)) {
                             echo "
                             <td>
-                                <a href='editRoom.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;buildingid=$building&amp;editmode=1&amp;id=$key'>";
+                                <a href='editRoom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+                                    . "moduleid=$cm->id&amp;buildingid=$building&amp;editmode=1&amp;id=$key'>";
                                 echo'
-                                    <img src="../../pix/e/document_properties.png" alt="Edit Room" style="width:20px;height:20px;" />
+                                    <img src="../../pix/e/document_properties.png"
+                                    alt="Edit Room" style="width:20px;height:20px;" />
                                 </a>
                             </td>
                             <td>';
                                 echo "
-                                <a href='deleteDatabaseElement.php?id=$cm->id&amp;key=$key&amp;table=rooms&amp;building=$building&amp;sesskey=".sesskey()."'>";
+                                <a href='deleteDatabaseElement.php?id=$cm->id&amp;"
+                                        . "key=$key&amp;table=rooms&amp;building=$building&amp;sesskey=".sesskey()."'>";
                                 echo'
-                                    <img src="../../pix/i/delete.png" alt="Delete Room" style="width:20px;height:20px;" />
+                                    <img src="../../pix/i/delete.png"
+                                    alt="Delete Room" style="width:20px;height:20px;" />
                                 </a>
                             </td>';
                         }
@@ -349,23 +366,25 @@ if ($export != true) {
         echo'
         </div>';
 
-        //If we are in 'allbuildings' or if we are not allowed to edit the database, we cannot add a new room.
+        // If we are in 'allbuildings' or if we are not allowed to edit the database, we cannot add a new room.
 
 
         if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
-            echo "<a href='editRoom.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;buildingid=$building&amp;editmode=0'><button>".get_string('addroom','inventory')."</button></a>";
+            echo "<a href='editRoom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+                    . "moduleid=$cm->id&amp;buildingid=$building&amp;"
+                    . "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
         }
 
-        $listRoomsid = array();
+        $listroomsid = array();
 
-        //Construire listRoomsid ici
+        // Construire listroomsid ici.
 
-        $listRoomsidinurl = http_build_query(array('listRoomsid' => $listRoomsid));
-        $encodedlistRoomsidinurl = urlencode($listRoomsidinurl);
+        $listroomsidinurl = http_build_query(array('listroomsid' => $listroomsid));
+        $encodedlistroomsidinurl = urlencode($listroomsidinurl);
 
         // If we are not allowed to export the csv, the button to do that will not be displayed.
 
-        if(has_capability('mod/inventory:edit', $context)) {
+        if (has_capability('mod/inventory:edit', $context)) {
 
             echo "
             <input type=hidden name=id value=$id />
@@ -374,7 +393,7 @@ if ($export != true) {
             <input type=hidden name=building value=$building />
             <input type=hidden name=categoryselected value=$categoryselected />
 
-            <input type=submit value='".get_string('exportroomsascsv','inventory')."' />";
+            <input type=submit value='".get_string('exportroomsascsv', 'inventory')."' />";
         }
     echo "
     </form> ";
@@ -384,7 +403,7 @@ if ($export != true) {
     echo $OUTPUT->footer();
 } else {
 
-    //To display the csv, we need an entirely new page without html
+    // To display the csv, we need an entirely new page without html.
 
     if ($p) {
         if (!$inventory = $DB->get_record('inventory', array('id' => $p))) {
@@ -401,16 +420,16 @@ if ($export != true) {
 
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
-    //Just in case, we check whether or not we are allowed to be here.
+    // Just in case, we check whether or not we are allowed to be here.
 
     require_course_login($course, true, $cm);
     $context = context_module::instance($cm->id);
     require_capability('mod/inventory:edit', $context);
 
-    //If we are in all buildings, we need to check all rooms
+    // If we are in all buildings, we need to check all rooms.
 
 
-    if($building != 0) {
+    if ($building != 0) {
 
         $listrooms = $DB->get_records('inventory_room', array('buildingid' => $building));
 
@@ -419,7 +438,7 @@ if ($export != true) {
         $listrooms = $DB->get_records('inventory_room');
     }
 
-    //If the checkbox of this room was selected, we add this room to the list of room to print in the csv file.
+    // If the checkbox of this room was selected, we add this room to the list of room to print in the csv file.
 
     $listroomsid = array();
 
@@ -444,12 +463,13 @@ if ($export != true) {
         exportcsv($listroomsid);
     } else {
 
-        $thisurl = new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected));
+        $thisurl = new moodle_url('/mod/inventory/listRooms.php',
+                array('id' => $id, 'building' => $building, 'categoryselected' => $categoryselected));
         redirect($thisurl);
     }
 }
 
-function exportcsv(array $listRoomsid) {
+function exportcsv(array $listroomsid) {
 
     global $DB, $CFG;
 
@@ -462,18 +482,18 @@ function exportcsv(array $listRoomsid) {
     $title = array(utf8_decode(get_string('csvtitle', 'inventory')));
     $csvexporter->add_data($title);
 
-    foreach ($listRoomsid as $currentroomid) {
+    foreach ($listroomsid as $currentroomid) {
 
         $csvexporter->add_data($currentroomid);
 
         $currentroom = $DB->get_record('inventory_room', array('id' => $currentroomid));
 
-        $listDevices = $DB->get_records('inventory_device', array('roomid' => $currentroom->id));
+        $listdevices = $DB->get_records('inventory_device', array('roomid' => $currentroom->id));
 
         $roomname = array(utf8_decode($currentroom->name));
         $csvexporter->add_data($roomname);
 
-        foreach ($listDevices as $currentdevice) {
+        foreach ($listdevices as $currentdevice) {
 
             $referenceid = $currentdevice->refid;
             $currentreference = $DB->get_record('inventory_reference', array('id' => $referenceid));
@@ -498,17 +518,18 @@ function exportcsv(array $listRoomsid) {
 
             $devicedata[] = $currentdevice->isworking;
 
-            $listfields = $DB->get_records('inventory_devicefield',array('categoryid' => $currentcategory->id));
+            $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $currentcategory->id));
 
             foreach ($listfields as $currentfield) {
 
-                $valuetable = $DB->get_record('inventory_devicevalue', array('fieldid' => $currentfield->id, 'deviceid' => $currentdevice->id));
+                $valuetable = $DB->get_record('inventory_devicevalue',
+                        array('fieldid' => $currentfield->id, 'deviceid' => $currentdevice->id));
                 if ($valuetable->value != "") {
 
                     $devicedata[] = utf8_decode($valuetable->value);
                 }
             }
-            
+
             $csvexporter->add_data($devicedata);
         }
     }

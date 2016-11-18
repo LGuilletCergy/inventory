@@ -68,13 +68,15 @@ inventory_view($inventory, $course, $cm, $context);
 
 $PAGE->set_url('/mod/inventory/failureandreservation.php', array('id' => $id, 'key' => $key, 'mode' => $reservation));
 
-//Get buildind and room id
+// Get buildind and room id.
 $currentdevice = $DB->get_record('inventory_device', array('id' => $key));
 $currentroom = $DB->get_record('inventory_room', array('id' => $currentdevice->roomid));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $currentroom->id)));
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+        array('id' => $id, 'building' => $currentbuilding->id)));
+$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+        array('id' => $id, 'room' => $currentroom->id)));
 
 $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
 
@@ -100,7 +102,8 @@ if (!empty($options['printintro'])) {
     }
 }
 
-$content = file_rewrite_pluginfile_urls($inventory->content, 'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
+$content = file_rewrite_pluginfile_urls($inventory->content,
+        'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
 $formatoptions = new stdClass;
 $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
@@ -122,7 +125,7 @@ echo "<p>".get_string('roomname', 'inventory')." : ".$currentroom->name."</p>";
 echo "<p>".get_string('reference', 'inventory')." : ".$currentreference->name."</p>";
 
 
-if($mode == "failure") {
+if ($mode == "failure") {
 
     $newdevice = $currentdevice;
     $newdevice->isworking = "Non";

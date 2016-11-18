@@ -38,12 +38,12 @@ require_once('../../config.php');
 if (isset($_REQUEST["brandid"])) {
 
     $tablereference = $DB->get_records('inventory_reference', array('brandid' => $_REQUEST["brandid"]));
-    
+
     foreach ($tablereference as $reference) {
 
         echo "<option value=$reference->id>$reference->name</option>";
     }
-    
+
 } else {
     echo "<option value='-1'>".get_string('notfound', 'inventory')."</option>";
 }

@@ -79,7 +79,10 @@ $context = context_module::instance($cm->id);
 // Completion and trigger events.
 inventory_view($inventory, $course, $cm, $context);
 
-$PAGE->set_url('/mod/inventory/deleteDatabaseElement', array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'key' => $key, 'delete' => $delete, 'table' => $table, 'building' => $building, 'room' => $room, 'oldid' => $oldid, 'editmode' => $editmode, 'categoryid' => $categoryid, 'courseid' => $courseid, 'blockid' => $blockid, 'idreference' => $idreference, 'editmodereference' => $editmodereference, 'arraykey' => $arraykey, 'sesskey' => $sesskey));
+$PAGE->set_url('/mod/inventory/deleteDatabaseElement', array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'key' => $key,
+    'delete' => $delete, 'table' => $table, 'building' => $building, 'room' => $room, 'oldid' => $oldid, 'editmode' => $editmode,
+    'categoryid' => $categoryid, 'courseid' => $courseid, 'blockid' => $blockid, 'idreference' => $idreference,
+    'editmodereference' => $editmodereference, 'arraykey' => $arraykey, 'sesskey' => $sesskey));
 
 $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
 
@@ -93,48 +96,71 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
     $PAGE->set_activity_record($inventory);
 }
 
-if($table == "rooms") {
+if ($table == "rooms") {
 
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $building));
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $currentbuilding->id)));
-} else if ($table == "devices"){
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+            array('id' => $id, 'building' => $currentbuilding->id)));
+} else if ($table == "devices") {
 
     $currentroom = $DB->get_record('inventory_room', array('id' => $room));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $room)));
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+            array('id' => $id, 'building' => $currentbuilding->id)));
+    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+            array('id' => $id, 'room' => $room)));
 } else if ($table == "references" || $table == "brandsfromdevice") {
 
     $currentroom = $DB->get_record('inventory_room', array('id' => $room));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $currentrecord->roomid)));
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+            array('id' => $id, 'building' => $currentbuilding->id)));
+    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+            array('id' => $id, 'room' => $currentrecord->roomid)));
 
-    if($editmode == 0) {
-        $PAGE->navbar->add(get_string('adddevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
+    if ($editmode == 0) {
+        $PAGE->navbar->add(get_string('adddevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php',
+                array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid,
+                    'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
     } else {
-        $PAGE->navbar->add(get_string('editdevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
+        $PAGE->navbar->add(get_string('editdevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php',
+                array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid,
+                    'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
     }
 } else if ($table == "brandsfromreference") {
-    
+
     $currentroom = $DB->get_record('inventory_room', array('id' => $room));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $currentrecord->roomid)));
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+            array('id' => $id, 'building' => $currentbuilding->id)));
+    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+            array('id' => $id, 'room' => $currentrecord->roomid)));
 
-    if($editmodereference == 0) {
-    $PAGE->navbar->add(get_string('addreference', 'inventory'), new moodle_url('/mod/inventory/editreference.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode, 'idreference' => $idreference, 'editmodereference' => $editmodereference)));
+    if ($editmodereference == 0) {
+        $PAGE->navbar->add(get_string('addreference', 'inventory'),
+            new moodle_url('/mod/inventory/editreference.php',
+                    array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
+                        'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode,
+                        'idreference' => $idreference, 'editmodereference' => $editmodereference)));
     } else {
-        $PAGE->navbar->add(get_string('editreference', 'inventory'), new moodle_url('/mod/inventory/editreference.php', array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode, 'idreference' => $idreference, 'editmodereference' => $editmodereference)));
+        $PAGE->navbar->add(get_string('editreference', 'inventory'), new moodle_url('/mod/inventory/editreference.php',
+                array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid,
+                    'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode, 'idreference' => $idreference,
+                    'editmodereference' => $editmodereference)));
     }
 } else if ($table == "devicecategory" || $table == "fieldsfromeditdevicetype") {
 
-    $PAGE->navbar->add(get_string('managedevicestype', 'inventory'), new moodle_url('/mod/inventory/managedevicestype.php', array('id' => $cm->id)));
+    $PAGE->navbar->add(get_string('managedevicestype', 'inventory'), new moodle_url('/mod/inventory/managedevicestype.php',
+            array('id' => $cm->id)));
 }
 
-$PAGE->navbar->add(get_string('deleteelement', 'inventory') , '/mod/inventory/deleteDatabaseElement', array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'key' => $key, 'delete' => $delete, 'table' => $table, 'building' => $building, 'room' => $room, 'oldid' => $oldid, 'editmode' => $editmode, 'categoryid' => $categoryid, 'courseid' => $courseid, 'blockid' => $blockid, 'idreference' => $idreference, 'editmodereference' => $editmodereference, 'arraykey' => $arraykey, 'sesskey' => $sesskey));
+$PAGE->navbar->add(get_string('deleteelement', 'inventory') , '/mod/inventory/deleteDatabaseElement',
+        array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'key' => $key, 'delete' => $delete, 'table' => $table,
+            'building' => $building, 'room' => $room, 'oldid' => $oldid, 'editmode' => $editmode, 'categoryid' => $categoryid,
+            'courseid' => $courseid, 'blockid' => $blockid, 'idreference' => $idreference,
+            'editmodereference' => $editmodereference, 'arraykey' => $arraykey, 'sesskey' => $sesskey));
 
 
 
@@ -151,7 +177,8 @@ if (!empty($options['printintro'])) {
     }
 }
 
-$content = file_rewrite_pluginfile_urls($inventory->content, 'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
+$content = file_rewrite_pluginfile_urls($inventory->content, 'pluginfile.php',
+        $context->id, 'mod_inventory', 'content', $inventory->revision);
 $formatoptions = new stdClass;
 $formatoptions->noclean = true;
 $formatoptions->overflowdiv = true;
@@ -168,9 +195,12 @@ if ($table == "buildings") {
 } else if ($table == "devices") {
     $originurl = "/mod/inventory/listDevices.php?id=$id&amp;room=$room";
 } else if ($table == "references" || $table == "brandsfromdevice") {
-    $originurl = "/mod/inventory/editDevice.php?id=$oldid&amp;courseid=$courseid&amp;blockid=$blockid&amp;moduleid=$id&amp;roomid=$room&amp;editmode=$editmode&amp;categoryid=$categoryid";
+    $originurl = "/mod/inventory/editDevice.php?id=$oldid&amp;courseid=$courseid&amp;blockid=$blockid&amp;"
+            . "moduleid=$id&amp;roomid=$room&amp;editmode=$editmode&amp;categoryid=$categoryid";
 } else if ($table == "brandsfromreference") {
-    $originurl = "/mod/inventory/editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$id&id=$oldid&editmode=$editmode&categoryid=$categoryid&roomid=$room&editmodereference=$editmodereference&idreference=$idreference";
+    $originurl = "/mod/inventory/editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$id&"
+            . "id=$oldid&editmode=$editmode&categoryid=$categoryid&roomid=$room&"
+            . "editmodereference=$editmodereference&idreference=$idreference";
 } else if ($table == "devicecategory" || $table == "fieldsfromeditdevicetype") {
     $originurl = "/mod/inventory/managedevicestype.php?id=$id";
 } else {
@@ -211,39 +241,45 @@ if ($delete == 1) {
 
 if ($delete == 2) {
 
-        if ($table == "buildings") {
+    if ($table == "buildings") {
 
-            echo get_string('confirmdeletebuilding', 'inventory');
-        } else if ($table == "rooms") {
+        echo get_string('confirmdeletebuilding', 'inventory');
+    } else if ($table == "rooms") {
 
-            echo get_string('confirmdeleteroom', 'inventory');
-        } else if ($table == "devices") {
+        echo get_string('confirmdeleteroom', 'inventory');
+    } else if ($table == "devices") {
 
-            echo get_string('confirmdeletedevice', 'inventory');
-        } else if ($table == "references") {
+        echo get_string('confirmdeletedevice', 'inventory');
+    } else if ($table == "references") {
 
-            echo get_string('confirmdeletereference', 'inventory');
-        } else if ($table == "brandsfromdevice" || $table == "brandsfromreference") {
+        echo get_string('confirmdeletereference', 'inventory');
+    } else if ($table == "brandsfromdevice" || $table == "brandsfromreference") {
 
-            echo get_string('confirmdeletebrand', 'inventory');
-        } else if ($table == "devicecategory") {
+        echo get_string('confirmdeletebrand', 'inventory');
+    } else if ($table == "devicecategory") {
 
-            echo get_string('confirmdeletedevicecategory', 'inventory');
-        } else if ($table == "fieldsfromeditdevicetype") {
+        echo get_string('confirmdeletedevicecategory', 'inventory');
+    } else if ($table == "fieldsfromeditdevicetype") {
 
-            echo get_string('confirmdeletefields', 'inventory');
-        }
+        echo get_string('confirmdeletefields', 'inventory');
+    }
 
     if ($arraykey != "") {
 
         $encodedarraykey = urlencode($arraykey);
     }
-    
+
 
     echo
     "<p>
-        <a href='deleteDatabaseElement.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;delete=1&amp;table=$table&amp;building=$building&amp;room=$room&amp;oldid=$oldid&amp;categoryid=$categoryid&amp;editmode=$editmode&amp;blockid=$blockid&amp;courseid=$courseid&amp;arraykey=$encodedarraykey&amp;sesskey=$sesskey'><button>".get_string('yes', 'inventory')."</button></a>
-        <a href='deleteDatabaseElement.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;delete=0&amp;table=$table&amp;building=$building&amp;room=$room&amp;oldid=$oldid&amp;categoryid=$categoryid&amp;editmode=$editmode&amp;blockid=$blockid&amp;courseid=$courseid&amp;arraykey=$encodedarraykey&amp;sesskey=$sesskey'><button>".get_string('no', 'inventory')."</button></a>
+        <a href='deleteDatabaseElement.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;"
+            . "delete=1&amp;table=$table&amp;building=$building&amp;room=$room&amp;oldid=$oldid&amp;"
+            . "categoryid=$categoryid&amp;editmode=$editmode&amp;blockid=$blockid&amp;courseid=$courseid&amp;"
+            . "arraykey=$encodedarraykey&amp;sesskey=$sesskey'><button>".get_string('yes', 'inventory')."</button></a>
+        <a href='deleteDatabaseElement.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;delete=0&amp;table=$table&amp;"
+            . "building=$building&amp;room=$room&amp;oldid=$oldid&amp;categoryid=$categoryid&amp;editmode=$editmode&amp;"
+            . "blockid=$blockid&amp;courseid=$courseid&amp;arraykey=$encodedarraykey&amp;"
+            . "sesskey=$sesskey'><button>".get_string('no', 'inventory')."</button></a>
     </p>";
 } else if ($delete == 1 && $deleted == -1) {
 
@@ -283,20 +319,20 @@ function deletebuilding($key, $DB, $cm) {
     $contextmodule = context_module::instance($cm->id);
     $filename = $currentrecord->imagename;
 
-    // Prepare file record object
+    // Prepare file record object.
     $fileinfo = array(
         'component' => 'mod_inventory',
-        'filearea' => 'image',     // usually = table name
-        'itemid' => $key,               // usually = ID of row in table
-        'contextid' => $contextmodule->id, // ID of context
-        'filepath' => '/',           // any path beginning and ending in /
-        'filename' => $filename); // any filename
+        'filearea' => 'image',     // Usually = table name.
+        'itemid' => $key,               // Usually = ID of row in table.
+        'contextid' => $contextmodule->id, // ID of context.
+        'filepath' => '/',           // Any path beginning and ending in /.
+        'filename' => $filename); // Any filename.
 
-    // Get file
+    // Get file.
     $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
             $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-    // Delete it if it exists
+    // Delete it if it exists.
     if ($file) {
         $file->delete();
     }
@@ -322,13 +358,12 @@ function deleteroom($key, $DB, $cm) {
         }
     }
     if ($DB->record_exists('inventory_room', array('id' => $key))) {
-        
+
         $DB->delete_records('inventory_room', array('id' => $key));
     } else {
 
         return -1;
     }
-    
 
     return 0;
 }
@@ -352,20 +387,20 @@ function deletedevice($key, $DB, $cm) {
         $contextmodule = context_module::instance($cm->id);
         $filename = $currentrecord->documentation;
 
-        // Prepare file record object
+        // Prepare file record object .
         $fileinfo = array(
             'component' => 'mod_inventory',
-            'filearea' => 'manuel',     // usually = table name
-            'itemid' => $key,               // usually = ID of row in table
-            'contextid' => $contextmodule->id, // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => $filename); // any filename
+            'filearea' => 'manuel',     // Usually = table name.
+            'itemid' => $key,               // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $filename); // Any filename.
 
-        // Get file
+        // Get file.
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-        // Delete it if it exists
+        // Delete it if it exists.
         if ($file) {
             $file->delete();
         }
@@ -403,7 +438,7 @@ function deletereference ($key, $DB, $cm, $forcedelete) {
 
         $brandid = $DB->get_record('inventory_reference', array('id' => $key))->brandid;
 
-        $listrecordbrand =$DB->get_records('inventory_reference', array('brandid' => $brandid));
+        $listrecordbrand = $DB->get_records('inventory_reference', array('brandid' => $brandid));
 
         foreach ($listrecordbrand as $recordkey => $recordvalue) {
 
@@ -425,7 +460,7 @@ function deletereference ($key, $DB, $cm, $forcedelete) {
             $devicestodelete = $DB->get_records('inventory_device', array('refid' => $key));
 
             foreach ($devicestodelete as $devicekey => $value) {
-                
+
                 deletedevice($devicekey, $DB, $cm);
             }
         }
@@ -438,20 +473,20 @@ function deletereference ($key, $DB, $cm, $forcedelete) {
             $contextmodule = context_module::instance($cm->id);
             $filename = $currentrecord->documentation;
 
-            // Prepare file record object
+            // Prepare file record object.
             $fileinfo = array(
                 'component' => 'mod_inventory',
-                'filearea' => 'manuelreference',     // usually = table name
-                'itemid' => $key,               // usually = ID of row in table
-                'contextid' => $contextmodule->id, // ID of context
-                'filepath' => '/',           // any path beginning and ending in /
-                'filename' => $filename); // any filename
+                'filearea' => 'manuelreference',     // Usually = table name.
+                'itemid' => $key,               // Usually = ID of row in table.
+                'contextid' => $contextmodule->id, // ID of context.
+                'filepath' => '/',           // Any path beginning and ending in /.
+                'filename' => $filename); // Any filename.
 
-            // Get file
+            // Get file.
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                     $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-            // Delete it if it exists
+            // Delete it if it exists.
             if ($file) {
                 $file->delete();
             }
@@ -480,7 +515,7 @@ function deletebrand($key, $DB, $cm, $forcedelete) {
 
         $categoryid = $DB->get_record('inventory_brand', array('id' => $key))->categoryid;
 
-        $listrecordcategories =$DB->get_records('inventory_brand', array('categoryid' => $categoryid));
+        $listrecordcategories = $DB->get_records('inventory_brand', array('categoryid' => $categoryid));
 
         foreach ($listrecordcategories as $recordkey => $recordvalue) {
 
@@ -496,7 +531,7 @@ function deletebrand($key, $DB, $cm, $forcedelete) {
         }
     }
 
-    if($stop != 1) {
+    if ($stop != 1) {
 
         if ($DB->record_exists('inventory_reference', array('brandid' => $key))) {
             $referencestodelete = $DB->get_records('inventory_reference', array('brandid' => $key));
@@ -523,7 +558,6 @@ function deletebrand($key, $DB, $cm, $forcedelete) {
 
 function deletedevicecategory($key, $DB, $cm) {
 
-
     if ($DB->record_exists('inventory_devicefield', array('categoryid' => $key))) {
         $fieldstodelete = $DB->get_records('inventory_devicefield', array('categoryid' => $key));
 
@@ -547,7 +581,7 @@ function deletedevicecategory($key, $DB, $cm) {
             deletebrand($brandkey, $DB, $cm, 1);
         }
     }
-    
+
     $currentrecord = $DB->get_record('inventory_devicecategory', array('id' => $key));
 
     if ($currentrecord->iconname != null) {
@@ -556,20 +590,20 @@ function deletedevicecategory($key, $DB, $cm) {
         $contextmodule = context_module::instance($cm->id);
         $filename = $currentrecord->iconname;
 
-        // Prepare file record object
+        // Prepare file record object.
         $fileinfo = array(
             'component' => 'mod_inventory',
-            'filearea' => 'icon',     // usually = table name
-            'itemid' => $key,               // usually = ID of row in table
-            'contextid' => $contextmodule->id, // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => $filename); // any filename
+            'filearea' => 'icon',     // Usually = table name.
+            'itemid' => $key,               // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $filename); // Any filename.
 
-        // Get file
+        // Get file.
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-        // Delete it if it exists
+        // Delete it if it exists.
         if ($file) {
             $file->delete();
         }
@@ -589,7 +623,7 @@ function deletedevicecategory($key, $DB, $cm) {
 function deletedevicefield ($key, $DB) {
 
     if ($DB->record_exists('inventory_devicevalue', array('fieldid' => $key))) {
-        
+
         $valuestodelete = $DB->get_records('inventory_devicevalue', array('fieldid' => $key));
 
         foreach ($valuestodelete as $valuekey => $value) {
