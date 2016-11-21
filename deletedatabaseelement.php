@@ -96,6 +96,8 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
     $PAGE->set_activity_record($inventory);
 }
 
+// The navigation bar depends on where we come from.
+
 if ($table == "rooms") {
 
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $building));
@@ -188,6 +190,8 @@ echo $OUTPUT->box($content, "generalbox center clearfix");
 
 require_capability('mod/inventory:edit', $context);
 
+// Depending on where we come from, we will go back to a different page.
+
 if ($table == "buildings") {
     $originurl = "/mod/inventory/view.php?id=$id";
 } else if ($table == "rooms") {
@@ -207,9 +211,15 @@ if ($table == "buildings") {
     $originurl = "/mod/inventory/view.php?id=$id";
 }
 
+// Delete only after the user have confirmed.
+
 if ($delete == 1) {
 
+    // Check the sesskey to ensure the user hasn't been tricked into coming here.
+
     if ($sesskey == sesskey()) {
+
+        // Depending on what we are supposed to delete, we will use a different function.
 
         if ($table == "buildings") {
             $deleted = deletebuilding($key, $DB, $cm);
@@ -226,6 +236,8 @@ if ($delete == 1) {
         } else if ($table == "fieldsfromeditdevicetype") {
             $deleted = deletemultiplefields($arraykey, $DB);
         }
+
+        // If there was no error, we redirect the user to its origin page.
 
         if ($deleted != -1) {
 
@@ -276,13 +288,15 @@ if ($delete == 2) {
             . "delete=1&amp;table=$table&amp;building=$building&amp;room=$room&amp;oldid=$oldid&amp;"
             . "categoryid=$categoryid&amp;editmode=$editmode&amp;blockid=$blockid&amp;courseid=$courseid&amp;"
             . "arraykey=$encodedarraykey&amp;sesskey=$sesskey'><button>".get_string('yes', 'inventory')."</button></a>"
-            . "<a href='deletedatabaseelement.php?id=$id&amp;"
-            . "p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;delete=0&amp;table=$table&amp;"
-            . "building=$building&amp;room=$room&amp;oldid=$oldid&amp;categoryid=$categoryid&amp;editmode=$editmode&amp;"
-            . "blockid=$blockid&amp;courseid=$courseid&amp;arraykey=$encodedarraykey&amp;"
-            . "sesskey=$sesskey'><button>".get_string('no', 'inventory')."</button></a>"
-            . "</p>";
+    . "<a href='deletedatabaseelement.php?id=$id&amp;"
+        . "p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;delete=0&amp;table=$table&amp;"
+        . "building=$building&amp;room=$room&amp;oldid=$oldid&amp;categoryid=$categoryid&amp;editmode=$editmode&amp;"
+        . "blockid=$blockid&amp;courseid=$courseid&amp;arraykey=$encodedarraykey&amp;"
+        . "sesskey=$sesskey'><button>".get_string('no', 'inventory')."</button></a>"
+. "</p>";
 } else if ($delete == 1 && $deleted == -1) {
+
+    // If the delete function failed, we inform the user.
 
     $courseurl = new moodle_url($originurl);
 
@@ -292,6 +306,8 @@ if ($delete == 2) {
 
 } else {
 
+    // Should only happen if the user was tricked to come here.
+
     echo get_string('neverdisplayed', 'inventory');
 }
 
@@ -299,6 +315,8 @@ $strlastmodified = get_string("lastmodified");
 echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
 
 echo $OUTPUT->footer();
+
+// We delete the building, its image and all its rooms.
 
 function deletebuilding($key, $DB, $cm) {
 
@@ -345,6 +363,8 @@ function deletebuilding($key, $DB, $cm) {
     return 0;
 }
 
+// We delete the room, its attachments and all its devices.
+
 function deleteroom($key, $DB, $cm) {
 
     if ($DB->record_exists('inventory_device', array('roomid' => $key))) {
@@ -355,6 +375,48 @@ function deleteroom($key, $DB, $cm) {
             deletedevice($devicekey, $DB);
         }
     }
+
+    if ($DB->record_exists('inventory_attachmentroom', array('roomid' => $key))) {
+
+        $attachmentstodelete = $DB->get_records('inventory_attachmentroom', array('roomid' => $key));
+
+        $fs = get_file_storage();
+        $contextmodule = context_module::instance($cm->id);
+
+        foreach ($attachmentstodelete as $attachmentkey => $attachmentvalue) {
+
+            $filename = $attachmentvalue->name;
+
+            if($attachmentvalue->isprivate == 1) {
+
+                $filearea = "privateattachment";
+            } else {
+
+                $filearea = "publicattachment";
+            }
+
+            // Prepare file record object.
+            $fileinfo = array(
+                'component' => 'mod_inventory',
+                'filearea' => $filearea,     // Usually = table name.
+                'itemid' => $key,               // Usually = ID of row in table.
+                'contextid' => $contextmodule->id, // ID of context.
+                'filepath' => '/',           // Any path beginning and ending in /.
+                'filename' => $filename); // Any filename.
+
+            // Get file.
+            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                    $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+            // Delete it if it exists.
+            if ($file) {
+                $file->delete();
+            }
+        }
+
+        $DB->delete_records('inventory_attachmentroom', array('roomid' => $key));
+    }
+
     if ($DB->record_exists('inventory_room', array('id' => $key))) {
 
         $DB->delete_records('inventory_room', array('id' => $key));
@@ -365,6 +427,8 @@ function deleteroom($key, $DB, $cm) {
 
     return 0;
 }
+
+// We delete the device, its specific manual and all its values.
 
 function deletedevice($key, $DB, $cm) {
 
@@ -415,6 +479,8 @@ function deletedevice($key, $DB, $cm) {
     return 0;
 }
 
+// We delete a value of a device.
+
 function deletedevicevalue ($key, $DB) {
 
     if ($DB->record_exists('inventory_devicevalue', array('id' => $key))) {
@@ -427,6 +493,9 @@ function deletedevicevalue ($key, $DB) {
 
     return 0;
 }
+
+// We delete a reference, the manual of this reference and all devices of this reference.
+// The first reference of a brand cannot be deleted, except when the brand is deleted.
 
 function deletereference ($key, $DB, $cm, $forcedelete) {
 
@@ -505,6 +574,9 @@ function deletereference ($key, $DB, $cm, $forcedelete) {
     }
 }
 
+// We delete a brand and all of its references.
+// We cannot delete rhe first brand of a category, except when we delete the category.
+
 function deletebrand($key, $DB, $cm, $forcedelete) {
 
     $stop = 0;
@@ -553,6 +625,9 @@ function deletebrand($key, $DB, $cm, $forcedelete) {
         return -1;
     }
 }
+
+// We delete a category of device, all fields of this category, all devices of this category and all brand of this category.
+// We also delete its icon.
 
 function deletedevicecategory($key, $DB, $cm) {
 
@@ -618,6 +693,8 @@ function deletedevicecategory($key, $DB, $cm) {
     return 0;
 }
 
+// We delete a field of the database and all values that refer to this field.
+
 function deletedevicefield ($key, $DB) {
 
     if ($DB->record_exists('inventory_devicevalue', array('fieldid' => $key))) {
@@ -639,6 +716,9 @@ function deletedevicefield ($key, $DB) {
 
     return 0;
 }
+
+// We delete multiple fields from the database.
+// We parse the parameter to get the list of ids to delete.
 
 function deletemultiplefields ($arraykey, $DB) {
 

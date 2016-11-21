@@ -38,11 +38,10 @@ require_once($CFG->dirroot.'/mod/inventory/lib.php');
 require_once($CFG->dirroot.'/mod/inventory/locallib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
-echo '
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="listdevicesstyle.css" />
-    </head>';
+echo '<head>'
+. '<meta charset="utf-8" />'
+        . '<link rel="stylesheet" href="listdevicesstyle.css" />'
+        . '</head>';
 
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID.
 $p       = optional_param('p', 0, PARAM_INT);  // Page instance ID.
@@ -126,11 +125,11 @@ $currentroom = $DB->get_record('inventory_room', array('id' => $room));
 
 // Display the public commentary.
 
-echo"<div class=headercommentary>
-        <div>
-            <strong>".get_string('publiccommentary', 'inventory')."</strong>
-        </div>
-        <div class=editbutton>";
+echo"<div class=headercommentary>"
+. "<div>"
+        . "<strong>".get_string('publiccommentary', 'inventory')."</strong>"
+        . "</div>"
+        . "<div class=editbutton>";
 
 // Display the edit button only if the user is allowed to edit.
 

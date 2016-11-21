@@ -198,7 +198,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
             array('roomid' => $room, 'isprivate' => $attachmentdata['isprivate']));
     $listattachment = $fs->get_area_files($usercontext->id, 'user', 'draft', $submitteddata->attachment, 'id');
 
-    //We check for every old attachment if it is still here. If not, we delete the url and their entries in the database.
+    // We check for every old attachment if it is still here. If not, we delete the url and their entries in the database.
 
     foreach ($listoldattachments as $oldattachment) {
 

@@ -64,6 +64,8 @@ class reference_form extends moodleform {
 
         $mform->addElement('text', 'name', get_string('name', 'inventory'));
 
+        // The list of brands is set depending on the brands available for the current category.
+
         $tablebrands = $DB->get_records_menu('inventory_brand', array('categoryid' => $categoryid), 'id', 'id, name');
 
         // We initialise based on the initial state of the form.

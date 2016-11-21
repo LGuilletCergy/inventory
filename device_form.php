@@ -61,7 +61,11 @@ class device_form extends moodleform {
 
         $mform->addElement('text', 'type', get_string('type', 'inventory'), 'disabled');
 
+        // The list of brands is set depending on the brands available for the current category.
+
         $tablebrands = $DB->get_records_menu('inventory_brand', array('categoryid' => $categoryid), 'id', 'id, name');
+
+        // We initialise based on the initial state of the form.
 
         $addbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
                 . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=0&idbrand=$brandid&source=editdevice";
@@ -70,6 +74,9 @@ class device_form extends moodleform {
         $deletebrandurl = "deletedatabaseelement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&"
                 . "oldid=$id&editmode=$editmode&categoryid=$categoryid&room=$roomid&"
                 . "key=$brandid&table=brandsfromdevice&sesskey=".sesskey();
+
+        // When we change the brand selected, we need to change the code of the buttons to edit the brand and to delete it.
+        // We call a Javascript function to do that.
 
         $brandarray = array();
         $brandarray[] =& $mform->createElement('select', 'brand', '', $tablebrands, array('onchange' => 'acquirereferences();'));
@@ -81,7 +88,11 @@ class device_form extends moodleform {
                 array ('onclick' => "location.href='$deletebrandurl'"));
         $mform->addGroup($brandarray, 'brandarray', get_string('choosebrand', 'inventory'), array(''), false);
 
+        // The list of references is set depending on the references available for the current brand.
+
         $tablereferences = $DB->get_records_menu('inventory_reference', array('brandid' => $brandid), 'id', 'id, name');
+
+        // We initialise based on the initial state of the form.
 
         $addreferenceurl = "editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
                 . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodereference=0&idreference=$referenceid";
@@ -90,6 +101,9 @@ class device_form extends moodleform {
         $deletereferenceurl = "deletedatabaseelement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&oldid=$id&"
                 . "editmode=$editmode&categoryid=$categoryid&room=$roomid&"
                 . "key=$referenceid&table=references&sesskey=".sesskey();
+
+        // When we change the brand selected, we need to change the code of the buttons to edit the brand and to delete it.
+        // We call a Javascript function to do that.
 
         $referencearray = array();
         $referencearray[] =& $mform->createElement('select', 'reference', '', $tablereferences,
@@ -101,6 +115,8 @@ class device_form extends moodleform {
         $referencearray[] =& $mform->createElement('button', 'deletereference', get_string('deletereference', 'inventory'),
                 array ('onclick' => "location.href='$deletereferenceurl'"));
         $mform->addGroup($referencearray, 'referencearray', get_string('choosereference', 'inventory'), array(''), false);
+
+        // We create a field for each type of fields that this category of device have.
 
         $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 
@@ -188,6 +204,10 @@ class device_form extends moodleform {
         }
     }
 
+    // If we change the brand, we need to change where the 'editBrand' and 'deleteBrand' buttons will lead us.
+    // Only the brandid part of the url of the button will change but we still need to completely recreate it.
+    // We also need to change the options for the select of reference.
+
     function acquirereferences() {
 
         getXhr();
@@ -244,6 +264,9 @@ class device_form extends moodleform {
         deletebrandbutton.outerHTML = '<input onclick=location.href="' + urldeletebrand + '" name=editbrand value="' +
                 stringdeletebrand + '" type=button id=id_deletebrand />';
     }
+
+    // If we change the reference, we need to change where the 'editReference' and 'deleteReference' buttons will lead us.
+    // Only the referenceid part of the url of the button will change but we still need to completely recreate it.
 
     function changereference() {
 

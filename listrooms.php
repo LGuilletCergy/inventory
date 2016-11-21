@@ -49,11 +49,10 @@ $export = optional_param('export', false, PARAM_BOOL);
 
 if ($export != true) {
 
-    echo '
-        <head>
-            <meta charset="utf-8" />
-            <link rel="stylesheet" href="listroomsstyle.css" />
-        </head>';
+    echo '<head>'
+    . '<meta charset="utf-8" />'
+            . '<link rel="stylesheet" href="listroomsstyle.css" />'
+            . '</head>';
 
     if ($p) {
         if (!$inventory = $DB->get_record('inventory', array('id' => $p))) {
@@ -130,13 +129,10 @@ if ($export != true) {
 
     // We create a select box to select the category we want to display. Changing the category will call a Javascript function.
 
-    echo "
-
-    <input type=hidden id=id value=$id>
-    <input type=hidden id=building value=$building>
-
-    <div>
-        <select id=selectcategory onChange=categoryChanged()>";
+    echo "<input type=hidden id=id value=$id>"
+            . "<input type=hidden id=building value=$building>
+                <div>
+                <select id=selectcategory onChange=categoryChanged()>";
 
     $listcategories = $DB->get_records('inventory_devicecategory');
 
