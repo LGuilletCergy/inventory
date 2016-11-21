@@ -58,6 +58,8 @@ class devicetype_form extends moodleform {
 
         $mform->addElement('editor', 'failuretext', get_string('failuretext', 'inventory'));
 
+        // Here, we creat as many fields as the number of fields already in the database for this device type.
+
         $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 
         $i = 1;
@@ -74,6 +76,8 @@ class devicetype_form extends moodleform {
             $i++;
         }
 
+        // Here, we declare the group of elements to be repeated with the 'add new fields' button.
+
         $repeatarray = array();
 
         $repeatarray[] = $mform->createElement('text', 'field');
@@ -83,6 +87,9 @@ class devicetype_form extends moodleform {
         $repeatgroup[] = $mform->createElement('group', 'repeatarray', get_string('field', 'inventory').' {no}', $repeatarray);
 
         $repeatoptions = array();
+
+        // If, this is a new type of device, we assume there will be at least one field,
+        // If not, we do not create empty fields before the user click on the 'add new fields' button.
 
         if ($editmode == 0) {
 
