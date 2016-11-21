@@ -41,7 +41,7 @@ require_once($CFG->libdir.'/completionlib.php');
 echo '
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="listBuildingsStyle.css" />
+    <link rel="stylesheet" href="listbuildingsstyle.css" />
 </head>';
 
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID.
@@ -65,7 +65,12 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/inventory:view', $context);
+
+if (!has_capability('mod/inventory:newview', $context)) {
+
+    $enrolurl = new moodle_url('login/index.php');
+    redirect($enrolurl);
+}
 
 // Completion and trigger events.
 inventory_view($inventory, $course, $cm, $context);
@@ -122,7 +127,7 @@ foreach ($listebuilding as $key => $value) {
             <tr>
                 <td>';
                     echo "
-                        <a href='listRooms.php?id=$id&amp;building=$key'>";
+                        <a href='listrooms.php?id=$id&amp;building=$key'>";
 
                         // We get the image of this building by taking the name from the database
                         // and we fetch the url with get_file.
@@ -140,52 +145,52 @@ foreach ($listebuilding as $key => $value) {
                         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-                        if ($file) {
+    if ($file) {
 
-                            $url = moodle_url::make_pluginfile_url($file->get_contextid(),
-                                    $file->get_component(), $file->get_filearea(), $file->get_itemid(),
-                                    $file->get_filepath(), $file->get_filename());
-                        } else {
+        $url = moodle_url::make_pluginfile_url($file->get_contextid(),
+                $file->get_component(), $file->get_filearea(), $file->get_itemid(),
+                $file->get_filepath(), $file->get_filename());
+    } else {
 
-                            $url = "";
-                        }
-                        echo"
-                            <img src=$url alt=$buildingtodisplay style=width:150px;height:150px; />
-                        </a>
+        $url = "";
+    }
+    echo"
+                        <img src=$url alt=$buildingtodisplay style=width:150px;height:150px; />
+                    </a>
                 </td>
                 <td>";
 
                 $context = context_module::instance($cm->id);
 
-                // We display the edit and remove buttons only if the user has edit rights.
+    // We display the edit and remove buttons only if the user has edit rights.
 
-                if (has_capability('mod/inventory:edit', $context)) {
+    if (has_capability('mod/inventory:edit', $context)) {
 
-                    echo "
-                    <table class=iconesBuilding>
-                        <tr>
-                            <td>";
-                            echo "
-                                <a href='deleteDatabaseElement.php?id=$cm->id&amp;"
-                                    . "key=$key&amp;table=buildings&amp;sesskey=".sesskey()."'>";
-                                echo '
-                                    <img src="../../pix/i/delete.png" alt="Delete" style="width:20px;height:20px;" />
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>';
-                            echo "
-                                <a href='editbuilding.php?courseid=$course->id&amp;"
-                                    . "blockid=$cm->p&amp;moduleid=$cm->id&amp;id=$key&amp;editmode=1'>";
-                                echo '
-                                    <img src="../../pix/e/document_properties.png" alt="Edit" style="width:20px;height:20px;" />
-                                </a>
-                            </td>
-                        </tr>
-                    </table>';
-                }
-                echo '
+        echo "
+        <table class=iconesBuilding>
+            <tr>
+                <td>";
+                echo "
+                    <a href='deletedatabaseelement.php?id=$cm->id&amp;"
+                        . "key=$key&amp;table=buildings&amp;sesskey=".sesskey()."'>";
+                    echo '
+                        <img src="../../pix/i/delete.png" alt="Delete" style="width:20px;height:20px;" />
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>';
+                echo "
+                    <a href='editbuilding.php?courseid=$course->id&amp;"
+                        . "blockid=$cm->p&amp;moduleid=$cm->id&amp;id=$key&amp;editmode=1'>";
+                    echo '
+                        <img src="../../pix/e/document_properties.png" alt="Edit" style="width:20px;height:20px;" />
+                    </a>
+                </td>
+            </tr>
+        </table>';
+    }
+    echo '
                 </td>
             </tr>
             <tr class=lineName>
@@ -205,7 +210,7 @@ echo'
             <tr>
                 <td>';
                     echo "
-                        <a href='listRooms.php?id=$id&amp;building=0'>";
+                        <a href='listrooms.php?id=$id&amp;building=0'>";
 
                         echo"
                             <img src=pix/logo_cergy.jpg alt='All buildings' style=width:150px;height:150px; />

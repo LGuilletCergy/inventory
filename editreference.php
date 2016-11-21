@@ -28,7 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  *
- * File : editDevice.php
+ * File : editreference.php
  * Page to add and edit a reference
  *
  */
@@ -89,24 +89,24 @@ $editurl = new moodle_url('/mod/inventory/editreference.php',
             'moduleid' => $moduleid, 'editmodereference' => $editmodereference, 'roomid' => $roomid,
             'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
 
-// Get buildind and room id.
+// Get building id and room id.
 $currentroom = $DB->get_record('inventory_room', array('id' => $roomid));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
         array('id' => $moduleid, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listdevices.php',
         array('id' => $moduleid, 'room' => $roomid)));
 
 if ($editmode == 0) {
     $PAGE->navbar->add(get_string('adddevice', 'inventory'),
-            new moodle_url('/mod/inventory/editDevice.php',
+            new moodle_url('/mod/inventory/editdevice.php',
                     array('courseid' => $courseid, 'blockid' => $blockid,
                         'moduleid' => $moduleid, 'roomid' => $roomid,
                         'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
 } else {
     $PAGE->navbar->add(get_string('editdevice', 'inventory'),
-            new moodle_url('/mod/inventory/editDevice.php',
+            new moodle_url('/mod/inventory/editdevice.php',
                     array('courseid' => $courseid, 'blockid' => $blockid,
                         'moduleid' => $moduleid, 'roomid' => $roomid,
                         'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
@@ -120,6 +120,10 @@ if ($editmodereference == 0) {
 
 require_capability('mod/inventory:edit', $context);
 
+// If we are in edit mode, we check whether or not the device we are trying to edit exists in the database.
+// If not, we go back to editdevice.
+// This might happen if we have deleted a brand from here and therefore deleted the reference too.
+
 if ($editmodereference == 1) {
 
     if ($DB->record_exists('inventory_reference', array('id' => $idreference))) {
@@ -131,7 +135,7 @@ if ($editmodereference == 1) {
         if (!$moduleid) {
             $moduleid = 1;
         }
-        $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+        $courseurl = new moodle_url('/mod/inventory/editdevice.php',
                 array('courseid' => $courseid, 'blockid' => $blockid,
                     'moduleid' => $moduleid, 'roomid' => $roomid,
                     'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
@@ -157,29 +161,8 @@ $formdata['roomid'] = $roomid;
 if ($editmodereference == 1) {
 
     $formdata['idreference'] = $idreference;
-    $formdata['id'] = $id;
     $formdata['name'] = $currentrecord->name;
     $formdata['brand'] = $brandid;
-
-    $listrecordbrand = $DB->get_records('inventory_reference', array('brandid' => $brandid));
-
-    foreach ($listrecordbrand as $recordkey => $recordvalue) {
-
-        if ($recordkey == $currentrecord->id) {
-
-            $firstelement = 1;
-            break;
-        } else {
-
-            $firstelement = 0;
-            break;
-        }
-    }
-
-    if ($firstelement == 1) {
-
-            $formdata->isfirstreference = 1;
-    }
 
     global $USER;
     $fs = get_file_storage();
@@ -201,7 +184,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;
     }
-    $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+    $courseurl = new moodle_url('/mod/inventory/editdevice.php',
             array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
                 'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
     redirect($courseurl);
@@ -292,7 +275,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         print_error('databaseerror', 'inventory');
     } else {
 
-        $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+        $courseurl = new moodle_url('/mod/inventory/editdevice.php',
                 array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
                     'roomid' => $roomid, 'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode));
         redirect($courseurl);
@@ -302,6 +285,8 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
 $site = get_site();
 echo $OUTPUT->header();
+
+// We check whether or not this is the first reference. If it is, we do not allow the user to edit it.
 
 $stop = 0;
 
@@ -324,7 +309,7 @@ if ($stop == 1) {
 
     if ($source == "editdevice") {
 
-        $courseurl = new moodle_url('/mod/inventory/editDevice.php',
+        $courseurl = new moodle_url('/mod/inventory/editdevice.php',
                 array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
                     'roomid' => $roomid, 'categoryid' => $categoryid,
                     'id' => $id, 'editmode' => $editmode));

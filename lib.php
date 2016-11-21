@@ -323,7 +323,7 @@ function inventory_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
     }
 
     require_course_login($course, true, $cm);
-    if (!has_capability('mod/inventory:view', $context)) {
+    if (!has_capability('mod/inventory:newview', $context)) {
         return false;
     }
 

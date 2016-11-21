@@ -80,13 +80,13 @@ $PAGE->set_heading($course->fullname);
 $editurl = new moodle_url('/mod/inventory/editcommentary.php',
         array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'room' => $room, 'mode' => $mode));
 
-// Get buildind and room id.
+// Get building id and room id.
 $currentrecord = $DB->get_record('inventory_room', array('id' => $room));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentrecord->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
         array('id' => $id, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php',
+$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listdevices.php',
         array('id' => $id, 'room' => $room)));
 $PAGE->navbar->add(get_string('editcommentary', 'inventory'), $editurl);
 
@@ -148,7 +148,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;
     }
-    $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $room));
+    $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $id, 'room' => $room));
     redirect($courseurl);
 } else if ($submitteddata = $mform->get_data()) { // Second scenario : the form was validated.
 
@@ -197,6 +197,8 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     $listoldattachments = $DB->get_records('inventory_attachmentroom',
             array('roomid' => $room, 'isprivate' => $attachmentdata['isprivate']));
     $listattachment = $fs->get_area_files($usercontext->id, 'user', 'draft', $submitteddata->attachment, 'id');
+
+    //We check for every old attachment if it is still here. If not, we delete the url and their entries in the database.
 
     foreach ($listoldattachments as $oldattachment) {
 
@@ -272,7 +274,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         print_error('databaseerror', 'inventory');
     } else {
 
-        $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $room));
+        $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $id, 'room' => $room));
         redirect($courseurl);
     }
 }

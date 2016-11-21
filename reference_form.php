@@ -44,6 +44,8 @@ class reference_form extends moodleform {
 
     public function definition() {
 
+        // We get every parameter required to go to the editbrand page and the deletedatabaseelement page.
+
         global $DB;
 
         $mform =& $this->_form;
@@ -64,16 +66,21 @@ class reference_form extends moodleform {
 
         $tablebrands = $DB->get_records_menu('inventory_brand', array('categoryid' => $categoryid), 'id', 'id, name');
 
+        // We initialise based on the initial state of the form.
+
         $addbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&"
                 . "id=$id&editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=0&"
                 . "idbrand=$brandid&source=editreference&idreference=$idreference&editmodereference=$editmodereference";
         $editbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&"
                 . "id=$id&editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=1&"
                 . "idbrand=$brandid&source=editreference&idreference=$idreference&editmodereference=$editmodereference";
-        $deletebrandurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&"
+        $deletebrandurl = "deletedatabaseelement.php?courseid=$courseid&blockid=$blockid&"
                 . "id=$moduleid&oldid=$id&editmode=$editmode&categoryid=$categoryid&room=$roomid&"
                 . "key=$brandid&table=brandsfromreference&idreference=$idreference&"
                 . "editmodereference=$editmodereference&sesskey=".sesskey()."";
+
+        // When we change the brand selected, we need to change the code of the buttons to edit the brand and to delete it.
+        // We call a Javascript function to do that.
 
         $brandarray = array();
         $brandarray[] =& $mform->createElement('select', 'brand', '', $tablebrands, array('onchange' => 'acquirereferences();'));
@@ -89,6 +96,8 @@ class reference_form extends moodleform {
 
         $mform->addElement('filemanager', 'manuel', get_string('manuel', 'inventory'),
                 null, array('maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('.pdf', 'document')));
+
+        // We store everything needed to create the buttons in hidden fields of the form.
 
         $mform->addElement('hidden', 'blockid');
         $mform->setType('blockid', PARAM_INT);
@@ -137,7 +146,8 @@ class reference_form extends moodleform {
 
 <script type='text/javascript'>
 
-    //If we change the brand, we need to change where the 'editBrand' and 'deleteBrand' buttons will lead us.
+    // If we change the brand, we need to change where the 'editBrand' and 'deleteBrand' buttons will lead us.
+    // Only the brandid part of the url of the button will change but we still need to completely recreate it.
 
     function acquirereferences() {
 
@@ -168,7 +178,7 @@ class reference_form extends moodleform {
         editbrandbutton.outerHTML = '<input onclick=location.href="' + urleditbrand + '" name=editbrand value="' + stringeditbrand +
                 '" type=button id=id_editbrand />';
 
-        urldeletebrand = "deleteDatabaseElement.php?courseid=" + courseid + "&blockid=" + blockid +
+        urldeletebrand = "deletedatabaseelement.php?courseid=" + courseid + "&blockid=" + blockid +
                 "&id=" + moduleid + "&oldid=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid +
                 "&room=" + roomid + "&key=" + brandid +"&table=brandsfromreference" + idreference +
                 "&editmodereference=" + editmodereference + "&sesskey=" + sesskey;

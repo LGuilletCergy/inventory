@@ -67,7 +67,7 @@ class device_form extends moodleform {
                 . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=0&idbrand=$brandid&source=editdevice";
         $editbrandurl = "editbrand.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
                 . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodebrand=1&idbrand=$brandid&source=editdevice";
-        $deletebrandurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&"
+        $deletebrandurl = "deletedatabaseelement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&"
                 . "oldid=$id&editmode=$editmode&categoryid=$categoryid&room=$roomid&"
                 . "key=$brandid&table=brandsfromdevice&sesskey=".sesskey();
 
@@ -87,7 +87,7 @@ class device_form extends moodleform {
                 . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodereference=0&idreference=$referenceid";
         $editreferenceurl = "editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$moduleid&id=$id&"
                 . "editmode=$editmode&categoryid=$categoryid&roomid=$roomid&editmodereference=1&idreference=$referenceid";
-        $deletereferenceurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&oldid=$id&"
+        $deletereferenceurl = "deletedatabaseelement.php?courseid=$courseid&blockid=$blockid&id=$moduleid&oldid=$id&"
                 . "editmode=$editmode&categoryid=$categoryid&room=$roomid&"
                 . "key=$referenceid&table=references&sesskey=".sesskey();
 
@@ -173,7 +173,7 @@ class device_form extends moodleform {
 
     function getXhr() {
 
-        if(window.XMLHttpRequest) // Firefox et autres
+        if (window.XMLHttpRequest) // Firefox et autres
            xhr = new XMLHttpRequest();
         else if(window.ActiveXObject){ // Internet Explorer
            try {
@@ -194,7 +194,7 @@ class device_form extends moodleform {
         // On definit ce qu'on va faire quand on aura la reponse.
         xhr.onreadystatechange = function(){
             // On ne fait quelque chose que si on a tout recu et que le serveur est ok.
-            if(xhr.readyState == 4 && xhr.status == 200){
+            if (xhr.readyState == 4 && xhr.status == 200){
 
                 listreferences = xhr.responseText;
                 // On se sert de innerHTML pour rajouter les options a la liste.
@@ -237,7 +237,7 @@ class device_form extends moodleform {
         editbrandbutton.outerHTML = '<input onclick=location.href="' + urleditbrand + '" name=editbrand value="' +
                 stringeditbrand + '" type=button id=id_editbrand />';
 
-        urldeletebrand = "deleteDatabaseElement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" +
+        urldeletebrand = "deletedatabaseelement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" +
                 moduleid + "&oldid=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid + "&room=" +
                 roomid + "&key=" + brandid +"&table=brandsfromdevice&sesskey=" + sesskey;
 
@@ -276,7 +276,7 @@ class device_form extends moodleform {
         editreferencebutton.outerHTML = '<input onclick=location.href="' + urleditreference + '" name=editreference value="' +
                 stringeditreference + '" type=button id=id_editreference />';
 
-        urldeletereference = "deleteDatabaseElement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" +
+        urldeletereference = "deletedatabaseelement.php?courseid=" + courseid + "&blockid=" + blockid + "&id=" +
                 moduleid + "&oldid=" + id + "&editmode=" + editmode + "&categoryid=" + categoryid +
                 "&room=" + roomid + "&key=" + referenceid +"&table=references&sesskey=" + sesskey;
 

@@ -64,7 +64,6 @@ $inventory = $DB->get_record('inventory', array('id' => $cm->instance), '*', MUS
 $context = context_module::instance($moduleid);
 require_course_login($course, true, $cm);
 
-
 // Header code.
 $PAGE->set_url('/mod/inventory/editdevicetype.php',
         array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid,
@@ -93,15 +92,15 @@ $editurl = new moodle_url('/mod/inventory/editdevicetype.php',
 
 require_capability('mod/inventory:edit', $context);
 
-if ($source == "listDevices") {
+if ($source == "listdevices") {
 
-    // Get buildind and room id.
+    // Get building id and room id.
     $currentrecord = $DB->get_record('inventory_room', array('id' => $roomid));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentrecord->buildingid));
 
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
             array('id' => $moduleid, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php',
+    $PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listdevices.php',
             array('id' => $moduleid, 'room' => $roomid)));
 } else {
 
@@ -176,9 +175,9 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $moduleid = 1;
     }
 
-    if ($source == "listDevices") {
+    if ($source == "listdevices") {
 
-        $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid));
+        $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $moduleid, 'room' => $roomid));
         redirect($courseurl);
     } else if ($source == "managedevicestype") {
 
@@ -196,6 +195,8 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
      * which performs some kind of subaction on the form and not a full
      * form submission.
      */
+
+    $justheretoavoidanerrorincodechecker;
 
 } else if ($submitteddata = $mform->get_data()) { // Second scenario : the form was validated.
 
@@ -264,6 +265,8 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 
+        // We check all old fields. If their name is empty, we will marck them for deletion.
+
         $fieldstodelete = array();
 
         foreach ($listfields as $fieldkey => $fieldvalue) {
@@ -298,6 +301,8 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         }
 
         $i = 0;
+
+        // We create all new fields.
 
         for ($i = 0; $i < $newfieldnumbers; $i++) {
 
@@ -413,9 +418,9 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         if ($fieldstodelete == "" || $fieldstodelete == null) {
 
-            if ($source == "listDevices") {
+            if ($source == "listdevices") {
 
-                $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid));
+                $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $moduleid, 'room' => $roomid));
                 redirect($courseurl);
             } else if ($source == "managedevicestype") {
 
@@ -428,11 +433,13 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
             }
         } else {
 
+            // If we have fields to delete, we send their ids to deletedatabaseelement.
+
             $arraykey = http_build_query(array('arraykey' => $fieldstodelete));
 
             $encodedarraykey = urlencode($arraykey);
 
-            $deletebrandurl = "deleteDatabaseElement.php?courseid=$courseid&blockid=$blockid&"
+            $deletebrandurl = "deletedatabaseelement.php?courseid=$courseid&blockid=$blockid&"
                     . "id=$moduleid&oldid=$id&editmode=$editmode&categoryid=$categoryid&"
                     . "key=0&table=fieldsfromeditdevicetype&arraykey=$encodedarraykey&sesskey=".sesskey();
             redirect($deletebrandurl);

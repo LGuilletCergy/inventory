@@ -28,7 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  *
- * File : failureandreservation.php
+ * File : failure.php
  * Display all informations about the device and tell the user where he should give them
  *
  */
@@ -66,16 +66,16 @@ $context = context_module::instance($cm->id);
 // Completion and trigger events.
 inventory_view($inventory, $course, $cm, $context);
 
-$PAGE->set_url('/mod/inventory/failureandreservation.php', array('id' => $id, 'key' => $key, 'mode' => $reservation));
+$PAGE->set_url('/mod/inventory/failure.php', array('id' => $id, 'key' => $key, 'mode' => $reservation));
 
-// Get buildind and room id.
+// Get building id and room id.
 $currentdevice = $DB->get_record('inventory_device', array('id' => $key));
 $currentroom = $DB->get_record('inventory_room', array('id' => $currentdevice->roomid));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
         array('id' => $id, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+$PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listdevices.php',
         array('id' => $id, 'room' => $currentroom->id)));
 
 $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
@@ -118,45 +118,33 @@ $currentreference = $DB->get_record('inventory_reference', array('id' => $curren
 $currentbrand = $DB->get_record('inventory_brand', array('id' => $currentreference->brandid));
 
 
-echo "<p>".get_string('failureandreservationintro', 'inventory')."</p>";
+echo "<p>".get_string('failureintro', 'inventory')."</p>";
 echo "<p>".get_string('devicetype', 'inventory')." : ".$currentcategory->name."</p>";
 echo "<p>".get_string('buildingname', 'inventory')." : ".$currentbuilding->name."</p>";
 echo "<p>".get_string('roomname', 'inventory')." : ".$currentroom->name."</p>";
 echo "<p>".get_string('reference', 'inventory')." : ".$currentreference->name."</p>";
 
+// We change the device in the database to signal it is no longer working.
 
-if ($mode == "failure") {
+$currentdevice->isworking = "Non";
 
-    $newdevice = $currentdevice;
-    $newdevice->isworking = "Non";
+$DB->update_record('inventory_device', $currentdevice);
 
-    $DB->update_record('inventory_device', $newdevice);
+echo "<p>".get_string('iddevice', 'inventory')." : ".$currentdevice->id."</p>";
+echo "<p>".get_string('brand', 'inventory')." : ".$currentbrand->name."</p>";
 
-    echo "<p>".get_string('iddevice', 'inventory')." : ".$currentdevice->id."</p>";
-    echo "<p>".get_string('brand', 'inventory')." : ".$currentbrand->name."</p>";
+$listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $currentdevice->categoryid));
 
-    $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $currentdevice->categoryid));
+foreach ($listfields as $fieldkey => $fieldvalue) {
 
-    foreach ($listfields as $fieldkey => $fieldvalue) {
+    $currentvalue = $DB->get_record('inventory_devicevalue', array('fieldid' => $fieldkey, 'deviceid' => $key));
 
-        $currentvalue = $DB->get_record('inventory_devicevalue', array('fieldid' => $fieldkey, 'deviceid' => $key));
-
-        echo "<p>".$fieldvalue->name." : ".$currentvalue->value."</p>";
-    }
-
-    echo $currentcategory->textforfailure;
-
-    echo "<p><a href='$currentcategory->linkforfailure'>".$currentcategory->linkforfailure."</a></p>";
-
-} else if ($mode == "reservation") {
-
-    echo $currentcategory->textforreservation;
-
-    echo "<p><a href='$currentcategory->linkforreservation'>".$currentcategory->linkforreservation."</a></p>";
-} else {
-
-    echo "Vous ne voyez jamais ça";
+    echo "<p>".$fieldvalue->name." : ".$currentvalue->value."</p>";
 }
+
+echo $currentcategory->textforfailure;
+
+echo "<p><a href='$currentcategory->linkforfailure'>".$currentcategory->linkforfailure."</a></p>";
 
 $strlastmodified = get_string("lastmodified");
 echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";

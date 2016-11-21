@@ -29,7 +29,7 @@
  *
  *
  * File : getreference.php
- * Internal page used to fill the list of references in editDevice.php
+ * Internal page used to fill the list of references in editdevice.php
  *
  */
 

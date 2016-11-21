@@ -36,16 +36,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = array(
-    'mod/inventory:view' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'guest' => CAP_ALLOW,
-            'user' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
 
     'mod/inventory:addinstance' => array(
 
@@ -73,6 +63,16 @@ $capabilities = array(
     'mod/inventory:reportfailure' => array(
 
         'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'user' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'mod/inventory:newview' => array(
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
             'user' => CAP_ALLOW,

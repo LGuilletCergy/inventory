@@ -125,7 +125,7 @@ foreach ($listcategories as $key => $value) {
         </td>
         <td>';
             echo "
-            <a href='deleteDatabaseElement.php?id=$id&amp;"
+            <a href='deletedatabaseelement.php?id=$id&amp;"
                     . "table=devicecategory&amp;key=$key&amp;sesskey=".sesskey()."'>";
             echo'
                 <img src="../../pix/i/delete.png" alt="Delete category" style="width:20px;height:20px;" />
