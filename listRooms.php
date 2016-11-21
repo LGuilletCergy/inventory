@@ -73,11 +73,7 @@ if ($export != true) {
     require_course_login($course, true, $cm);
     $context = context_module::instance($cm->id);
 
-    if (!has_capability('mod/inventory:newview', $context)) {
-
-        $enrolurl = new moodle_url('login/index.php');
-        redirect($enrolurl);
-    }
+    require_capability('mod/inventory:newview', $context);
 
     // Completion and trigger events.
     inventory_view($inventory, $course, $cm, $context);
