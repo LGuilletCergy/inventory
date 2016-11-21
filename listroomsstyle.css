@@ -20,6 +20,5 @@
 #listrooms
 {
     display: flex;
-    flex-direction: line;
     flex-wrap: wrap;
 }
