@@ -102,7 +102,7 @@ class devicetype_form extends moodleform {
         $this->repeat_elements($repeatgroup, $numrepeatgroupinitial, $repeatoptions, 'numnewfields', 'addfields', 3);
 
         $mform->addElement('filemanager', 'icon', get_string('icon', 'inventory'),
-                null, array('maxfiles' => 1, 'accepted_types' => array('image')));
+                null, array('subdirs' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
 
         $mform->addElement('hidden', 'blockid');
         $mform->setType('blockid', PARAM_INT);

@@ -50,7 +50,7 @@ class building_form extends moodleform {
         $mform->addElement('text', 'address', get_string('address', 'inventory'));
         $mform->addElement('text', 'phone', get_string('phone', 'inventory'));
         $mform->addElement('filemanager', 'image', get_string('image', 'inventory'),
-                null, array('maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
+                null, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('image')));
 
         $mform->addElement('hidden', 'blockid');
         $mform->setType('blockid', PARAM_INT);

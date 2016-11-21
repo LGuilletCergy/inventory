@@ -143,7 +143,7 @@ $formdata['attachment'] = $draftitemid;
 
 $mform->set_data($formdata);
 
-// Three possible states
+// Two possible states
 if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;
@@ -279,7 +279,6 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     }
 }
 
-$site = get_site();
 echo $OUTPUT->header();
 $mform->display();
 

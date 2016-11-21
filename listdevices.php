@@ -81,7 +81,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 $currentrecord = $DB->get_record('inventory_room', array('id' => $room));
@@ -105,18 +104,6 @@ if (!empty($options['printintro'])) {
         echo $OUTPUT->box_end();
     }
 }
-
-$content = file_rewrite_pluginfile_urls($inventory->content,
-        'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
-$formatoptions = new stdClass;
-$formatoptions->noclean = true;
-$formatoptions->overflowdiv = true;
-$formatoptions->context = $context;
-$content = format_text($content, $inventory->contentformat, $formatoptions);
-echo $OUTPUT->box($content, "generalbox center clearfix");
-
-
-$listdevices = $DB->get_records('inventory_device', array('roomid' => $room));
 
 echo"
 <div>";
@@ -226,6 +213,8 @@ if (has_capability('mod/inventory:edit', $context)) {
 }
 
 // Display all devices.
+
+$listdevices = $DB->get_records('inventory_device', array('roomid' => $room));
 
 echo"
 <table id=listdevice>";
@@ -349,7 +338,7 @@ foreach ($listdevices as $key => $currentdevice) {
 
     // If the device has a specific manual, display it.
     // Otherwise, display the manual of the reference if there is one.
-    // If it has no manual, don't display them.
+    // If it has no manual, display nothing.
 
     $fs = get_file_storage();
     $contextmodule = context_module::instance($id);

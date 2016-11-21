@@ -80,7 +80,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 // Navigation node.
@@ -91,6 +90,8 @@ $editurl = new moodle_url('/mod/inventory/editdevicetype.php',
             'source' => $source, 'currentstep' => $currentstep));
 
 require_capability('mod/inventory:edit', $context);
+
+// The navbar changes depending on where we come from.
 
 if ($source == "listdevices") {
 
@@ -188,17 +189,17 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $courseurl = new moodle_url('/mod/inventory/view.php', array('id' => $moduleid));
         redirect($courseurl);
     }
-} else if ($mform->no_submit_button_pressed()) {
+} else if ($mform->no_submit_button_pressed()) { // Second scenario : fields are added.
 
     /*
      * You need this section if you have a 'submit' button on your form
      * which performs some kind of subaction on the form and not a full
-     * form submission.
+     * form submission. It does not need to do anything, we only put a variable here to avoid errors in code checker.
      */
 
     $justheretoavoidanerrorincodechecker;
 
-} else if ($submitteddata = $mform->get_data()) { // Second scenario : the form was validated.
+} else if ($submitteddata = $mform->get_data()) { // Third scenario : the form was validated.
 
     $submitteddata->uploadedat = time();
     if ($USER->id) {
@@ -447,8 +448,6 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     }
 }
 
-
-$site = get_site();
 echo $OUTPUT->header();
 
 echo get_string('deleterule', 'inventory');

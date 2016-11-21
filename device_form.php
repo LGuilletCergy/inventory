@@ -132,7 +132,7 @@ class device_form extends moodleform {
         }
 
         $mform->addElement('filemanager', 'manuel', get_string('manuel', 'inventory'),
-                null, array('maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('.pdf', 'document')));
+                null, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('.pdf', 'document')));
 
         $mform->addElement('select', 'isworking', get_string('isworking', 'inventory'), array('Oui', 'Non'));
 

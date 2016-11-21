@@ -78,7 +78,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 // Navigation node.
@@ -92,7 +91,6 @@ if ($editmode == 0) {
     $PAGE->navbar->add(get_string('editbuilding', 'inventory'), $editurl);
 }
 
-$site = get_site();
 echo $OUTPUT->header();
 require_capability('mod/inventory:edit', $context);
 
@@ -128,7 +126,7 @@ if ($editmode == 1) {
 }
 $mform->set_data($formdata);
 
-// Three possible states.
+// Two possible states.
 if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;

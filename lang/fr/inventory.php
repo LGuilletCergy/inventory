@@ -33,8 +33,6 @@
  *
  */
 $string['configdisplayoptions'] = 'Sélectionner toutes les options qui devraient êtres disponibles. Maintenez enfoncé la touche CTRL pour sélectionner plusieur champs';
-$string['content'] = 'Contenu de l\'inventaire';
-$string['contentheader'] = 'Contenu';
 $string['createinventory'] = 'Crée une nouvelle ressource Inventaire';
 $string['displayoptions'] = 'Options d\'affichage disponible';
 $string['displayselect'] = 'Affichage';
@@ -81,9 +79,7 @@ $string['choosereference'] = 'Choisir une référence';
 $string['manuel'] = 'Manuel utilisateur';
 $string['isworking'] = 'Cet équipement fonctionne t-il ?';
 $string['failurelink'] = 'Lien en cas de problème';
-$string['failuretext'] = 'Texte à afficher à l\'utilisateur si il rapporte un problème';
-$string['reservationlink'] = 'Lien en cas de réservation';
-$string['reservationtext'] = 'Texte à afficher à l\'utilisateur si il veut réserver l\'équipement';
+$string['failuretext'] = 'Texte à afficher à l\'utilisateur si il rapporte un problème';;
 $string['deleteoldfield'] = 'Supprimer ce champ de la base de données à l\'enregistrement';
 $string['oldfield'] = 'Ancien champ';
 $string['field'] = 'Champ';
@@ -124,7 +120,6 @@ $string['adddevicetype'] = 'Ajouter un nouveau type d\'équipement';
 $string['addroom'] = 'Ajouter une nouvelle salle';
 $string['add'] = 'Ajouter un(e) ';
 $string['reportfailure'] = 'Signaler une panne';
-$string['reservationdevice'] = 'Réserver cet équipement';
 $string['managedevicestype'] = 'Gérer les types d\'équipements';
 $string['deleterule'] = 'Si l\'un des nouveaux champs est vide, il ne sera pas ajouté au type d\'équipement lors de l\'enregistrement et sera supprimé de la base de données s\'il appartenait précédemment à ce type d\'équipement';
 $string['yes'] = 'Oui';

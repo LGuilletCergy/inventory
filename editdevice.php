@@ -77,7 +77,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 // Navigation node.
@@ -98,7 +97,6 @@ if ($editmode == 0) {
 } else {
     $PAGE->navbar->add(get_string('editdevice', 'inventory'), $editurl);
 }
-$site = get_site();
 echo $OUTPUT->header();
 require_capability('mod/inventory:edit', $context);
 
@@ -140,7 +138,6 @@ if ($editmode == 1) {
 
     $formdata['referenceid'] = $currentreference->id;
     $formdata['id'] = $id;
-    $formdata['reference'] = $currentreference->id;
     $formdata['brand'] = $brandid;
 
     $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));

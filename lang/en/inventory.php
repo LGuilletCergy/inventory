@@ -33,8 +33,6 @@
  *
  */
 $string['configdisplayoptions'] = 'Select all options that should be available, existing settings are not modified. Hold CTRL key to select multiple fields.';
-$string['content'] = 'Inventory content';
-$string['contentheader'] = 'Content';
 $string['createinventory'] = 'Create a new inventory resource';
 $string['displayoptions'] = 'Available display options';
 $string['displayselect'] = 'Display';
@@ -82,8 +80,6 @@ $string['manuel'] = 'User manual';
 $string['isworking'] = 'Is this working ?';
 $string['failurelink'] = 'Link in case of failure';
 $string['failuretext'] = 'Text to display to the user if he reports a failure';
-$string['reservationlink'] = 'Link in case of reservation';
-$string['reservationtext'] = 'Text to display to the user if he wants to reserve the device';
 $string['oldfield'] = 'Old field';
 $string['field'] = 'Field';
 $string['icon'] = 'Icon';
@@ -102,7 +98,6 @@ $string['roomname'] = 'Name of the room';
 $string['reference'] = 'Reference of the device';
 $string['iddevice'] = 'ID of the device in the database';
 $string['brand'] = 'Brand of the device';
-$string['content'] = 'Content'; // Check if relevant later on.
 $string['manuelreference'] = 'Reference manual'; // Check if relevant later on.
 $string['publicattachment'] = 'Public attachment'; // Check if relevant later on.
 $string['privateattachment'] = 'Private attachment'; // Check if relevant later on.
@@ -124,7 +119,6 @@ $string['adddevicetype'] = 'Add a new device type';
 $string['addroom'] = 'Add a new room';
 $string['add'] = 'Add a ';
 $string['reportfailure'] = 'Device does not work';
-$string['reservationdevice'] = 'Reserve this device';
 $string['managedevicestype'] = 'Manage devices type';
 $string['deleterule'] = 'If a field is empty, it will not be added to the device type and will be deleted if it was previously part od the device type';
 $string['yes'] = 'Yes';

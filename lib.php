@@ -322,6 +322,8 @@ function inventory_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
         return false;
     }
 
+    // All files require at least 'newview' capability.
+
     require_course_login($course, true, $cm);
     if (!has_capability('mod/inventory:newview', $context)) {
         return false;
@@ -379,6 +381,8 @@ function inventory_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
         }
     } else if ($filearea == 'image' || $filearea == 'manuel' || $filearea == 'manuelreference' ||
             $filearea == 'icon' || $filearea == 'publicattachment' || $filearea == 'privateattachment') {
+
+        // Private attachments require the edit capability.
 
         if ($filearea == 'privateattachment' && !has_capability('mod/inventory:edit', $context)) {
 

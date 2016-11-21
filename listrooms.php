@@ -84,8 +84,6 @@ if ($export != true) {
 
     if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
         $PAGE->set_pagelayout('popup');
-    } else {
-        $PAGE->set_activity_record($inventory);
     }
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
@@ -117,15 +115,6 @@ if ($export != true) {
             echo $OUTPUT->box_end();
         }
     }
-
-    $content = file_rewrite_pluginfile_urls($inventory->content,
-            'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
-    $formatoptions = new stdClass;
-    $formatoptions->noclean = true;
-    $formatoptions->overflowdiv = true;
-    $formatoptions->context = $context;
-    $content = format_text($content, $inventory->contentformat, $formatoptions);
-    echo $OUTPUT->box($content, "generalbox center clearfix");
 
     // We create a select box to select the category we want to display. Changing the category will call a Javascript function.
 
@@ -174,7 +163,10 @@ if ($export != true) {
         $listbuildings = $DB->get_records('inventory_building');
     }
 
-    $numelemcolonne = 0;
+    // ...numelemcolumn is here to ensure that we create a new column if we have more than 15 rooms in the current column.
+    // If we have no more space to create a new column, it will be created on a new line.
+
+    $numelemcolumn = 0;
 
     echo "
 
@@ -199,6 +191,8 @@ if ($export != true) {
             }
         }
 
+        // If there is no category selected, we still need to check if the building have at least one room.
+
         if ($categoryselected == 0) {
 
             $hasroom = $DB->record_exists('inventory_room', array('buildingid' => $buildingkey));
@@ -218,7 +212,7 @@ if ($export != true) {
 
             if ($categoryselected == 0 || $hasdevice) {
 
-                if ($numelemcolonne == 0) {
+                if ($numelemcolumn == 0) {
                     echo "
                     <div class=divRooms>
                         <table>";
@@ -340,17 +334,17 @@ if ($export != true) {
                 }
                 echo '
                 </tr>';
-                if ($numelemcolonne == 14) {
+                if ($numelemcolumn == 14) {
                     echo "</table>
                     </div>";
-                    $numelemcolonne = -1;
+                    $numelemcolumn = -1;
                 }
 
-                $numelemcolonne++;
+                $numelemcolumn++;
             }
         }
 
-        if ($numelemcolonne != 0) {
+        if ($numelemcolumn != 0) {
             echo "</table>
             </div>
             <div class=divRooms>
@@ -358,7 +352,7 @@ if ($export != true) {
         }
     }
 
-    if ($numelemcolonne != 0) {
+    if ($numelemcolumn != 0) {
         echo "</table>
         </div>";
     }
@@ -366,7 +360,7 @@ if ($export != true) {
     echo'
         </div>';
 
-        // If we are in 'allbuildings' or if the user is not allowed to edit the database, we cannot add a new room.
+    // If we are in 'allbuildings' or if the user is not allowed to edit the database, we cannot add a new room.
 
 
     if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
@@ -375,7 +369,7 @@ if ($export != true) {
                 . "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
     }
 
-    // If we are not allowed to export the csv, the button to do that will not be displayed.
+    // If the user is not allowed to export the csv, the button to do that will not be displayed.
 
     if (has_capability('mod/inventory:edit', $context)) {
 

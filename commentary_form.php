@@ -50,7 +50,7 @@ class commentary_form extends moodleform {
         $mform->addElement('editor', 'commentary', get_string('commentary', 'inventory'));
 
         $mform->addElement('filemanager', 'attachment', get_string('attachment', 'inventory'),
-                null, array());
+                null, array('subdirs' => 0));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

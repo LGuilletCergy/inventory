@@ -35,6 +35,8 @@
 
 require_once('../../config.php');
 
+// Echo the list of options for the newly selected brand.
+
 if (isset($_REQUEST["brandid"])) {
 
     $tablereference = $DB->get_records('inventory_reference', array('brandid' => $_REQUEST["brandid"]));

@@ -97,7 +97,7 @@ class reference_form extends moodleform {
         $mform->disabledIf('brand', 'isfirstreference', 'eq', 1);
 
         $mform->addElement('filemanager', 'manuel', get_string('manuel', 'inventory'),
-                null, array('maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('.pdf', 'document')));
+                null, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1, 'accepted_types' => array('.pdf', 'document')));
 
         // We store everything needed to create the buttons in hidden fields of the form.
 

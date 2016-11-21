@@ -76,7 +76,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 // Navigation node.
@@ -93,7 +92,6 @@ if ($editmode == 0) {
     $PAGE->navbar->add(get_string('editroom', 'inventory'), $editurl);
 }
 
-$site = get_site();
 echo $OUTPUT->header();
 require_capability('mod/inventory:edit', $context);
 

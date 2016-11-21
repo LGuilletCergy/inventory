@@ -82,7 +82,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 echo $OUTPUT->header();
@@ -97,16 +96,6 @@ if (!empty($options['printintro'])) {
         echo $OUTPUT->box_end();
     }
 }
-
-$content = file_rewrite_pluginfile_urls($inventory->content,
-        'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
-$formatoptions = new stdClass;
-$formatoptions->noclean = true;
-$formatoptions->overflowdiv = true;
-$formatoptions->context = $context;
-$content = format_text($content, $inventory->contentformat, $formatoptions);
-echo $OUTPUT->box($content, "generalbox center clearfix");
-
 
 $listebuilding = $DB->get_records('inventory_building');
 

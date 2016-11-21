@@ -28,8 +28,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  *
- * File : editbuilding.php
- * Page to add a building
+ * File : access.php
+ * Page that define the access right.
+ * You need to update version.php if you want the changes here to take effect.
+ *
+ * It seems Moodle will not update categories of permissions,
+ * you need to delete the previous category and recreate it with the changes.
  *
  */
 

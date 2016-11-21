@@ -42,7 +42,6 @@ $id      = optional_param('id', 0, PARAM_INT); // Course Module ID.
 $p       = optional_param('p', 0, PARAM_INT);  // Page instance ID.
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 $key     = required_param('key', PARAM_INT);
-$mode     = required_param('mode', PARAM_TEXT);
 
 if ($p) {
     if (!$inventory = $DB->get_record('inventory', array('id' => $p))) {
@@ -66,7 +65,7 @@ $context = context_module::instance($cm->id);
 // Completion and trigger events.
 inventory_view($inventory, $course, $cm, $context);
 
-$PAGE->set_url('/mod/inventory/failure.php', array('id' => $id, 'key' => $key, 'mode' => $reservation));
+$PAGE->set_url('/mod/inventory/failure.php', array('id' => $id, 'key' => $key));
 
 // Get building id and room id.
 $currentdevice = $DB->get_record('inventory_device', array('id' => $key));
@@ -87,7 +86,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 echo $OUTPUT->header();
 if (!isset($options['printheading']) || !empty($options['printheading'])) {
@@ -101,15 +99,6 @@ if (!empty($options['printintro'])) {
         echo $OUTPUT->box_end();
     }
 }
-
-$content = file_rewrite_pluginfile_urls($inventory->content,
-        'pluginfile.php', $context->id, 'mod_inventory', 'content', $inventory->revision);
-$formatoptions = new stdClass;
-$formatoptions->noclean = true;
-$formatoptions->overflowdiv = true;
-$formatoptions->context = $context;
-$content = format_text($content, $inventory->contentformat, $formatoptions);
-echo $OUTPUT->box($content, "generalbox center clearfix");
 
 require_capability('mod/inventory:reportfailure', $context);
 

@@ -64,7 +64,6 @@ $inventory = $DB->get_record('inventory', array('id' => $cm->instance), '*', MUS
 $context = context_module::instance($moduleid);
 require_course_login($course, true, $cm);
 
-
 // Header code.
 $PAGE->set_url('/mod/inventory/editreference.php',
         array('idreference' => $idreference, 'courseid' => $courseid, 'blockid' => $blockid,
@@ -80,7 +79,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 // Navigation node.
@@ -179,7 +177,7 @@ if ($editmodereference == 1) {
 
 $mform->set_data($formdata);
 
-// Three possible states.
+// Two possible states.
 if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;
@@ -282,8 +280,6 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     }
 }
 
-
-$site = get_site();
 echo $OUTPUT->header();
 
 // We check whether or not this is the first reference. If it is, we do not allow the user to edit it.

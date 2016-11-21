@@ -93,7 +93,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 
 // The navigation bar depends on where we come from.
@@ -178,15 +177,6 @@ if (!empty($options['printintro'])) {
         echo $OUTPUT->box_end();
     }
 }
-
-$content = file_rewrite_pluginfile_urls($inventory->content, 'pluginfile.php',
-        $context->id, 'mod_inventory', 'content', $inventory->revision);
-$formatoptions = new stdClass;
-$formatoptions->noclean = true;
-$formatoptions->overflowdiv = true;
-$formatoptions->context = $context;
-$content = format_text($content, $inventory->contentformat, $formatoptions);
-echo $OUTPUT->box($content, "generalbox center clearfix");
 
 require_capability('mod/inventory:edit', $context);
 
@@ -293,7 +283,7 @@ if ($delete == 2) {
         . "building=$building&amp;room=$room&amp;oldid=$oldid&amp;categoryid=$categoryid&amp;editmode=$editmode&amp;"
         . "blockid=$blockid&amp;courseid=$courseid&amp;arraykey=$encodedarraykey&amp;"
         . "sesskey=$sesskey'><button>".get_string('no', 'inventory')."</button></a>"
-. "</p>";
+    ."</p>";
 } else if ($delete == 1 && $deleted == -1) {
 
     // If the delete function failed, we inform the user.
@@ -387,7 +377,7 @@ function deleteroom($key, $DB, $cm) {
 
             $filename = $attachmentvalue->name;
 
-            if($attachmentvalue->isprivate == 1) {
+            if ($attachmentvalue->isprivate == 1) {
 
                 $filearea = "privateattachment";
             } else {
