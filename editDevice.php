@@ -28,7 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  *
- * File : editDevice.php
+ * File : editdevice.php
  * Page to add and edit a device
  *
  */
@@ -65,7 +65,7 @@ $context = context_module::instance($moduleid);
 require_course_login($course, true, $cm);
 
 // Header code.
-$PAGE->set_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
+$PAGE->set_url('/mod/inventory/editdevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
     'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
@@ -81,16 +81,16 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 
 // Navigation node.
-$editurl = new moodle_url('/mod/inventory/editDevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
+$editurl = new moodle_url('/mod/inventory/editdevice.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid,
     'moduleid' => $moduleid, 'editmode' => $editmode, 'roomid' => $roomid, 'categoryid' => $categoryid));
 
-// Get buildind and room id.
+// Get building id and room id.
 $currentrecord = $DB->get_record('inventory_room', array('id' => $roomid));
 $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentrecord->buildingid));
 
-$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+$PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
         array('id' => $moduleid, 'building' => $currentbuilding->id)));
-$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php',
+$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listdevices.php',
         array('id' => $moduleid, 'room' => $roomid)));
 
 if ($editmode == 0) {
@@ -107,6 +107,9 @@ $referenceid = 1;
 
 if ($editmode == 1) {
 
+    // If we are trying to edit a device that does not exist, we go back to listDevices.
+    // This can happen if we have deleted the brand or the reference of this device.
+
     if ($DB->record_exists('inventory_device', array('id' => $id))) {
 
         $currentrecord = $DB->get_record('inventory_device', array('id' => $id));
@@ -115,7 +118,7 @@ if ($editmode == 1) {
         $referenceid = $currentreference->id;
     } else {
 
-        $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid));
+        $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $moduleid, 'room' => $roomid));
         redirect($courseurl);
     }
 }
@@ -136,7 +139,6 @@ $formdata['referenceid'] = 1;
 if ($editmode == 1) {
 
     $formdata['referenceid'] = $currentreference->id;
-    $formdata['type'] = $DB->get_record('inventory_devicecategory', array('id' => $categoryid))->name;
     $formdata['id'] = $id;
     $formdata['reference'] = $currentreference->id;
     $formdata['brand'] = $brandid;
@@ -182,12 +184,12 @@ if ($editmode == 1) {
 
 $mform->set_data($formdata);
 
-// Three possible states
+// Two possible states
 if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;
     }
-    $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid));
+    $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $moduleid, 'room' => $roomid));
     redirect($courseurl);
 } else if ($submitteddata = $mform->get_data()) { // Second scenario : the form was validated.
 
@@ -363,7 +365,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         print_error('databaseerror', 'inventory');
     } else {
 
-        $courseurl = new moodle_url('/mod/inventory/listDevices.php', array('id' => $moduleid, 'room' => $roomid));
+        $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $moduleid, 'room' => $roomid));
         redirect($courseurl);
     }
 }

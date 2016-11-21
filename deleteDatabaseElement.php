@@ -28,7 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  *
- * File : deleteDatabaseElement.php
+ * File : deletedatabaseelement.php
  * Delete an element and all elements that depend on it in the database.
  *
  */
@@ -79,7 +79,7 @@ $context = context_module::instance($cm->id);
 // Completion and trigger events.
 inventory_view($inventory, $course, $cm, $context);
 
-$PAGE->set_url('/mod/inventory/deleteDatabaseElement', array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'key' => $key,
+$PAGE->set_url('/mod/inventory/deletedatabaseelement', array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'key' => $key,
     'delete' => $delete, 'table' => $table, 'building' => $building, 'room' => $room, 'oldid' => $oldid, 'editmode' => $editmode,
     'categoryid' => $categoryid, 'courseid' => $courseid, 'blockid' => $blockid, 'idreference' => $idreference,
     'editmodereference' => $editmodereference, 'arraykey' => $arraykey, 'sesskey' => $sesskey));
@@ -99,32 +99,32 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 if ($table == "rooms") {
 
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $building));
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
             array('id' => $id, 'building' => $currentbuilding->id)));
 } else if ($table == "devices") {
 
     $currentroom = $DB->get_record('inventory_room', array('id' => $room));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
             array('id' => $id, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listdevices.php',
             array('id' => $id, 'room' => $room)));
 } else if ($table == "references" || $table == "brandsfromdevice") {
 
     $currentroom = $DB->get_record('inventory_room', array('id' => $room));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
             array('id' => $id, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listdevices.php',
             array('id' => $id, 'room' => $currentrecord->roomid)));
 
     if ($editmode == 0) {
-        $PAGE->navbar->add(get_string('adddevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php',
+        $PAGE->navbar->add(get_string('adddevice', 'inventory'), new moodle_url('/mod/inventory/editdevice.php',
                 array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid,
                     'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
     } else {
-        $PAGE->navbar->add(get_string('editdevice', 'inventory'), new moodle_url('/mod/inventory/editDevice.php',
+        $PAGE->navbar->add(get_string('editdevice', 'inventory'), new moodle_url('/mod/inventory/editdevice.php',
                 array('courseid' => $courseid, 'blockid' => $blockid, 'moduleid' => $moduleid, 'roomid' => $roomid,
                     'categoryid' => $categoryid, 'id' => $id, 'editmode' => $editmode)));
     }
@@ -133,9 +133,9 @@ if ($table == "rooms") {
     $currentroom = $DB->get_record('inventory_room', array('id' => $room));
     $currentbuilding = $DB->get_record('inventory_building', array('id' => $currentroom->buildingid));
 
-    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listRooms.php',
+    $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listrooms.php',
             array('id' => $id, 'building' => $currentbuilding->id)));
-    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listDevices.php',
+    $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listdevices.php',
             array('id' => $id, 'room' => $currentrecord->roomid)));
 
     if ($editmodereference == 0) {
@@ -156,7 +156,7 @@ if ($table == "rooms") {
             array('id' => $cm->id)));
 }
 
-$PAGE->navbar->add(get_string('deleteelement', 'inventory') , '/mod/inventory/deleteDatabaseElement',
+$PAGE->navbar->add(get_string('deleteelement', 'inventory') , '/mod/inventory/deletedatabaseelement',
         array('id' => $id, 'p' => $p, 'inpopup' => $inpopup, 'key' => $key, 'delete' => $delete, 'table' => $table,
             'building' => $building, 'room' => $room, 'oldid' => $oldid, 'editmode' => $editmode, 'categoryid' => $categoryid,
             'courseid' => $courseid, 'blockid' => $blockid, 'idreference' => $idreference,
@@ -191,11 +191,11 @@ require_capability('mod/inventory:edit', $context);
 if ($table == "buildings") {
     $originurl = "/mod/inventory/view.php?id=$id";
 } else if ($table == "rooms") {
-    $originurl = "/mod/inventory/listRooms.php?id=$id&amp;building=$building";
+    $originurl = "/mod/inventory/listrooms.php?id=$id&amp;building=$building";
 } else if ($table == "devices") {
-    $originurl = "/mod/inventory/listDevices.php?id=$id&amp;room=$room";
+    $originurl = "/mod/inventory/listdevices.php?id=$id&amp;room=$room";
 } else if ($table == "references" || $table == "brandsfromdevice") {
-    $originurl = "/mod/inventory/editDevice.php?id=$oldid&amp;courseid=$courseid&amp;blockid=$blockid&amp;"
+    $originurl = "/mod/inventory/editdevice.php?id=$oldid&amp;courseid=$courseid&amp;blockid=$blockid&amp;"
             . "moduleid=$id&amp;roomid=$room&amp;editmode=$editmode&amp;categoryid=$categoryid";
 } else if ($table == "brandsfromreference") {
     $originurl = "/mod/inventory/editreference.php?courseid=$courseid&blockid=$blockid&moduleid=$id&"
@@ -271,26 +271,24 @@ if ($delete == 2) {
 
 
     echo
-    "<p>
-        <a href='deleteDatabaseElement.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;"
+    "<p>"
+    . "<a href='deletedatabaseelement.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;"
             . "delete=1&amp;table=$table&amp;building=$building&amp;room=$room&amp;oldid=$oldid&amp;"
             . "categoryid=$categoryid&amp;editmode=$editmode&amp;blockid=$blockid&amp;courseid=$courseid&amp;"
-            . "arraykey=$encodedarraykey&amp;sesskey=$sesskey'><button>".get_string('yes', 'inventory')."</button></a>
-        <a href='deleteDatabaseElement.php?id=$id&amp;p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;delete=0&amp;table=$table&amp;"
+            . "arraykey=$encodedarraykey&amp;sesskey=$sesskey'><button>".get_string('yes', 'inventory')."</button></a>"
+            . "<a href='deletedatabaseelement.php?id=$id&amp;"
+            . "p=$p&amp;inpopup=$inpopup&amp;key=$key&amp;delete=0&amp;table=$table&amp;"
             . "building=$building&amp;room=$room&amp;oldid=$oldid&amp;categoryid=$categoryid&amp;editmode=$editmode&amp;"
             . "blockid=$blockid&amp;courseid=$courseid&amp;arraykey=$encodedarraykey&amp;"
-            . "sesskey=$sesskey'><button>".get_string('no', 'inventory')."</button></a>
-    </p>";
+            . "sesskey=$sesskey'><button>".get_string('no', 'inventory')."</button></a>"
+            . "</p>";
 } else if ($delete == 1 && $deleted == -1) {
 
     $courseurl = new moodle_url($originurl);
 
     echo get_string('deleteerror', 'inventory');
 
-    echo "
-    <p>
-        <a href=$courseurl><button>".get_string('redirect', 'inventory')."</button></a>
-    </p>";
+    echo "<p><a href=$courseurl><button>".get_string('redirect', 'inventory')."</button></a></p>";
 
 } else {
 

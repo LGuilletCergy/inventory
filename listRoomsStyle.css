@@ -12,12 +12,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  *
- * File : listRoomsStyle.php
- * Define the stylesheet of listRooms.php
+ * File : listroomsstyle.php
+ * Define the stylesheet of listrooms.php
  *
  */
 
-#listRooms
+#listrooms
 {
     display: flex;
     flex-direction: column;

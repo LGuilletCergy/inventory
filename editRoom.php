@@ -43,7 +43,6 @@ global $DB, $OUTPUT, $PAGE, $USER;
 
 // Check params.
 
-
 $courseid = required_param('courseid', PARAM_INT);
 $blockid = required_param('blockid', PARAM_INT);
 $moduleid = required_param('moduleid', PARAM_INT);
@@ -86,7 +85,7 @@ $editurl = new moodle_url('/mod/inventory/editroom.php',
             'editmode' => $editmode, 'buildingid' => $buildingid));;
 
 $PAGE->navbar->add($DB->get_record('inventory_building', array('id' => $buildingid))->name,
-        new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $buildingid)));
+        new moodle_url('/mod/inventory/listrooms.php', array('id' => $moduleid, 'building' => $buildingid)));
 
 if ($editmode == 0) {
     $PAGE->navbar->add(get_string('addroom', 'inventory'), $editurl);
@@ -123,12 +122,12 @@ if ($editmode == 1) {
 
 $mform->set_data($formdata);
 
-// Three possible states
+// Two possible states.
 if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
     if (!$moduleid) {
         $moduleid = 1;
     }
-    $courseurl = new moodle_url('/mod/inventory/listRooms.php', array('id' => $moduleid, 'building' => $buildingid));
+    $courseurl = new moodle_url('/mod/inventory/listrooms.php', array('id' => $moduleid, 'building' => $buildingid));
     redirect($courseurl);
 } else if ($submitteddata = $mform->get_data()) { // Second scenario : the form was validated.
 
@@ -158,8 +157,8 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         print_error('databaseerror', 'inventory');
     } else {
 
-        $courseurl = new moodle_url('/mod/inventory/listRooms.php',
-                array('id' => $moduleid, 'building' => $buildingid, 'vartest' => $vartest));
+        $courseurl = new moodle_url('/mod/inventory/listrooms.php',
+                array('id' => $moduleid, 'building' => $buildingid));
         redirect($courseurl);
     }
 }

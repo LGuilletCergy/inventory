@@ -28,7 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  *
- * File : listDevices.php
+ * File : listdevices.php
  * List all devices and allow interaction
  *
  */
@@ -41,7 +41,7 @@ require_once($CFG->libdir.'/completionlib.php');
 echo '
     <head>
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="listDevicesStyle.css" />
+        <link rel="stylesheet" href="listdevicesstyle.css" />
     </head>';
 
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID.
@@ -66,12 +66,17 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/inventory:view', $context);
+
+if (!has_capability('mod/inventory:newview', $context)) {
+
+    $enrolurl = new moodle_url('login/index.php');
+    redirect($enrolurl);
+}
 
 // Completion and trigger events.
 inventory_view($inventory, $course, $cm, $context);
 
-$PAGE->set_url('/mod/inventory/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/inventory/listdevices.php', array('id' => $cm->id, 'p' => $p, 'inpopup' => $inpopup, 'room' => $room));
 
 $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
 
@@ -89,10 +94,9 @@ $currentrecord = $DB->get_record('inventory_room', array('id' => $room));
 $building = $currentrecord->buildingid;
 
 $PAGE->navbar->add($DB->get_record('inventory_building', array('id' => $building))->name,
-        new moodle_url('/mod/inventory/listRooms.php', array('id' => $id, 'building' => $building)));
+        new moodle_url('/mod/inventory/listrooms.php', array('id' => $id, 'building' => $building)));
 
-
-$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listDevices.php', array('id' => $id, 'room' => $room)));
+$PAGE->navbar->add($currentrecord->name, new moodle_url('/mod/inventory/listdevices.php', array('id' => $id, 'room' => $room)));
 
 
 echo $OUTPUT->header();
@@ -123,44 +127,92 @@ $listdevices = $DB->get_records('inventory_device', array('roomid' => $room));
 echo"
 <div>";
 
-    $currentroom = $DB->get_record('inventory_room', array('id' => $room));
+$currentroom = $DB->get_record('inventory_room', array('id' => $room));
 
-    // Marquer 'Commentaire et pièces jointes publiques'.
-    // Donner un bouton éditer à coté.
-    // Afficher ensuite le commentaire public et les liens vers les pièces jointes publiques.
+// Display the public commentary.
+
+echo"<div class=headercommentary>
+        <div>
+            <strong>".get_string('publiccommentary', 'inventory')."</strong>
+        </div>
+        <div class=editbutton>";
+
+// Display the edit button only if the user is allowed to edit.
+
+if (has_capability('mod/inventory:edit', $context)) {
+    echo "
+    <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=public'>
+        <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
+    </a>";
+}
+echo "
+        </div>
+    </div>
+";
+
+echo $currentroom->publiccommentary;
+
+// Display the public attachments.
+
+$listpublicattachments = $DB->get_records('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => 0));
+
+foreach ($listpublicattachments as $publicattachment) {
+
+    $fs = get_file_storage();
+    $contextmodule = context_module::instance($id);
+    $attachmenturl = "";
+
+    $filename = $publicattachment->name;
+    $fileinfo = array(
+            'component' => 'mod_inventory',
+            'filearea' => 'publicattachment',     // Usually = table name.
+            'itemid' => $room,           // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $filename); // Any filename.
+    $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+            $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+    if ($file) {
+
+        $attachmenturl = moodle_url::make_pluginfile_url($file->get_contextid(),
+                $file->get_component(), $file->get_filearea(), $file->get_itemid(),
+                $file->get_filepath(), $file->get_filename());
+    }
+
+    echo '<a href='.$attachmenturl.'>'.$publicattachment->name.'</a> ';
+}
+
+// Display the private commentary and the private attachments only if the user is allowed to edit.
+
+if (has_capability('mod/inventory:edit', $context)) {
 
     echo"<div class=headercommentary>
             <div>
-                <strong>".get_string('publiccommentary', 'inventory')."</strong>
+                <strong>".get_string('privatecommentary', 'inventory')."</strong>
             </div>
-            <div class=editbutton>";
-                if (has_capability('mod/inventory:edit', $context)) {
-                    echo "
-                    <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=public'>
-                        <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
-                    </a>";
-                }
-            echo "
+            <div class=editbutton>
+                <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=private'>
+                    <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
+                </a>
             </div>
         </div>
     ";
 
-    echo $currentroom->publiccommentary;
+    echo $currentroom->privatecommentary;
 
-    // Ici afficher les pièces jointes publiques.
+    $listprivateattachments = $DB->get_records('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => 1));
 
-    $listpublicattachments = $DB->get_records('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => 0));
-
-    foreach ($listpublicattachments as $publicattachment) {
+    foreach ($listprivateattachments as $privateattachment) {
 
         $fs = get_file_storage();
         $contextmodule = context_module::instance($id);
         $attachmenturl = "";
 
-        $filename = $publicattachment->name;
+        $filename = $privateattachment->name;
         $fileinfo = array(
                 'component' => 'mod_inventory',
-                'filearea' => 'publicattachment',     // Usually = table name.
+                'filearea' => 'privateattachment',     // Usually = table name.
                 'itemid' => $room,           // Usually = ID of row in table.
                 'contextid' => $contextmodule->id, // ID of context.
                 'filepath' => '/',           // Any path beginning and ending in /.
@@ -175,243 +227,208 @@ echo"
                     $file->get_filepath(), $file->get_filename());
         }
 
-        echo '<a href='.$attachmenturl.'>'.$publicattachment->name.'</a> ';
+        echo '<a href='.$attachmenturl.'>'.$privateattachment->name.'</a> ';
     }
+}
 
-    if (has_capability('mod/inventory:edit', $context)) {
+// Display all devices.
 
-        echo"<div class=headercommentary>
-                <div>
-                    <strong>".get_string('privatecommentary', 'inventory')."</strong>
-                </div>
-                <div class=editbutton>
-                    <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=private'>
-                        <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
-                    </a>
-                </div>
-            </div>
-        ";
+echo"
+<table id=listdevice>";
 
-        echo $currentroom->privatecommentary;
+foreach ($listdevices as $key => $currentdevice) {
 
-        $listprivateattachments = $DB->get_records('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => 1));
+    $categoryid = $currentdevice->categoryid;
 
-        foreach ($listprivateattachments as $privateattachment) {
+    /*
+     * 1) Display the device type using the 'categoryid' of the current device.
+     * 2) Display all general fields (reference and brand) if they are not undefined.
+     * 3) Display all specific fields if they have a value.
+    */
 
-            $fs = get_file_storage();
-            $contextmodule = context_module::instance($id);
-            $attachmenturl = "";
+    echo "
+    <tr class=linesingledevice>";
+        echo"
+        <div class=singledevice>
+            <td class=deviceinfo>
+                <table class=deviceheader>
+                    <tr>
+                        <td>
+                            <div class=namedevice>";
 
-            $filename = $privateattachment->name;
-            $fileinfo = array(
-                    'component' => 'mod_inventory',
-                    'filearea' => 'privateattachment',     // Usually = table name.
-                    'itemid' => $room,           // Usually = ID of row in table.
-                    'contextid' => $contextmodule->id, // ID of context.
-                    'filepath' => '/',           // Any path beginning and ending in /.
-                    'filename' => $filename); // Any filename.
-            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-                    $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+                                $devicecategory = $DB->get_record('inventory_devicecategory', array('id' => $categoryid));
+                                echo"$devicecategory->name";
+                                echo "
+                            </div>
+                        </td>
+                        <td class=devicebuttons>";
 
-            if ($file) {
+    // We can only report the failure of an equipment if we are allowed to do it.
 
-                $attachmenturl = moodle_url::make_pluginfile_url($file->get_contextid(),
-                        $file->get_component(), $file->get_filearea(), $file->get_itemid(),
-                        $file->get_filepath(), $file->get_filename());
+    if (has_capability('mod/inventory:reportfailure', $context)) {
+
+        if (($devicecategory->linkforfailure != null && $devicecategory->linkforfailure != "") ||
+                ($devicecategory->textforfailure != null && $devicecategory->textforfailure != "")) {
+            if ($currentdevice->isworking == "Oui") {
+                echo "
+                            <div class=boxwithmargin>
+                                <a href='failure.php?id=$id&amp;key=$key&amp;"
+                                    . "mode=failure'><button>".get_string('reportfailure',
+                                            'inventory')."</button></a>
+                            </div>";
             }
-
-            echo '<a href='.$attachmenturl.'>'.$privateattachment->name.'</a> ';
         }
     }
 
-    echo"
-    <table id=listdevice>";
+    // If the user can edit the database, display the edit and delete buttons.
 
-    foreach ($listdevices as $key => $currentdevice) {
-
-        $categoryid = $currentdevice->categoryid;
-
-        /*
-        * 1) Afficher le type d'équipement => Regarder dans device category le type d'équipement grace à 'categoryid'
-        * 2) Afficher tous les champs communs à tous les types d'équipement (référence/autre/ ???)
-        * 3) Afficher les champs particuliers à l'équipement
-        * => Regarder toutes les entrées de 'devicefield' ayant le même 'categoryid' que nous.
-        * => Regarder dans 'devicevalue' la 'value' correspondante pour le 'deviceid' de notre device
-        * Afficher à l'écran le 'name' de 'devicefield' et la 'value' de 'devicevalue'
-        */
+    if (has_capability('mod/inventory:edit', $context)) {
 
         echo "
-        <tr class=linesingledevice>";
-
-        // Un header pour le type.
-        // Une div pour les champs communs et chaque champ particulier.
-        // Evidemment on ne peut pas garantir une belle mise en page sans savoir ce qu'on va devoir afficher...
-
-            echo"
-            <div class=singledevice>
-                <td class=deviceinfo>
-                    <table class=deviceheader>
-                        <tr>
-                            <td>
-                                <div class=namedevice>";
-
-                                    $devicecategory = $DB->get_record('inventory_devicecategory', array('id' => $categoryid));
-                                    echo"$devicecategory->name";
-                                    echo "
-                                </div>
-                            </td>
-                            <td class=devicebuttons>";
-                                if (has_capability('mod/inventory:reportfailure', $context)) {
-
-                                    if (($devicecategory->linkforfailure != null && $devicecategory->linkforfailure != "") ||
-                                            ($devicecategory->textforfailure != null && $devicecategory->textforfailure != "")) {
-                                        if ($currentdevice->isworking == "Oui") {
-                                            echo "
-                                            <div class=boxwithmargin>
-                                                <a href='failureandreservation.php?id=$id&amp;key=$key&amp;"
-                                                    . "mode=failure'><button>".get_string('reportfailure',
-                                                            'inventory')."</button></a>
-                                            </div>";
-                                        }
-                                    }
-                                }
-
-                                if (has_capability('mod/inventory:edit', $context)) {
-
-                                    echo "
-                                    <div>
-                                        <a href='editDevice.php?id=$key&amp;courseid=$course->id&amp;"
-                                            . "blockid=$cm->p&amp;moduleid=$cm->id&amp;"
-                                            . "roomid=$room&amp;editmode=1&amp;categoryid=$categoryid'>";
-                                        echo '
-                                            <img src="../../pix/e/document_properties.png"
-                                            alt="Edit Room" style="width:20px;height:20px;" />';
-                                        echo "
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a href='deleteDatabaseElement.php?id=$cm->id&amp;key=$key&amp;"
-                                                . "table=devices&amp;room=$room&amp;sesskey=".sesskey()."'>";
-                                        echo'
-                                            <img src="../../pix/i/delete.png" alt="Delete Room" style="width:20px;height:20px;" />
-                                        </a>';
-                                    echo "
-                                    </div>";
-                                }
-                            echo "
-                            </td>
-                        </tr>
-                    </table>
-                    <div class=infodevice>";
-
-                        $referenceid = $currentdevice->refid;
-                        $referencedata = $DB->get_record('inventory_reference', array('id' => $referenceid));
-                        $branddata = $DB->get_record('inventory_brand', array('id' => $referencedata->brandid));
-                        if ($currentdevice->isworking == "Non") {
-                            echo "
-                            <div class=isworking>";
-                            echo get_string('failure', 'inventory');
-                            echo "
-                            </div>
-                            ";
-                        }
-                        if ($referencedata->name != "undefined") {
-                            echo"
-                            <div class=boxwithmargin>";
-                                echo get_string('reference', 'inventory'); echo " : $referencedata->name";
-                            echo "
-                            </div>";
-                        }
-                        if ($branddata->name != "undefined") {
-                            echo"
-                            <div class=boxwithmargin>";
-                                echo get_string('brand', 'inventory'); echo " : $branddata->name";
-                            echo "
-                            </div>
-                            ";
-                        }
-                        $listefields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
-
-                        foreach ($listefields as $fieldkey => $currentfield) {
-
-                            $valuetable = $DB->get_record('inventory_devicevalue',
-                                    array('fieldid' => $currentfield->id, 'deviceid' => $currentdevice->id));
-                            if ($valuetable->value != "") {
+                            <div>
+                                <a href='editdevice.php?id=$key&amp;courseid=$course->id&amp;"
+                                    . "blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+                                    . "roomid=$room&amp;editmode=1&amp;categoryid=$categoryid'>";
+                                echo '
+                                    <img src="../../pix/e/document_properties.png"
+                                    alt="Edit Room" style="width:20px;height:20px;" />';
                                 echo "
-                                <div class=boxwithmargin>
-                                    $currentfield->name : $valuetable->value
-                                </div>";
-                            }
-                        }
-                        $fs = get_file_storage();
-                        $contextmodule = context_module::instance($id);
-                        $filename = $currentdevice->documentation;
-                        $fileinfo = array(
-                                'component' => 'mod_inventory',
-                                'filearea' => 'manuel',     // Usually = table name.
-                                'itemid' => $key,               // Usually = ID of row in table.
-                                'contextid' => $contextmodule->id, // ID of context.
-                                'filepath' => '/',           // Any path beginning and ending in /.
-                                'filename' => $filename); // Any filename.
-                        $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-                                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-
-                        if ($file) {
-
-                            $manuelurl = moodle_url::make_pluginfile_url($file->get_contextid(),
-                                    $file->get_component(), $file->get_filearea(),
-                                    $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-                        } else {
-
-                            $manuelurl = "";
-
-                            $filename2 = $referencedata->documentation;
-                            $fileinfo2 = array(
-                                    'component' => 'mod_inventory',
-                                    'filearea' => 'manuelreference',     // Usually = table name.
-                                    'itemid' => $referencedata->id,               // Usually = ID of row in table.
-                                    'contextid' => $contextmodule->id, // ID of context.
-                                    'filepath' => '/',           // Any path beginning and ending in /.
-                                    'filename' => $filename2); // Any filename.
-                            $file = $fs->get_file($fileinfo2['contextid'], $fileinfo2['component'], $fileinfo2['filearea'],
-                                    $fileinfo2['itemid'], $fileinfo2['filepath'], $fileinfo2['filename']);
-
-                            if ($file) {
-
-                                $manuelrefurl = moodle_url::make_pluginfile_url($file->get_contextid(),
-                                        $file->get_component(), $file->get_filearea(), $file->get_itemid(),
-                                        $file->get_filepath(), $file->get_filename());
-                            } else {
-
-                                $manuelrefurl = "";
-                            }
-                        }
-
-
-                        if ($manuelurl != "") {
+                                </a>
+                            </div>
+                            <div>
+                                <a href='deletedatabaseelement.php?id=$cm->id&amp;key=$key&amp;"
+                                        . "table=devices&amp;room=$room&amp;sesskey=".sesskey()."'>";
+                                echo'
+                                    <img src="../../pix/i/delete.png" alt="Delete Room" style="width:20px;height:20px;" />
+                                </a>';
                             echo "
-                            <div class=boxwithmargin>
-                            Manuel : <a href=$manuelurl>Manuel Spécifique</a>
                             </div>";
-                        } else if ($manuelrefurl != "") {
-
-                            echo "
-                            <div class=boxwithmargin>
-                            Manuel : <a href=$manuelrefurl>Manuel Général</a>
-                            </div>";
-                        }
-                    echo "
-                    </div>
-                </td>
-            </div>";
-
-        echo "
-        </tr>";
-
     }
     echo "
+                        </td>
+                    </tr>
+                </table>
+                <div class=infodevice>";
+
+    $referenceid = $currentdevice->refid;
+    $referencedata = $DB->get_record('inventory_reference', array('id' => $referenceid));
+    $branddata = $DB->get_record('inventory_brand', array('id' => $referencedata->brandid));
+
+    // If the device is broken, display this information.
+
+    if ($currentdevice->isworking == "Non") {
+        echo "
+        <div class=isworking>";
+        echo get_string('failure', 'inventory');
+        echo "
+        </div>
+        ";
+    }
+    if ($referencedata->name != "undefined") {
+        echo"
+        <div class=boxwithmargin>";
+            echo get_string('reference', 'inventory'); echo " : $referencedata->name";
+        echo "
+        </div>";
+    }
+    if ($branddata->name != "undefined") {
+        echo"
+        <div class=boxwithmargin>";
+            echo get_string('brand', 'inventory'); echo " : $branddata->name";
+        echo "
+        </div>
+        ";
+    }
+    $listefields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
+
+    foreach ($listefields as $fieldkey => $currentfield) {
+
+        $valuetable = $DB->get_record('inventory_devicevalue',
+                array('fieldid' => $currentfield->id, 'deviceid' => $currentdevice->id));
+        if ($valuetable->value != "") {
+            echo "
+            <div class=boxwithmargin>
+                $currentfield->name : $valuetable->value
+            </div>";
+        }
+    }
+
+    // If the device has a specific manual, display it.
+    // Otherwise, display the manual of the reference if there is one.
+    // If it has no manual, don't display them.
+
+    $fs = get_file_storage();
+    $contextmodule = context_module::instance($id);
+    $filename = $currentdevice->documentation;
+    $fileinfo = array(
+            'component' => 'mod_inventory',
+            'filearea' => 'manuel',     // Usually = table name.
+            'itemid' => $key,               // Usually = ID of row in table.
+            'contextid' => $contextmodule->id, // ID of context.
+            'filepath' => '/',           // Any path beginning and ending in /.
+            'filename' => $filename); // Any filename.
+    $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+            $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+    if ($file) {
+
+        $manuelurl = moodle_url::make_pluginfile_url($file->get_contextid(),
+                $file->get_component(), $file->get_filearea(),
+                $file->get_itemid(), $file->get_filepath(), $file->get_filename());
+    } else {
+
+        $manuelurl = "";
+
+        $filename2 = $referencedata->documentation;
+        $fileinfo2 = array(
+                'component' => 'mod_inventory',
+                'filearea' => 'manuelreference',     // Usually = table name.
+                'itemid' => $referencedata->id,               // Usually = ID of row in table.
+                'contextid' => $contextmodule->id, // ID of context.
+                'filepath' => '/',           // Any path beginning and ending in /.
+                'filename' => $filename2); // Any filename.
+        $file = $fs->get_file($fileinfo2['contextid'], $fileinfo2['component'], $fileinfo2['filearea'],
+                $fileinfo2['itemid'], $fileinfo2['filepath'], $fileinfo2['filename']);
+
+        if ($file) {
+
+            $manuelrefurl = moodle_url::make_pluginfile_url($file->get_contextid(),
+                    $file->get_component(), $file->get_filearea(), $file->get_itemid(),
+                    $file->get_filepath(), $file->get_filename());
+        } else {
+
+            $manuelrefurl = "";
+        }
+    }
+
+
+    if ($manuelurl != "") {
+        echo "
+                    <div class=boxwithmargin>
+                    Manuel : <a href=$manuelurl>Manuel Spécifique</a>
+                    </div>";
+    } else if ($manuelrefurl != "") {
+
+        echo "
+                    <div class=boxwithmargin>
+                    Manuel : <a href=$manuelrefurl>Manuel Général</a>
+                    </div>";
+    }
+    echo "
+                </div>
+            </td>
+        </div>";
+
+    echo "
+    </tr>";
+
+}
+echo "
     </table>
 </div>";
+
+// If the user can edit, display the buttons to create a device of every category.
+// Display also the button to create a new category.
 
 $listcategories = $DB->get_records('inventory_devicecategory');
 
@@ -419,7 +436,7 @@ if (has_capability('mod/inventory:edit', $context)) {
 
     foreach ($listcategories as $category) {
         echo"
-        <a href='editDevice.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+        <a href='editdevice.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;"
                 . "roomid=$room&amp;editmode=0&amp;"
                 . "categoryid=$category->id'><button>".get_string('add', 'inventory')." $category->name</button></a>
         ";
@@ -427,7 +444,7 @@ if (has_capability('mod/inventory:edit', $context)) {
     echo"
         <a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
             . "moduleid=$cm->id&amp;editmode=0&amp;roomid=$room&amp;"
-            . "source=listDevices'><button>".get_string('adddevicetype', 'inventory')."</button></a>
+            . "source=listdevices'><button>".get_string('adddevicetype', 'inventory')."</button></a>
         ";
 
 }
