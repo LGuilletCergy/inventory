@@ -76,7 +76,6 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 } else {
     $PAGE->set_title($course->shortname.': '.$inventory->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($inventory);
 }
 echo $OUTPUT->header();
 if (!isset($options['printheading']) || !empty($options['printheading'])) {
