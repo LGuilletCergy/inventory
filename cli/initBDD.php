@@ -48,7 +48,7 @@ if ($fichiercsv == FALSE) {
 
         //print_object(utf8_encode($data[4]));
 
-        if($row != 1) {
+        if($row != 1 && utf8_encode($data[0]) != "") {
 
             if (!$DB->record_exists('inventory_building', array('name' => utf8_encode($data[4]))) && utf8_encode($data[4]) != "") {
 
@@ -68,24 +68,158 @@ if ($fichiercsv == FALSE) {
 
                 $roomtoinsert['buildingid'] = $buildingid;
                 $roomtoinsert['name'] = utf8_encode($data[5]);
-
-                //Est-ce un amphi ?
-
-                if (strstr(utf8_encode($data[4]), "AMPHI", true)) {
-
-                    $roomtoinsert['isamphi'] = 1;
-                } else {
-
-                    $roomtoinsert['isamphi'] = 0;
-                }
+                $roomtoinsert['isamphi'] = 0;
 
                 $roomid = $DB->insert_record('inventory_room', $roomtoinsert);
             } else {
 
                 $roomid = $DB->get_record('inventory_room', array('name' => utf8_encode($data[5])))->id;
             }
-        }
 
+            if(utf8_encode($data[6]) != "" && utf8_encode($data[6]) != "N") {
+
+                if (!$DB->record_exists('inventory_brand', array('categoryid' => 1, 'name' => utf8_encode($data[6])))) {
+
+                    $brandtoinsert['name'] = utf8_encode($data[6]);
+                    $brandtoinsert['categoryid'] = 1;
+
+                    $brandid = $DB->insert_record('inventory_brand', $brandtoinsert);
+                } else {
+
+                    $brandid = $DB->get_record('inventory_brand', array('categoryid' => 1, 'name' => utf8_encode($data[6])))->id;
+                }
+            } else {
+
+                $brandid = 1;
+            }
+
+            if(utf8_encode($data[7]) != "" && utf8_encode($data[7]) != "INCONNU") {
+
+                if (!$DB->record_exists('inventory_reference', array('brandid' => $brandid, 'name' => utf8_encode($data[7])))) {
+
+                    $referencetoinsert['name'] = utf8_encode($data[7]);
+                    $referencetoinsert['brandid'] = $brandid;
+
+                    $referenceid = $DB->insert_record('inventory_reference', $referencetoinsert);
+                } else {
+
+                    $referenceid = $DB->get_record('inventory_reference', array('brandid' => $brandid, 'name' => utf8_encode($data[7])))->id;
+                }
+            } else {
+
+                $listreference = $DB->get_records('inventory_reference', array('brandid' => $brandid));
+
+                foreach ($listreference as $firstreference) {
+
+                    $referenceid = $firstreference->id;
+                    break;
+                }
+            }
+
+            if(!$DB->record_exists('inventory_device', array('categoryid' => 1, 'roomid' => $roomid))) {
+
+                $videoprojecteurtoinsert['roomid'] = $roomid;
+                $videoprojecteurtoinsert['categoryid'] = 1;
+                $videoprojecteurtoinsert['refid'] = $referenceid;
+                $videoprojecteurtoinsert['isworking'] = 1;
+
+                $videoprojecteurid = $DB->insert_record('inventory_device', $videoprojecteurtoinsert);
+
+                $valuetoinsert['fieldid'] = 1;
+                $valuetoinsert['deviceid'] = $videoprojecteurid;
+                $valuetoinsert['value'] = utf8_encode($data[9]);
+
+                $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+
+                $valuetoinsert['fieldid'] = 2;
+                $valuetoinsert['deviceid'] = $videoprojecteurid;
+                $valuetoinsert['value'] = utf8_encode($data[10]);
+
+                $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+
+                $valuetoinsert['fieldid'] = 3;
+                $valuetoinsert['deviceid'] = $videoprojecteurid;
+                $valuetoinsert['value'] = utf8_encode($data[12]);
+
+                $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+
+                $valuetoinsert['fieldid'] = 4;
+                $valuetoinsert['deviceid'] = $videoprojecteurid;
+                $valuetoinsert['value'] = utf8_encode($data[13]);
+
+                $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+
+                $valuetoinsert['fieldid'] = 5;
+                $valuetoinsert['deviceid'] = $videoprojecteurid;
+                $valuetoinsert['value'] = utf8_encode($data[21]);
+
+                $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+
+                $valuetoinsert['fieldid'] = 9;
+                $valuetoinsert['deviceid'] = $videoprojecteurid;
+
+                $finalvalue = utf8_encode($data[27])." ".utf8_encode($data[28])." ".utf8_encode($data[29])." ".utf8_encode($data[30]);
+
+                $valuetoinsert['value'] = $finalvalue;
+
+                $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+            }
+
+            if(!$DB->record_exists('inventory_device', array('categoryid' => 2, 'roomid' => $roomid))) {
+
+                if (utf8_encode($data[15]) == "OUI" || utf8_encode($data[15]) == "VGA") {
+
+
+                    $vgatoinsert['roomid'] = $roomid;
+                    $vgatoinsert['categoryid'] = 2;
+                    $vgatoinsert['refid'] = 1;
+
+                    if (utf8_encode($data[16]) == "OK") {
+
+                        $vgatoinsert['isworking'] = 1;
+                    } else {
+
+                        $vgatoinsert['isworking'] = 0;
+                    }
+
+                    $vgaid = $DB->insert_record('inventory_device', $vgatoinsert);
+
+                    $valuetoinsert['fieldid'] = 10;
+                    $valuetoinsert['deviceid'] = $vgaid;
+                    $valuetoinsert['value'] = utf8_encode($data[25]);
+
+                    $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+                }
+            }
+
+            if(!$DB->record_exists('inventory_device', array('categoryid' => 3, 'roomid' => $roomid))) {
+
+                if (utf8_encode($data[18]) == "OUI") {
+
+
+                    $vgatoinsert['roomid'] = $roomid;
+                    $vgatoinsert['categoryid'] = 3;
+                    $vgatoinsert['refid'] = 1;
+
+                    if (utf8_encode($data[19]) == "OK") {
+
+                        $vgatoinsert['isworking'] = 1;
+                    } else {
+
+                        $vgatoinsert['isworking'] = 0;
+                    }
+
+                    $vgaid = $DB->insert_record('inventory_device', $vgatoinsert);
+
+                    $valuetoinsert['fieldid'] = 10;
+                    $valuetoinsert['deviceid'] = $vgaid;
+                    $valuetoinsert['value'] = utf8_encode($data[26]);
+
+                    $DB->insert_record('inventory_devicevalue', $valuetoinsert);
+                }
+            }
+        }
+        
         $row++;
    }
 }

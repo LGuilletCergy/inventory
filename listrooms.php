@@ -337,7 +337,7 @@ if ($export != true) {
                                 <td>';
                         echo "
                                     <a href='deletedatabaseelement.php?id=$cm->id&amp;"
-                                            . "key=$key&amp;table=rooms&amp;building=$building&amp;sesskey=".sesskey()."'>";
+                                            . "key=$key&amp;table=rooms&amp;building=$buildingid&amp;sesskey=".sesskey()."'>";
                         echo'
                                         <img src="../../pix/i/delete.png"
                                         alt="Delete Room" style="width:20px;height:20px;" />
