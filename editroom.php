@@ -109,7 +109,7 @@ if ($editmode == 1) {
     $currentrecord = $DB->get_record('inventory_room', array('id' => $id));
     $formdata['name'] = $currentrecord->name;
 
-    if ($currentrecord->isamphi == "Oui") {
+    if ($currentrecord->isamphi == 1) {
 
         $formdata['isamphi']  = 1;
     } else {
