@@ -76,6 +76,8 @@ $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listro
         array('id' => $id, 'building' => $currentbuilding->id)));
 $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listdevices.php',
         array('id' => $id, 'room' => $currentroom->id)));
+$PAGE->navbar->add(get_string('navbarfailure', 'inventory'),
+        new moodle_url('/mod/inventory/failure.php', array('id' => $id, 'key' => $key)));
 
 $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
 

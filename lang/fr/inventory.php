@@ -148,3 +148,4 @@ $string['confirmdeletereference'] = 'Etes-vous sûr de vouloir supprimer cette r
 $string['confirmdeletebrand'] = 'Etes-vous sûr de vouloir supprimer cette marque ? Celà supprimera également toutes les références liés à cette marque et tout les équipements de cette marque.';
 $string['confirmdeletedevicecategory'] = 'Etes-vous VRAIMENT sûr de vouloir supprimer cette catégorie d\'équipement ? Celà supprimera également tous les équipements de cette catégorie et toutes les marques et références de cette catégorie.';
 $string['confirmdeletefields'] = 'Etes-vous sûr de vouloir supprimer ces champs de la base de données ? Tous les équipements de cette catégorie perdront toutes les informations liées à ces champs.';
+$string['navbarfailure'] = 'Signaler la panne d\'un équipement';

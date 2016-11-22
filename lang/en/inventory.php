@@ -147,3 +147,4 @@ $string['confirmdeletereference'] = 'Are you sure you want to delete this refere
 $string['confirmdeletebrand'] = 'Are you sure you want to delete this brand ? This will also delete all the references of this brand and all the devices of this brand.';
 $string['confirmdeletedevicecategory'] = 'Are you REALLY sure you want to delete this category of device ? This will also delete all devices of this category and all brands and references associated with this category.';
 $string['confirmdeletefields'] = 'Are you sure you want to delete these fields from the database ? All devices of this category will lose all the information related to these fields.';
+$string['navbarfailure'] = 'Report the failure of a device';
