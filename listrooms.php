@@ -322,10 +322,13 @@ if ($export != true) {
                 // We display the buttons to edit and delete this room only if the user is allowed to edit.
 
                 if (has_capability('mod/inventory:edit', $context)) {
+
+                    $buildingid = $buildingvalue->id;
+
                     echo "
                                 <td>
                                     <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
-                                        . "moduleid=$cm->id&amp;buildingid=$building&amp;editmode=1&amp;id=$key'>";
+                                        . "moduleid=$cm->id&amp;buildingid=$buildingid&amp;editmode=1&amp;id=$key'>";
                         echo'
                                         <img src="../../pix/e/document_properties.png"
                                         alt="Edit Room" style="width:20px;height:20px;" />
