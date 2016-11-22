@@ -34,8 +34,58 @@
  */
 
 define('CLI_SCRIPT', true);
-require_once(__DIR__.'/../../../config.php');
+require_once(__DIR__.'/config.php');
 require_once($CFG->libdir.'/clilib.php');
 
-echo 'test';
+$fichiercsv = fopen('videoprojecteurs.csv', 'r');
 
+$row = 1;
+if ($fichiercsv == FALSE) {
+    echo "Impossible d'ouvrir le fichier CSV\n";
+} else {
+
+    while (($data = fgetcsv($fichiercsv, 1000, ";")) !== FALSE) {
+
+        //print_object(utf8_encode($data[4]));
+
+        if($row != 1) {
+
+            if (!$DB->record_exists('inventory_building', array('name' => utf8_encode($data[4]))) && utf8_encode($data[4]) != "") {
+
+                $buildingtoinsert['name'] = utf8_encode($data[4]);
+                $buildingtoinsert['city'] = utf8_encode($data[3]);
+                $buildingtoinsert['department'] = utf8_encode($data[2]);
+                $buildingtoinsert['address'] = "";
+                $buildingtoinsert['phone'] = "";
+
+                $buildingid = $DB->insert_record('inventory_building', $buildingtoinsert);
+            } else {
+
+                $buildingid = $DB->get_record('inventory_building', array('name' => utf8_encode($data[4])))->id;
+            }
+
+            if (!$DB->record_exists('inventory_room', array('buildingid' => $buildingid, 'name' => utf8_encode($data[5]))) && utf8_encode($data[5]) != "") {
+
+                $roomtoinsert['buildingid'] = $buildingid;
+                $roomtoinsert['name'] = utf8_encode($data[5]);
+
+                //Est-ce un amphi ?
+
+                if (strstr(utf8_encode($data[4]), "AMPHI", true)) {
+
+                    $roomtoinsert['isamphi'] = 1;
+                } else {
+
+                    $roomtoinsert['isamphi'] = 0;
+                }
+
+                $roomid = $DB->insert_record('inventory_room', $roomtoinsert);
+            } else {
+
+                $roomid = $DB->get_record('inventory_room', array('name' => utf8_encode($data[5])))->id;
+            }
+        }
+
+        $row++;
+   }
+}

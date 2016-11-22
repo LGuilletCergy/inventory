@@ -17,7 +17,14 @@
  *
  */
 
-#listrooms
+#newlistrooms
+{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.roomsofbuilding
 {
     display: flex;
     flex-wrap: wrap;

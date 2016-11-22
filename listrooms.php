@@ -170,7 +170,8 @@ if ($export != true) {
 
     echo "
 
-    <form method=post action=listrooms.php?export=true>";
+        <form method=post action=listrooms.php?export=true>
+            <div id=newlistrooms>";
 
     foreach ($listbuildings as $buildingkey => $buildingvalue) {
 
@@ -200,7 +201,12 @@ if ($export != true) {
 
         if ($hasdevice || ($hasroom && !$hasdevice)) {
 
-            echo "<div><h5>$buildingvalue->name</h5></div>";
+            $closedivatend = 1;
+            $newbuilding = 1;
+
+            echo ""
+            ."  <div><h5>$buildingvalue->name</h5></div>"
+            ."  <div class=roomsofbuilding>";
         }
 
         foreach ($listrooms as $key => $value) {
@@ -212,38 +218,41 @@ if ($export != true) {
 
             if ($categoryselected == 0 || $hasdevice) {
 
-                if ($numelemcolumn == 0) {
+                if ($numelemcolumn == 0 || $newbuilding == 1) {
+
                     echo "
                     <div class=divRooms>
                         <table>";
+                    $newbuilding = 0;
+                    $numelemcolumn = 0;
                 }
 
                 $checkboxname = "exportroom".$key;
 
                 echo "
-                <tr>
-                    <td>
-                        <ul>
-                            <li class=singleRoom>";
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li class=singleRoom>";
 
                 if (has_capability('mod/inventory:edit', $context)) {
 
                     echo "
-                    <input type=checkbox name=$checkboxname />";
+                                            <input type=checkbox name=$checkboxname />";
                 }
 
                 echo "
-                <a href='listdevices.php?id=$id&amp;room=$key'>";
+                                            <a href='listdevices.php?id=$id&amp;room=$key'>";
 
                     $roomtodisplay = $listrooms[$key]->name;
 
                     echo "$roomtodisplay";
 
                     echo "
-                                </a>
-                            </li>
-                        </ul>
-                    </td>";
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </td>";
 
                 // If the category has an icon and the room have a device of this category,
                 // we will display the icon next to the name of the room.
@@ -314,28 +323,30 @@ if ($export != true) {
 
                 if (has_capability('mod/inventory:edit', $context)) {
                     echo "
-                    <td>
-                        <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
-                            . "moduleid=$cm->id&amp;buildingid=$building&amp;editmode=1&amp;id=$key'>";
+                                <td>
+                                    <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+                                        . "moduleid=$cm->id&amp;buildingid=$building&amp;editmode=1&amp;id=$key'>";
                         echo'
-                            <img src="../../pix/e/document_properties.png"
-                            alt="Edit Room" style="width:20px;height:20px;" />
-                        </a>
-                    </td>
-                    <td>';
+                                        <img src="../../pix/e/document_properties.png"
+                                        alt="Edit Room" style="width:20px;height:20px;" />
+                                    </a>
+                                </td>
+                                <td>';
                         echo "
-                        <a href='deletedatabaseelement.php?id=$cm->id&amp;"
-                                . "key=$key&amp;table=rooms&amp;building=$building&amp;sesskey=".sesskey()."'>";
+                                    <a href='deletedatabaseelement.php?id=$cm->id&amp;"
+                                            . "key=$key&amp;table=rooms&amp;building=$building&amp;sesskey=".sesskey()."'>";
                         echo'
-                            <img src="../../pix/i/delete.png"
-                            alt="Delete Room" style="width:20px;height:20px;" />
-                        </a>
-                    </td>';
+                                        <img src="../../pix/i/delete.png"
+                                        alt="Delete Room" style="width:20px;height:20px;" />
+                                    </a>
+                                </td>';
                 }
                 echo '
-                </tr>';
+                            </tr>';
                 if ($numelemcolumn == 14) {
-                    echo "</table>
+
+                    echo "
+                        </table>
                     </div>";
                     $numelemcolumn = -1;
                 }
@@ -345,28 +356,37 @@ if ($export != true) {
         }
 
         if ($numelemcolumn != 0) {
-            echo "</table>
-            </div>
-            <div class=divRooms>
-                <table>";
+
+            echo "
+                        </table>
+                    </div>";
+            $numelemcolumn = 0;
+        }
+
+        if ($closedivatend == 1) {
+
+            $closedivatend = 0;
+            echo ""
+            . " </div>";
         }
     }
 
-    if ($numelemcolumn != 0) {
-        echo "</table>
-        </div>";
-    }
+//    if ($numelemcolumn != 0) {
+//        echo "              </table>
+//                        </div>";
+//    }
 
     echo'
-        </div>';
+            </div>';
 
     // If we are in 'allbuildings' or if the user is not allowed to edit the database, we cannot add a new room.
 
 
     if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
-        echo "<a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
-                . "moduleid=$cm->id&amp;buildingid=$building&amp;"
-                . "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
+        echo ""
+        . " <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+        .       "moduleid=$cm->id&amp;buildingid=$building&amp;"
+        .       "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
     }
 
     // If the user is not allowed to export the csv, the button to do that will not be displayed.
@@ -374,16 +394,17 @@ if ($export != true) {
     if (has_capability('mod/inventory:edit', $context)) {
 
         echo "
-        <input type=hidden name=id value=$id />
-        <input type=hidden name=p value=$p />
-        <input type=hidden name=inpopup value=$inpopup />
-        <input type=hidden name=building value=$building />
-        <input type=hidden name=categoryselected value=$categoryselected />
+            <input type=hidden name=id value=$id />
+            <input type=hidden name=p value=$p />
+            <input type=hidden name=inpopup value=$inpopup />
+            <input type=hidden name=building value=$building />
+            <input type=hidden name=categoryselected value=$categoryselected />
 
-        <input type=submit value='".get_string('exportroomsascsv', 'inventory')."' />";
+            <input type=submit value='".get_string('exportroomsascsv', 'inventory')."' />";
     }
     echo "
-    </form> ";
+        </form>
+    </div> ";
     $strlastmodified = get_string("lastmodified");
     echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
 
