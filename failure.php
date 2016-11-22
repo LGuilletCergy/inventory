@@ -135,8 +135,5 @@ echo $currentcategory->textforfailure;
 
 echo "<p><a href='$currentcategory->linkforfailure'>".$currentcategory->linkforfailure."</a></p>";
 
-$strlastmodified = get_string("lastmodified");
-echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
-
 echo $OUTPUT->footer();
 

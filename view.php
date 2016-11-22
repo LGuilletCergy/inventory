@@ -225,7 +225,4 @@ if (has_capability('mod/inventory:edit', $context)) {
     ";
 }
 
-$strlastmodified = get_string("lastmodified");
-echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
-
 echo $OUTPUT->footer();

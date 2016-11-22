@@ -403,8 +403,6 @@ if ($export != true) {
     echo "
         </form>
     </div> ";
-    $strlastmodified = get_string("lastmodified");
-    echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
 
     echo $OUTPUT->footer();
 } else {

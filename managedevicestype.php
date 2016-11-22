@@ -154,8 +154,4 @@ echo"<a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;mod
         . "editmode=0&amp;"
         . "source=managedevicestype'><button>".get_string('adddevicetype', 'inventory')."</button></a>";
 
-
-$strlastmodified = get_string("lastmodified");
-echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
-
 echo $OUTPUT->footer();

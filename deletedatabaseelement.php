@@ -301,9 +301,6 @@ if ($delete == 2) {
     echo get_string('neverdisplayed', 'inventory');
 }
 
-$strlastmodified = get_string("lastmodified");
-echo "<div class=\"modified\">$strlastmodified: ".userdate($inventory->timemodified)."</div>";
-
 echo $OUTPUT->footer();
 
 // We delete the building, its image and all its rooms.
