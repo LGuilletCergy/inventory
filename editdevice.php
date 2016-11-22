@@ -139,6 +139,7 @@ if ($editmode == 1) {
     $formdata['referenceid'] = $currentreference->id;
     $formdata['id'] = $id;
     $formdata['brand'] = $brandid;
+    $formdata['reference'] = $referenceid;
 
     $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 
