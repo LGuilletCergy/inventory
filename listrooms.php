@@ -374,11 +374,6 @@ if ($export != true) {
         }
     }
 
-//    if ($numelemcolumn != 0) {
-//        echo "              </table>
-//                        </div>";
-//    }
-
     echo'
             </div>';
 

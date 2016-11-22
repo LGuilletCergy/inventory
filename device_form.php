@@ -90,7 +90,33 @@ class device_form extends moodleform {
 
         // The list of references is set depending on the references available for the current brand.
 
-        $tablereferences = $DB->get_records_menu('inventory_reference', array('brandid' => $brandid), 'id', 'id, name');
+        $initialtablereferences = $DB->get_records_sql('SELECT id, name FROM {inventory_reference} '
+                . 'WHERE brandid=:brandid ORDER BY name', array('brandid' => $brandid));
+
+        $unorderedtablereferences = $DB->get_records_sql('SELECT id, name FROM {inventory_reference} '
+                . 'WHERE brandid=:brandid', array('brandid' => $brandid));
+
+        // To order the references by name, we need to use a sql statement.
+        // However, we still want undefined to be the first element of the list.
+
+        $tablereferences = array();
+
+        foreach ($unorderedtablereferences as $temptablereference) {
+
+            $tablereferences[$temptablereference->id] = $temptablereference->name;
+
+            $firstreferenceid = $temptablereference->id;
+
+            break;
+        }
+
+        foreach ($initialtablereferences as $temptablereference) {
+
+            if ($temptablereference->id != $firstreferenceid) {
+
+                $tablereferences[$temptablereference->id] = $temptablereference->name;
+            }
+        }
 
         // We initialise based on the initial state of the form.
 
