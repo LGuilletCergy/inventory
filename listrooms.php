@@ -397,7 +397,6 @@ if ($export != true) {
 
     // If we are in 'allbuildings' or if the user is not allowed to edit the database, we cannot add a new room.
 
-
     if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
         echo ""
         . " <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
