@@ -226,6 +226,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $devicetypedata['iconname'] = $iconname;
 
         $devicetypedata['id'] = $submitteddata->categoryid;
+        $devicetypedata['moduleid'] = $submitteddata->moduleid;
         $devicetypedata['name'] = $submitteddata->name;
 
         $devicetypedata['linkforfailure'] = $submitteddata->failurelink;
@@ -344,6 +345,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         }
 
         $devicetypedata['iconname'] = $iconname;
+        $devicetypedata['moduleid'] = $submitteddata->moduleid;
 
         $devicetypedata['name'] = $submitteddata->name;
 

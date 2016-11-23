@@ -158,6 +158,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         }
 
         $finaldata['id'] = $submitteddata->id;
+        $finaldata['moduleid'] = $submitteddata->moduleid;
         $finaldata['name'] = $submitteddata->name;
         $finaldata['city'] = $submitteddata->city;
         $finaldata['department'] = $submitteddata->department;
@@ -208,6 +209,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         }
 
         $finaldata['name'] = $submitteddata->name;
+        $finaldata['moduleid'] = $submitteddata->moduleid;
         $finaldata['city'] = $submitteddata->city;
         $finaldata['department'] = $submitteddata->department;
         $finaldata['address'] = $submitteddata->address;

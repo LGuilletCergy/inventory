@@ -28,6 +28,7 @@
     <TABLE NAME="inventory_building" COMMENT="Table of university buildings">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="moduleid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="city" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="department" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
@@ -72,6 +73,7 @@
     <TABLE NAME="inventory_devicecategory" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="moduleid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Nombre de possibilités limités suivant le nombre de types d'équipements qui sont gérés dans la base de données"/>
         <FIELD NAME="linkforfailure" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="textforfailure" TYPE="text" NOTNULL="false" SEQUENCE="false"/>

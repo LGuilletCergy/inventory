@@ -97,7 +97,7 @@ if (!empty($options['printintro'])) {
     }
 }
 
-$listebuilding = $DB->get_records('inventory_building');
+$listebuilding = $DB->get_records('inventory_building', array('moduleid' => $id));
 
 // We display all buildings. Clicking on a building will display the rooms in this building.
 

@@ -86,7 +86,7 @@ if (!isset($options['printheading']) || !empty($options['printheading'])) {
 
 require_capability('mod/inventory:edit', $context);
 
-$listcategories = $DB->get_records('inventory_devicecategory');
+$listcategories = $DB->get_records('inventory_devicecategory', array('moduleid' => $id));
 
 // We display all current categories with buttons to edit or delete them.
 
