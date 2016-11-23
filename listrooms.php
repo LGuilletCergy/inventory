@@ -377,15 +377,7 @@ if ($export != true) {
     echo'
             </div>';
 
-    // If we are in 'allbuildings' or if the user is not allowed to edit the database, we cannot add a new room.
 
-
-    if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
-        echo ""
-        . " <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
-        .       "moduleid=$cm->id&amp;buildingid=$building&amp;"
-        .       "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
-    }
 
     // If the user is not allowed to export the csv, the button to do that will not be displayed.
 
@@ -401,7 +393,19 @@ if ($export != true) {
             <input type=submit value='".get_string('exportroomsascsv', 'inventory')."' />";
     }
     echo "
-        </form>
+        </form>";
+
+    // If we are in 'allbuildings' or if the user is not allowed to edit the database, we cannot add a new room.
+
+
+    if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
+        echo ""
+        . " <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+        .       "moduleid=$cm->id&amp;buildingid=$building&amp;"
+        .       "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
+    }
+        
+    echo  "
     </div> ";
 
     echo $OUTPUT->footer();
