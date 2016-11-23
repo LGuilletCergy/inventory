@@ -404,7 +404,7 @@ if ($export != true) {
         .       "moduleid=$cm->id&amp;buildingid=$building&amp;"
         .       "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
     }
-        
+
     echo  "
     </div> ";
 
