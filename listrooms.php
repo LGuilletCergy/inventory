@@ -123,7 +123,7 @@ if ($export != true) {
                 <div>
                 <select id=selectcategory onChange=categoryChanged()>";
 
-    $listcategories = $DB->get_records('inventory_devicecategory');
+    $listcategories = $DB->get_records('inventory_devicecategory', array('moduleid' => $id));
 
     echo '
     <option value=0>'.get_string('nocategory', 'inventory').'</option>
@@ -160,7 +160,7 @@ if ($export != true) {
 
     } else {
 
-        $listbuildings = $DB->get_records('inventory_building');
+        $listbuildings = $DB->get_records('inventory_building', array('moduleid' => $id));
     }
 
     // ...numelemcolumn is here to ensure that we create a new column if we have more than 15 rooms in the current column.
@@ -443,7 +443,7 @@ if ($export != true) {
 
     } else {
 
-        $listbuildings = $DB->get_records('inventory_building');
+        $listbuildings = $DB->get_records('inventory_building', array('moduleid' => $id));
     }
 
     // If the checkbox of this room was selected, we add this room to the list of room to print in the csv file.
