@@ -413,7 +413,7 @@ echo "
 // If the user can edit, display the buttons to create a device of every category.
 // Display also the button to create a new category.
 
-$listcategories = $DB->get_records('inventory_devicecategory');
+$listcategories = $DB->get_records('inventory_devicecategory', array('moduleid' => $id));
 
 if (has_capability('mod/inventory:edit', $context)) {
 
