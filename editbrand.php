@@ -196,12 +196,14 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $branddata['id'] = $submitteddata->idbrand;
         $branddata['name'] = $submitteddata->name;
         $branddata['contact'] = $submitteddata->contact;
+        $branddata['categoryid'] = $submitteddata->categoryid;
 
         $brandid = $DB->update_record('inventory_brand', $branddata);
     } else {
 
         $branddata['name'] = $submitteddata->name;
         $branddata['contact'] = $submitteddata->contact;
+        $branddata['categoryid'] = $submitteddata->categoryid;
 
         $brandid = $DB->insert_record('inventory_brand', $branddata);
 
