@@ -235,7 +235,7 @@ foreach ($listdevices as $key => $currentdevice) {
         <div class=singledevice>
             <td class=deviceinfo>
                 <table class=deviceheader>
-                    <tr>
+                    <tr class=lineheader>
                         <td>
                             <div class=namedevice>";
 
@@ -243,7 +243,21 @@ foreach ($listdevices as $key => $currentdevice) {
                                 echo"$devicecategory->name";
                                 echo "
                             </div>
+                        </td>";
+
+    // If the device is broken, display this information.
+
+    if ($currentdevice->isworking == "Non") {
+                        echo "
+                        <td class=cellisworking>
+                            <div class=isworking>";
+                                echo get_string('failure', 'inventory');
+                                echo "
+                            </div>
                         </td>
+                            ";
+    }
+                        echo "
                         <td class=devicebuttons>";
 
     // We can only report the failure of an equipment if we are allowed to do it.
@@ -253,10 +267,31 @@ foreach ($listdevices as $key => $currentdevice) {
         if (($devicecategory->linkforfailure != null && $devicecategory->linkforfailure != "") ||
                 ($devicecategory->textforfailure != null && $devicecategory->textforfailure != "")) {
             if ($currentdevice->isworking == "Oui") {
-                echo "
+
+                if ($devicecategory->textforfailure != null && $devicecategory->textforfailure != "") {
+
+                    echo "
                             <div class=boxwithmargin>
                                 <a href='failure.php?id=$id&amp;key=$key&amp;"
                                     . "mode=failure'><button>".get_string('reportfailure',
+                                            'inventory')."</button></a>
+                            </div>";
+                } else {
+
+                    $failureurl = $devicecategory->linkforfailure;
+
+                    echo "
+                            <div class=boxwithmargin>
+                                <a href='failure.php?id=$id&amp;key=$key&amp;"
+                                    . "mode=failure' onclick=window.open('".$failureurl."');><button>".get_string('reportfailure',
+                                            'inventory')."</button></a>
+                            </div>";
+                }
+            } else {
+                echo "
+                            <div class=boxwithmargin>
+                                <a href='failure.php?id=$id&amp;key=$key&amp;"
+                                    . "mode=working'><button>".get_string('reportworking',
                                             'inventory')."</button></a>
                             </div>";
             }
@@ -297,16 +332,6 @@ foreach ($listdevices as $key => $currentdevice) {
     $referencedata = $DB->get_record('inventory_reference', array('id' => $referenceid));
     $branddata = $DB->get_record('inventory_brand', array('id' => $referencedata->brandid));
 
-    // If the device is broken, display this information.
-
-    if ($currentdevice->isworking == "Non") {
-        echo "
-        <div class=isworking>";
-        echo get_string('failure', 'inventory');
-        echo "
-        </div>
-        ";
-    }
     if ($referencedata->name != "undefined") {
         echo"
         <div class=boxwithmargin>";

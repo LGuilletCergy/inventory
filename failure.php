@@ -42,6 +42,7 @@ $id      = optional_param('id', 0, PARAM_INT); // Course Module ID.
 $p       = optional_param('p', 0, PARAM_INT);  // Page instance ID.
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 $key     = required_param('key', PARAM_INT);
+$mode    = required_param('mode', PARAM_TEXT);
 
 if ($p) {
     if (!$inventory = $DB->get_record('inventory', array('id' => $p))) {
@@ -76,8 +77,14 @@ $PAGE->navbar->add($currentbuilding->name, new moodle_url('/mod/inventory/listro
         array('id' => $id, 'building' => $currentbuilding->id)));
 $PAGE->navbar->add($currentroom->name, new moodle_url('/mod/inventory/listdevices.php',
         array('id' => $id, 'room' => $currentroom->id)));
-$PAGE->navbar->add(get_string('navbarfailure', 'inventory'),
-        new moodle_url('/mod/inventory/failure.php', array('id' => $id, 'key' => $key)));
+
+if ($mode == "failure") {
+    $PAGE->navbar->add(get_string('navbarfailure', 'inventory'),
+            new moodle_url('/mod/inventory/failure.php', array('id' => $id, 'key' => $key, 'mode' => $mode)));
+} else {
+    $PAGE->navbar->add(get_string('navbarworking', 'inventory'),
+            new moodle_url('/mod/inventory/failure.php', array('id' => $id, 'key' => $key, 'mode' => $mode)));
+}
 
 $options = empty($inventory->displayoptions) ? array() : unserialize($inventory->displayoptions);
 
@@ -91,7 +98,12 @@ if ($inpopup and $inventory->display == RESOURCELIB_DISPLAY_POPUP) {
 }
 echo $OUTPUT->header();
 if (!isset($options['printheading']) || !empty($options['printheading'])) {
-    echo $OUTPUT->heading(get_string('reportfailure', 'inventory'));
+
+    if ($mode == "failure") {
+        echo $OUTPUT->heading(get_string('reportfailuretitle', 'inventory'));
+    } else {
+        echo $OUTPUT->heading(get_string('reportworkingtitle', 'inventory'));
+    }
 }
 
 if (!empty($options['printintro'])) {
@@ -108,34 +120,52 @@ $currentcategory = $DB->get_record('inventory_devicecategory', array('id' => $cu
 $currentreference = $DB->get_record('inventory_reference', array('id' => $currentdevice->refid));
 $currentbrand = $DB->get_record('inventory_brand', array('id' => $currentreference->brandid));
 
+if ($mode == "failure") {
 
-echo "<p>".get_string('failureintro', 'inventory')."</p>";
-echo "<p>".get_string('devicetype', 'inventory')." : ".$currentcategory->name."</p>";
-echo "<p>".get_string('buildingname', 'inventory')." : ".$currentbuilding->name."</p>";
-echo "<p>".get_string('roomname', 'inventory')." : ".$currentroom->name."</p>";
-echo "<p>".get_string('reference', 'inventory')." : ".$currentreference->name."</p>";
+    $currentdevice->isworking = "Non";
 
-// We change the device in the database to signal it is no longer working.
+    $DB->update_record('inventory_device', $currentdevice);
 
-$currentdevice->isworking = "Non";
+    if ($currentcategory->textforfailure != null && $currentcategory->textforfailure != "") {
 
-$DB->update_record('inventory_device', $currentdevice);
 
-echo "<p>".get_string('iddevice', 'inventory')." : ".$currentdevice->id."</p>";
-echo "<p>".get_string('brand', 'inventory')." : ".$currentbrand->name."</p>";
+        echo "<p>".get_string('failureintro', 'inventory')."</p>";
+        echo "<p>".get_string('devicetype', 'inventory')." : ".$currentcategory->name."</p>";
+        echo "<p>".get_string('buildingname', 'inventory')." : ".$currentbuilding->name."</p>";
+        echo "<p>".get_string('roomname', 'inventory')." : ".$currentroom->name."</p>";
+        echo "<p>".get_string('reference', 'inventory')." : ".$currentreference->name."</p>";
 
-$listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $currentdevice->categoryid));
+        // We change the device in the database to signal it is no longer working.
 
-foreach ($listfields as $fieldkey => $fieldvalue) {
 
-    $currentvalue = $DB->get_record('inventory_devicevalue', array('fieldid' => $fieldkey, 'deviceid' => $key));
 
-    echo "<p>".$fieldvalue->name." : ".$currentvalue->value."</p>";
+        echo "<p>".get_string('iddevice', 'inventory')." : ".$currentdevice->id."</p>";
+        echo "<p>".get_string('brand', 'inventory')." : ".$currentbrand->name."</p>";
+
+        $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $currentdevice->categoryid));
+
+        foreach ($listfields as $fieldkey => $fieldvalue) {
+
+            $currentvalue = $DB->get_record('inventory_devicevalue', array('fieldid' => $fieldkey, 'deviceid' => $key));
+
+            echo "<p>".$fieldvalue->name." : ".$currentvalue->value."</p>";
+        }
+
+        echo $currentcategory->textforfailure;
+
+        echo "<p><a href='$currentcategory->linkforfailure'>".$currentcategory->linkforfailure."</a></p>";
+    } else {
+
+        $originurl = new moodle_url('listdevices.php', array('id' => $id, 'room' => $currentroom->id));
+        redirect($originurl);
+    }
+} else if ($mode == "working") {
+
+    $currentdevice->isworking = "Oui";
+    $DB->update_record('inventory_device', $currentdevice);
+    $originurl = new moodle_url('listdevices.php', array('id' => $id, 'room' => $currentroom->id));
+    redirect($originurl);
 }
 
-echo $currentcategory->textforfailure;
-
-echo "<p><a href='$currentcategory->linkforfailure'>".$currentcategory->linkforfailure."</a></p>";
-
-echo $OUTPUT->footer();
+    echo $OUTPUT->footer();
 
