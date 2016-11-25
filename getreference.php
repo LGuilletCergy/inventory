@@ -39,11 +39,39 @@ require_once('../../config.php');
 
 if (isset($_REQUEST["brandid"])) {
 
-    $tablereference = $DB->get_records('inventory_reference', array('brandid' => $_REQUEST["brandid"]));
+    // The list of references is set depending on the references available for the current brand.
 
-    foreach ($tablereference as $reference) {
+    $initialtablereferences = $DB->get_records_sql('SELECT id, name FROM {inventory_reference} '
+            . 'WHERE brandid=:brandid ORDER BY name', array('brandid' => $_REQUEST["brandid"]));
 
-        echo "<option value=$reference->id>$reference->name</option>";
+    $unorderedtablereferences = $DB->get_records_sql('SELECT id, name FROM {inventory_reference} '
+            . 'WHERE brandid=:brandid', array('brandid' => $_REQUEST["brandid"]));
+
+    // To order the references by name, we need to use a sql statement.
+    // However, we still want undefined to be the first element of the list.
+
+    $tablereferences = array();
+
+    foreach ($unorderedtablereferences as $temptablereference) {
+
+        $tablereferences[$temptablereference->id] = $temptablereference->name;
+
+        $firstreferenceid = $temptablereference->id;
+
+        break;
+    }
+
+    foreach ($initialtablereferences as $temptablereference) {
+
+        if ($temptablereference->id != $firstreferenceid) {
+
+            $tablereferences[$temptablereference->id] = $temptablereference->name;
+        }
+    }
+
+    foreach ($tablereferences as $referencekey => $referencevalue) {
+
+        echo "<option value=$referencekey>$referencevalue</option>";
     }
 
 } else {
