@@ -339,7 +339,7 @@ if ($export != true) {
                                     <a href='deletedatabaseelement.php?id=$cm->id&amp;"
                                             . "key=$key&amp;table=rooms&amp;building=$buildingid&amp;sesskey=".sesskey()."'>";
                         echo'
-                                        <img src="../../pix/i/delete.png"
+                                        <img class=lastbutton src="../../pix/i/delete.png"
                                         alt="Delete Room" style="width:20px;height:20px;" />
                                     </a>
                                 </td>';

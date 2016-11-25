@@ -110,58 +110,69 @@ echo"
 
 $currentroom = $DB->get_record('inventory_room', array('id' => $room));
 
-// Display the public commentary.
+$publiccommentary = false;
 
-echo"<div class=headercommentary>"
-. "<div>"
-        . "<strong>".get_string('publiccommentary', 'inventory')."</strong>"
-        . "</div>"
-        . "<div class=editbutton>";
+if ((($currentroom->publiccommentary != "" && $currentroom->publiccommentary != null)
+        || ($DB->record_exists('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => 0))))) {
 
-// Display the edit button only if the user is allowed to edit.
-
-if (has_capability('mod/inventory:edit', $context)) {
-    echo "
-    <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=public'>
-        <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
-    </a>";
+    $publiccommentary = true;
 }
-echo "
-        </div>
-    </div>
-";
 
-echo $currentroom->publiccommentary;
+if ($publiccommentary || (has_capability('mod/inventory:edit', $context))) {
 
-// Display the public attachments.
+    // Display the public commentary.
 
-$listpublicattachments = $DB->get_records('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => 0));
+    echo"<div class=headercommentary>"
+    . "<div>"
+            . "<strong>".get_string('publiccommentary', 'inventory')."</strong>"
+            . "</div>"
+            . "<div class=editbutton>";
 
-foreach ($listpublicattachments as $publicattachment) {
+    // Display the edit button only if the user is allowed to edit.
 
-    $fs = get_file_storage();
-    $contextmodule = context_module::instance($id);
-    $attachmenturl = "";
-
-    $filename = $publicattachment->name;
-    $fileinfo = array(
-            'component' => 'mod_inventory',
-            'filearea' => 'publicattachment',     // Usually = table name.
-            'itemid' => $room,           // Usually = ID of row in table.
-            'contextid' => $contextmodule->id, // ID of context.
-            'filepath' => '/',           // Any path beginning and ending in /.
-            'filename' => $filename); // Any filename.
-    $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-            $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-
-    if ($file) {
-
-        $attachmenturl = moodle_url::make_pluginfile_url($file->get_contextid(),
-                $file->get_component(), $file->get_filearea(), $file->get_itemid(),
-                $file->get_filepath(), $file->get_filename());
+    if (has_capability('mod/inventory:edit', $context)) {
+        echo "
+        <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=public'>
+            <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
+        </a>";
     }
+    echo "
+            </div>
+        </div>
+    ";
 
-    echo '<a href='.$attachmenturl.'>'.$publicattachment->name.'</a> ';
+    echo $currentroom->publiccommentary;
+
+    // Display the public attachments.
+
+    $listpublicattachments = $DB->get_records('inventory_attachmentroom', array('roomid' => $room, 'isprivate' => 0));
+
+    foreach ($listpublicattachments as $publicattachment) {
+
+        $fs = get_file_storage();
+        $contextmodule = context_module::instance($id);
+        $attachmenturl = "";
+
+        $filename = $publicattachment->name;
+        $fileinfo = array(
+                'component' => 'mod_inventory',
+                'filearea' => 'publicattachment',     // Usually = table name.
+                'itemid' => $room,           // Usually = ID of row in table.
+                'contextid' => $contextmodule->id, // ID of context.
+                'filepath' => '/',           // Any path beginning and ending in /.
+                'filename' => $filename); // Any filename.
+        $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+        if ($file) {
+
+            $attachmenturl = moodle_url::make_pluginfile_url($file->get_contextid(),
+                    $file->get_component(), $file->get_filearea(), $file->get_itemid(),
+                    $file->get_filepath(), $file->get_filename());
+        }
+
+        echo '<a href='.$attachmenturl.'>'.$publicattachment->name.'</a> ';
+    }
 }
 
 // Display the private commentary and the private attachments only if the user is allowed to edit.

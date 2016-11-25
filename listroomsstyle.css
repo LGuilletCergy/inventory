@@ -29,3 +29,13 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+.singleRoom
+{
+    margin-right: 20px;
+}
+
+.lastbutton
+{
+    margin-right: 20px;
+}
