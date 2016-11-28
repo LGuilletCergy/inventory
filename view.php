@@ -204,7 +204,7 @@ echo'
             </tr>
             <tr class=lineName>
                 <td class=cellName>
-                    <a class=nameBuilding>";
+                    <a class=nameBuilding href='listrooms.php?id=$id&amp;building=0'>";
                         echo get_string('allbuildings', 'inventory');
     echo '          </a>
                 </td>
