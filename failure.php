@@ -122,10 +122,13 @@ $currentbrand = $DB->get_record('inventory_brand', array('id' => $currentreferen
 
 if ($mode == "failure") {
 
+    // Functionality temporarily disabled.
+
+    /*
     $currentdevice->isworking = "Non";
 
     $DB->update_record('inventory_device', $currentdevice);
-
+    */
     if ($currentcategory->textforfailure != null && $currentcategory->textforfailure != "") {
 
 

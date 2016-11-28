@@ -175,12 +175,12 @@ foreach ($listebuilding as $key => $value) {
             </tr>
         </table>';
     }
-    echo '
+    echo "
                 </td>
             </tr>
             <tr class=lineName>
                 <td class=cellName>
-                    <a class=nameBuilding>';
+                    <a class=nameBuilding href='listrooms.php?id=$id&amp;building=$key'>";
                         echo "$buildingtodisplay";
     echo '          </a>
                 </td>

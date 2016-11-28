@@ -42,24 +42,6 @@ defined('MOODLE_INTERNAL') || die;
  */
 function inventory_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_ARCHETYPE:
-            return MOD_ARCHETYPE_RESOURCE;
-        case FEATURE_GROUPS:
-            return false;
-        case FEATURE_GROUPINGS:
-            return false;
-        case FEATURE_MOD_INTRO:
-            return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-            return true;
-        case FEATURE_GRADE_HAS_GRADE:
-            return false;
-        case FEATURE_GRADE_OUTCOMES:
-            return false;
-        case FEATURE_BACKUP_MOODLE2:
-            return true;
-        case FEATURE_SHOW_DESCRIPTION:
-            return true;
 
         default:
             return null;
@@ -177,7 +159,23 @@ function inventory_delete_instance($id) {
         return false;
     }
 
+    $cm = get_coursemodule_from_instance('inventory', $inventory->id, $inventory->course, false, MUST_EXIST);
+
     // Note: all context files are deleted automatically.
+
+    $listbuildings = $DB->get_records('inventory_building', array('moduleid' => $cm->id));
+
+    foreach ($listbuildings as $buildingkey => $buildingvalue) {
+
+        deletebuilding($buildingkey, $DB);
+    }
+
+    $listcategories = $DB->get_records('inventory_devicecategory', array('moduleid' => $cm->id));
+
+    foreach ($listcategories as $categorykey => $categoryvalue) {
+
+        deletedevicecategory($categorykey, $DB);
+    }
 
     $DB->delete_records('inventory', array('id' => $inventory->id));
 
@@ -542,4 +540,210 @@ function inventory_view($inventory, $course, $cm, $context) {
     // Completion.
     $completion = new completion_info($course);
     $completion->set_module_viewed($cm);
+}
+
+// Methods from deleteDatabaseElement, used if the instance is deleted.
+// Attached files are automatically deleted.
+
+function deletebuilding($key, $DB) {
+
+    if ($DB->record_exists('inventory_room', array('buildingid' => $key))) {
+        $roomstodelete = $DB->get_records('inventory_room', array('buildingid' => $key));
+
+        foreach ($roomstodelete as $roomkey => $value) {
+
+            deleteroom($roomkey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_building', array('id' => $key))) {
+
+        $DB->delete_records('inventory_building', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
+}
+
+// We delete the room, its attachments and all its devices.
+
+function deleteroom($key, $DB) {
+
+    if ($DB->record_exists('inventory_device', array('roomid' => $key))) {
+        $devicestodelete = $DB->get_records('inventory_device', array('roomid' => $key));
+
+        foreach ($devicestodelete as $devicekey => $value) {
+
+            deletedevice($devicekey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_attachmentroom', array('roomid' => $key))) {
+
+        $DB->delete_records('inventory_attachmentroom', array('roomid' => $key));
+    }
+
+    if ($DB->record_exists('inventory_room', array('id' => $key))) {
+
+        $DB->delete_records('inventory_room', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
+}
+
+// We delete the device, its specific manual and all its values.
+
+function deletedevice($key, $DB) {
+
+    if ($DB->record_exists('inventory_devicevalue', array('deviceid' => $key))) {
+        $valuestodelete = $DB->get_records('inventory_devicevalue', array('deviceid' => $key));
+
+        foreach ($valuestodelete as $devicevaluekey => $value) {
+
+            deletedevicevalue($devicevaluekey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_device', array('id' => $key))) {
+
+        $DB->delete_records('inventory_device', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
+}
+
+// We delete a value of a device.
+
+function deletedevicevalue ($key, $DB) {
+
+    if ($DB->record_exists('inventory_devicevalue', array('id' => $key))) {
+
+        $DB->delete_records('inventory_devicevalue', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
+}
+
+// We delete a reference, the manual of this reference and all devices of this reference.
+// The first reference of a brand cannot be deleted, except when the brand is deleted.
+
+function deletereference ($key, $DB) {
+
+    if ($DB->record_exists('inventory_device', array('refid' => $key))) {
+        $devicestodelete = $DB->get_records('inventory_device', array('refid' => $key));
+
+        foreach ($devicestodelete as $devicekey => $value) {
+
+            deletedevice($devicekey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_reference', array('id' => $key))) {
+
+        $DB->delete_records('inventory_reference', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
+}
+
+// We delete a brand and all of its references.
+// We cannot delete rhe first brand of a category, except when we delete the category.
+
+function deletebrand($key, $DB) {
+
+    if ($DB->record_exists('inventory_reference', array('brandid' => $key))) {
+        $referencestodelete = $DB->get_records('inventory_reference', array('brandid' => $key));
+
+        foreach ($referencestodelete as $referencekey => $value) {
+            deletereference($referencekey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_brand', array('id' => $key))) {
+
+        $DB->delete_records('inventory_brand', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
+}
+
+// We delete a category of device, all fields of this category, all devices of this category and all brand of this category.
+// We also delete its icon.
+
+function deletedevicecategory($key, $DB) {
+
+    if ($DB->record_exists('inventory_devicefield', array('categoryid' => $key))) {
+        $fieldstodelete = $DB->get_records('inventory_devicefield', array('categoryid' => $key));
+
+        foreach ($fieldstodelete as $fieldkey => $fieldvalue) {
+            deletedevicefield($fieldkey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_device', array('categoryid' => $key))) {
+        $devicestodelete = $DB->get_records('inventory_device', array('categoryid' => $key));
+
+        foreach ($devicestodelete as $devicekey => $devicevalue) {
+            deletedevice($devicekey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_brand', array('categoryid' => $key))) {
+        $brandstodelete = $DB->get_records('inventory_brand', array('categoryid' => $key));
+
+        foreach ($brandstodelete as $brandkey => $brandvalue) {
+            deletebrand($brandkey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_devicecategory', array('id' => $key))) {
+
+        $DB->delete_records('inventory_devicecategory', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
+}
+
+// We delete a field of the database and all values that refer to this field.
+
+function deletedevicefield ($key, $DB) {
+
+    if ($DB->record_exists('inventory_devicevalue', array('fieldid' => $key))) {
+
+        $valuestodelete = $DB->get_records('inventory_devicevalue', array('fieldid' => $key));
+
+        foreach ($valuestodelete as $valuekey => $value) {
+            deletedevicevalue($valuekey, $DB);
+        }
+    }
+
+    if ($DB->record_exists('inventory_devicefield', array('id' => $key))) {
+
+        $DB->delete_records('inventory_devicefield', array('id' => $key));
+    } else {
+
+        return -1;
+    }
+
+    return 0;
 }

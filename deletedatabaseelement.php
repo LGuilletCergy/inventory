@@ -312,7 +312,7 @@ function deletebuilding($key, $DB, $cm) {
 
         foreach ($roomstodelete as $roomkey => $value) {
 
-            deleteroom($roomkey, $DB);
+            deleteroom($roomkey, $DB, $cm);
         }
     }
 
@@ -359,7 +359,7 @@ function deleteroom($key, $DB, $cm) {
 
         foreach ($devicestodelete as $devicekey => $value) {
 
-            deletedevice($devicekey, $DB);
+            deletedevice($devicekey, $DB, $cm);
         }
     }
 

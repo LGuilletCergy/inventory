@@ -133,7 +133,7 @@ if ($publiccommentary || (has_capability('mod/inventory:edit', $context))) {
     if (has_capability('mod/inventory:edit', $context)) {
         echo "
         <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=public'>
-            <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
+            <button>".get_string('editcommentary', 'inventory')."</button>
         </a>";
     }
     echo "
@@ -185,7 +185,7 @@ if (has_capability('mod/inventory:edit', $context)) {
             </div>
             <div class=editbutton>
                 <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=private'>
-                    <img src=../../pix/e/document_properties.png alt=Edit Room style=width:20px;height:20px; />
+                    <button>".get_string('editcommentary', 'inventory')."</button>
                 </a>
             </div>
         </div>
@@ -258,6 +258,9 @@ foreach ($listdevices as $key => $currentdevice) {
 
     // If the device is broken, display this information.
 
+    // Functionality temporarily disabled.
+
+    /*
     if ($currentdevice->isworking == "Non") {
                         echo "
                         <td class=cellisworking>
@@ -268,12 +271,16 @@ foreach ($listdevices as $key => $currentdevice) {
                         </td>
                             ";
     }
+    */
                         echo "
                         <td class=devicebuttons>";
 
     // We can only report the failure of an equipment if we are allowed to do it.
 
     if (has_capability('mod/inventory:reportfailure', $context)) {
+
+
+        /* This is temporarily disabled. We use the version below instead.
 
         if (($devicecategory->linkforfailure != null && $devicecategory->linkforfailure != "") ||
                 ($devicecategory->textforfailure != null && $devicecategory->textforfailure != "")) {
@@ -306,6 +313,18 @@ foreach ($listdevices as $key => $currentdevice) {
                                             'inventory')."</button></a>
                             </div>";
             }
+        }
+         */
+
+        if ($devicecategory->linkforfailure != null && $devicecategory->linkforfailure != "") {
+
+            $failureurl = $devicecategory->linkforfailure;
+
+            echo "
+                    <div class=boxwithmargin>
+                        <a onclick=window.open('".$failureurl."');><button>".get_string('reportfailure',
+                                    'inventory')."</button></a>
+                    </div>";
         }
     }
 
@@ -362,13 +381,16 @@ foreach ($listdevices as $key => $currentdevice) {
 
     foreach ($listefields as $fieldkey => $currentfield) {
 
-        $valuetable = $DB->get_record('inventory_devicevalue',
-                array('fieldid' => $currentfield->id, 'deviceid' => $currentdevice->id));
-        if ($valuetable->value != "") {
-            echo "
-            <div class=boxwithmargin>
-                $currentfield->name : $valuetable->value
-            </div>";
+        if (has_capability('mod/inventory:edit', $context)) {
+
+            $valuetable = $DB->get_record('inventory_devicevalue',
+                    array('fieldid' => $currentfield->id, 'deviceid' => $currentdevice->id));
+            if ($valuetable->value != "") {
+                echo "
+                <div class=boxwithmargin>
+                    $currentfield->name : $valuetable->value
+                </div>";
+            }
         }
     }
 
