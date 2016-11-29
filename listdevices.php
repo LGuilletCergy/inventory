@@ -251,7 +251,15 @@ foreach ($listdevices as $key => $currentdevice) {
                             <div class=namedevice>";
 
                                 $devicecategory = $DB->get_record('inventory_devicecategory', array('id' => $categoryid));
-                                echo"$devicecategory->name";
+
+    if (has_capability('mod/inventory:edit', $context)) {
+        echo"<a href='editdevice.php?id=$key&amp;courseid=$course->id&amp;"
+        . "blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+        . "roomid=$room&amp;editmode=1&amp;categoryid=$categoryid'>$devicecategory->name</a>";
+    } else {
+
+        echo"$devicecategory->name";
+    }
                                 echo "
                             </div>
                         </td>";
