@@ -212,19 +212,19 @@ if ($delete == 1) {
         // Depending on what we are supposed to delete, we will use a different function.
 
         if ($table == "buildings") {
-            $deleted = deletebuilding($key, $DB, $cm);
+            $deleted = local_deletebuilding($key, $DB, $cm);
         } else if ($table == "rooms") {
-            $deleted = deleteroom($key, $DB, $cm);
+            $deleted = local_deleteroom($key, $DB, $cm);
         } else if ($table == "devices") {
-            $deleted = deletedevice($key, $DB, $cm);
+            $deleted = local_deletedevice($key, $DB, $cm);
         } else if ($table == "references") {
-            $deleted = deletereference($key, $DB, $cm, 0);
+            $deleted = local_deletereference($key, $DB, $cm, 0);
         } else if ($table == "brandsfromdevice" || $table == "brandsfromreference") {
-            $deleted = deletebrand($key, $DB, $cm, 0);
+            $deleted = local_deletebrand($key, $DB, $cm, 0);
         } else if ($table == "devicecategory") {
-            $deleted = deletedevicecategory($key, $DB, $cm);
+            $deleted = local_deletedevicecategory($key, $DB, $cm);
         } else if ($table == "fieldsfromeditdevicetype") {
-            $deleted = deletemultiplefields($arraykey, $DB);
+            $deleted = local_deletemultiplefields($arraykey, $DB);
         }
 
         // If there was no error, we redirect the user to its origin page.
@@ -305,14 +305,14 @@ echo $OUTPUT->footer();
 
 // We delete the building, its image and all its rooms.
 
-function deletebuilding($key, $DB, $cm) {
+function local_deletebuilding($key, $DB, $cm) {
 
     if ($DB->record_exists('inventory_room', array('buildingid' => $key))) {
         $roomstodelete = $DB->get_records('inventory_room', array('buildingid' => $key));
 
         foreach ($roomstodelete as $roomkey => $value) {
 
-            deleteroom($roomkey, $DB, $cm);
+            local_deleteroom($roomkey, $DB, $cm);
         }
     }
 
@@ -352,14 +352,14 @@ function deletebuilding($key, $DB, $cm) {
 
 // We delete the room, its attachments and all its devices.
 
-function deleteroom($key, $DB, $cm) {
+function local_deleteroom($key, $DB, $cm) {
 
     if ($DB->record_exists('inventory_device', array('roomid' => $key))) {
         $devicestodelete = $DB->get_records('inventory_device', array('roomid' => $key));
 
         foreach ($devicestodelete as $devicekey => $value) {
 
-            deletedevice($devicekey, $DB, $cm);
+            local_deletedevice($devicekey, $DB, $cm);
         }
     }
 
@@ -417,14 +417,14 @@ function deleteroom($key, $DB, $cm) {
 
 // We delete the device, its specific manual and all its values.
 
-function deletedevice($key, $DB, $cm) {
+function local_deletedevice($key, $DB, $cm) {
 
     if ($DB->record_exists('inventory_devicevalue', array('deviceid' => $key))) {
         $valuestodelete = $DB->get_records('inventory_devicevalue', array('deviceid' => $key));
 
         foreach ($valuestodelete as $devicevaluekey => $value) {
 
-            deletedevicevalue($devicevaluekey, $DB);
+            local_deletedevicevalue($devicevaluekey, $DB);
         }
     }
 
@@ -468,7 +468,7 @@ function deletedevice($key, $DB, $cm) {
 
 // We delete a value of a device.
 
-function deletedevicevalue ($key, $DB) {
+function local_deletedevicevalue ($key, $DB) {
 
     if ($DB->record_exists('inventory_devicevalue', array('id' => $key))) {
 
@@ -484,7 +484,7 @@ function deletedevicevalue ($key, $DB) {
 // We delete a reference, the manual of this reference and all devices of this reference.
 // The first reference of a brand cannot be deleted, except when the brand is deleted.
 
-function deletereference ($key, $DB, $cm, $forcedelete) {
+function local_deletereference ($key, $DB, $cm, $forcedelete) {
 
     $stop = 0;
 
@@ -515,7 +515,7 @@ function deletereference ($key, $DB, $cm, $forcedelete) {
 
             foreach ($devicestodelete as $devicekey => $value) {
 
-                deletedevice($devicekey, $DB, $cm);
+                local_deletedevice($devicekey, $DB, $cm);
             }
         }
 
@@ -564,7 +564,7 @@ function deletereference ($key, $DB, $cm, $forcedelete) {
 // We delete a brand and all of its references.
 // We cannot delete rhe first brand of a category, except when we delete the category.
 
-function deletebrand($key, $DB, $cm, $forcedelete) {
+function local_deletebrand($key, $DB, $cm, $forcedelete) {
 
     $stop = 0;
 
@@ -594,7 +594,7 @@ function deletebrand($key, $DB, $cm, $forcedelete) {
             $referencestodelete = $DB->get_records('inventory_reference', array('brandid' => $key));
 
             foreach ($referencestodelete as $referencekey => $value) {
-                deletereference($referencekey, $DB, $cm, 1);
+                local_deletereference($referencekey, $DB, $cm, 1);
             }
         }
 
@@ -616,13 +616,13 @@ function deletebrand($key, $DB, $cm, $forcedelete) {
 // We delete a category of device, all fields of this category, all devices of this category and all brand of this category.
 // We also delete its icon.
 
-function deletedevicecategory($key, $DB, $cm) {
+function local_deletedevicecategory($key, $DB, $cm) {
 
     if ($DB->record_exists('inventory_devicefield', array('categoryid' => $key))) {
         $fieldstodelete = $DB->get_records('inventory_devicefield', array('categoryid' => $key));
 
         foreach ($fieldstodelete as $fieldkey => $fieldvalue) {
-            deletedevicefield($fieldkey, $DB);
+            local_deletedevicefield($fieldkey, $DB);
         }
     }
 
@@ -630,7 +630,7 @@ function deletedevicecategory($key, $DB, $cm) {
         $devicestodelete = $DB->get_records('inventory_device', array('categoryid' => $key));
 
         foreach ($devicestodelete as $devicekey => $devicevalue) {
-            deletedevice($devicekey, $DB, $cm);
+            local_deletedevice($devicekey, $DB, $cm);
         }
     }
 
@@ -638,7 +638,7 @@ function deletedevicecategory($key, $DB, $cm) {
         $brandstodelete = $DB->get_records('inventory_brand', array('categoryid' => $key));
 
         foreach ($brandstodelete as $brandkey => $brandvalue) {
-            deletebrand($brandkey, $DB, $cm, 1);
+            local_deletebrand($brandkey, $DB, $cm, 1);
         }
     }
 
@@ -682,14 +682,14 @@ function deletedevicecategory($key, $DB, $cm) {
 
 // We delete a field of the database and all values that refer to this field.
 
-function deletedevicefield ($key, $DB) {
+function local_deletedevicefield ($key, $DB) {
 
     if ($DB->record_exists('inventory_devicevalue', array('fieldid' => $key))) {
 
         $valuestodelete = $DB->get_records('inventory_devicevalue', array('fieldid' => $key));
 
         foreach ($valuestodelete as $valuekey => $value) {
-            deletedevicevalue($valuekey, $DB);
+            local_deletedevicevalue($valuekey, $DB);
         }
     }
 
@@ -707,7 +707,7 @@ function deletedevicefield ($key, $DB) {
 // We delete multiple fields from the database.
 // We parse the parameter to get the list of ids to delete.
 
-function deletemultiplefields ($arraykey, $DB) {
+function local_deletemultiplefields ($arraykey, $DB) {
 
     $newarraykey = str_replace("amp;", "", $arraykey);
 
@@ -717,7 +717,7 @@ function deletemultiplefields ($arraykey, $DB) {
 
     foreach ($finalarraykey['arraykey'] as $key) {
 
-        $error = deletedevicefield ($key, $DB);
+        $error = local_deletedevicefield ($key, $DB);
 
         if ($error == -1) {
 
