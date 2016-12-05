@@ -454,7 +454,7 @@ foreach ($listdevices as $key => $currentdevice) {
     if ($manuelurl != "") {
         echo "
                     <div class=boxwithmargin>
-                    Manuel : <a href=$manuelurl>Manuel Spécifique</a>
+                    Fiche d'utilisation : <a href=$manuelurl>Fiche d'utilisation</a>
                     </div>";
     } else if ($manuelrefurl != "") {
 
