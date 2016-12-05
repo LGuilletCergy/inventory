@@ -453,14 +453,14 @@ foreach ($listdevices as $key => $currentdevice) {
 
     if ($manuelurl != "") {
         echo "
-                    <div class=boxwithmargin>
-                    Fiche d'utilisation : <a href=$manuelurl>Fiche d'utilisation</a>
+                    <div class=boxwithmargin>".
+                    get_string('manuelspecific', 'inventory')." : <a href=$manuelurl>".get_string('manuelspecific', 'inventory')."</a>
                     </div>";
     } else if ($manuelrefurl != "") {
 
         echo "
-                    <div class=boxwithmargin>
-                    Manuel : <a href=$manuelrefurl>Manuel Général</a>
+                    <div class=boxwithmargin>".
+                    get_string('manuel', 'inventory')." : <a href=$manuelrefurl>".get_string('manuel', 'inventory')."</a>
                     </div>";
     }
     echo "
