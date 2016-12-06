@@ -236,7 +236,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $fileinfo = array(
             'component' => 'mod_inventory',
             'filearea' => 'manuel',     // Usually = table name.
-            'itemid' => $key,               // Usually = ID of row in table.
+            'itemid' => $submitteddata->id,               // Usually = ID of row in table.
             'contextid' => $contextmodule->id, // ID of context.
             'filepath' => '/',           // Any path beginning and ending in /.
             'filename' => $oldmanuelname); // Any filename.
@@ -244,6 +244,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         // Get file.
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+        
 
         // Delete it if it exists.
         if ($file) {
@@ -252,8 +253,22 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
 
         $deviceid = $DB->update_record('inventory_device', $devicedata);
 
-        file_save_draft_area_files($submitteddata->manuel, $contextmodule->id, 'mod_inventory', 'manuel',
-               $submitteddata->id, array('maxbytes' => 0, 'maxfiles' => 1));
+        $savedraft = 0;
+
+        $newlistmanuel = $fs->get_area_files($usercontext->id, 'user', 'draft', $submitteddata->manuel, 'id');
+
+        foreach ($newlistmanuel as $manuel) {
+
+            if ($manuel->get_filename() != ".") {
+                $savedraft = 1;
+            }
+        }
+
+        if ($savedraft != 0) {
+
+            file_save_draft_area_files($submitteddata->manuel, $contextmodule->id, 'mod_inventory', 'manuel',
+                   $submitteddata->id, array('maxbytes' => 0, 'maxfiles' => 1));
+        }
 
         $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 

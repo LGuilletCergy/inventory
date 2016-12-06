@@ -419,7 +419,7 @@ foreach ($listdevices as $key => $currentdevice) {
     $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
             $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
-    if ($file) {
+    if ($file && $currentdevice->documentation) {
 
         $manuelurl = moodle_url::make_pluginfile_url($file->get_contextid(),
                 $file->get_component(), $file->get_filearea(),
@@ -439,7 +439,7 @@ foreach ($listdevices as $key => $currentdevice) {
         $file = $fs->get_file($fileinfo2['contextid'], $fileinfo2['component'], $fileinfo2['filearea'],
                 $fileinfo2['itemid'], $fileinfo2['filepath'], $fileinfo2['filename']);
 
-        if ($file) {
+        if ($file && $referencedata->documentation) {
 
             $manuelrefurl = moodle_url::make_pluginfile_url($file->get_contextid(),
                     $file->get_component(), $file->get_filearea(), $file->get_itemid(),
