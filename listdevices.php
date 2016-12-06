@@ -419,6 +419,9 @@ foreach ($listdevices as $key => $currentdevice) {
     $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
             $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 
+    // ... file_save_draft_area_files also save the repository of files '.'
+    // so we need to test if the device should have a documentation.
+
     if ($file && $currentdevice->documentation) {
 
         $manuelurl = moodle_url::make_pluginfile_url($file->get_contextid(),
@@ -438,6 +441,9 @@ foreach ($listdevices as $key => $currentdevice) {
                 'filename' => $filename2); // Any filename.
         $file = $fs->get_file($fileinfo2['contextid'], $fileinfo2['component'], $fileinfo2['filearea'],
                 $fileinfo2['itemid'], $fileinfo2['filepath'], $fileinfo2['filename']);
+
+        // ... file_save_draft_area_files also save the repository of files '.'
+        // so we need to test if the reference should have a documentation.
 
         if ($file && $referencedata->documentation) {
 
