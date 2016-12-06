@@ -181,9 +181,11 @@ if ($export != true) {
         $hasdevice = 0;
         $hasroom = 0;
 
-        $listrooms = $DB->get_records('inventory_room', array('buildingid' => $buildingkey));
+        $listamphis = $DB->get_records('inventory_room', array('buildingid' => $buildingkey, 'isamphi' => 1));
 
-        foreach ($listrooms as $key => $value) {
+        $listroomsandamphis = $DB->get_records('inventory_room', array('buildingid' => $buildingkey));
+
+        foreach ($listroomsandamphis as $key => $value) {
 
             $hasdevice = $DB->record_exists('inventory_device', array('categoryid' => $categoryselected, 'roomid' => $key));
 
@@ -208,6 +210,157 @@ if ($export != true) {
             ."  <div><h5>$buildingvalue->name</h5></div>"
             ."  <div class=roomsofbuilding>";
         }
+
+        foreach ($listamphis as $key => $value) {
+
+            // We check whether or not this room have the good category of device.
+            // If not, we will not display the room.
+
+            $hasdevice = $DB->record_exists('inventory_device', array('categoryid' => $categoryselected, 'roomid' => $key));
+
+            if ($categoryselected == 0 || $hasdevice) {
+
+                if ($numelemcolumn == 0 || $newbuilding == 1) {
+
+                    echo "
+                    <div class=divRooms>
+                        <table>";
+                    $newbuilding = 0;
+                    $numelemcolumn = 0;
+                }
+
+                $checkboxname = "exportroom".$key;
+
+                echo "
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li class=singleRoom>";
+
+                if (has_capability('mod/inventory:edit', $context)) {
+
+                    echo "
+                                            <input type=checkbox name=$checkboxname />";
+                }
+
+                echo "
+                                            <a href='listdevices.php?id=$id&amp;room=$key'>";
+
+                    $roomtodisplay = $listamphis[$key]->name;
+
+                    echo "$roomtodisplay";
+
+                    echo "
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </td>";
+
+                // If the category has an icon and the room have a device of this category,
+                // we will display the icon next to the name of the room.
+
+                foreach ($listcategories as $category) {
+
+                    $iconurl = "";
+
+                    if ($category->iconname != "" && $category->iconname != null) {
+
+                        $listdevices = $DB->get_records('inventory_device', array('roomid' => $key));
+                        $hascategory = 0;
+
+                        foreach ($listdevices as $device) {
+
+                            if ($device->categoryid == $category->id) {
+
+                                $hascategory = 1;
+                                break;
+                            }
+                        }
+
+                        if ($hascategory == 1) {
+
+                            $fs = get_file_storage();
+                            $contextmodule = context_module::instance($id);
+                            $filename = $category->iconname;
+                            $fileinfo = array(
+                                    'component' => 'mod_inventory',
+                                    'filearea' => 'icon',     // Usually = table name.
+                                    'itemid' => $category->id,               // Usually = ID of row in table.
+                                    'contextid' => $contextmodule->id, // ID of context.
+                                    'filepath' => '/',           // Any path beginning and ending in /.
+                                    'filename' => $filename); // Any filename.
+                            $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+                                    $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+
+                            $categoryname = $category->name;
+
+                            if ($file) {
+
+                                $iconurl = moodle_url::make_pluginfile_url($file->get_contextid(),
+                                        $file->get_component(), $file->get_filearea(), $file->get_itemid(),
+                                        $file->get_filepath(), $file->get_filename());
+                            } else {
+
+                                $iconurl = "";
+                            }
+
+                            if ($iconurl != "") {
+                                echo "
+                                <td>
+                                        <img src=$iconurl alt=$categoryname"
+                                        . " title=$categoryname style=width:20px;height:20px; />
+                                </td>
+                                ";
+                            }
+                        }
+
+                        if ($iconurl == "") {
+                                echo "
+                                <td />";
+                        }
+                    }
+                }
+
+                // We display the buttons to edit and delete this room only if the user is allowed to edit.
+
+                if (has_capability('mod/inventory:edit', $context)) {
+
+                    $buildingid = $buildingvalue->id;
+
+                    echo "
+                                <td>
+                                    <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+                                        . "moduleid=$cm->id&amp;buildingid=$buildingid&amp;editmode=1&amp;id=$key'>";
+                        echo'
+                                        <img src="../../pix/e/document_properties.png"
+                                        alt="Edit Room" style="width:20px;height:20px;" />
+                                    </a>
+                                </td>
+                                <td>';
+                        echo "
+                                    <a href='deletedatabaseelement.php?id=$cm->id&amp;"
+                                            . "key=$key&amp;table=rooms&amp;building=$buildingid&amp;sesskey=".sesskey()."'>";
+                        echo'
+                                        <img class=lastbutton src="../../pix/i/delete.png"
+                                        alt="Delete Room" style="width:20px;height:20px;" />
+                                    </a>
+                                </td>';
+                }
+                echo '
+                            </tr>';
+                if ($numelemcolumn == 14) {
+
+                    echo "
+                        </table>
+                    </div>";
+                    $numelemcolumn = -1;
+                }
+
+                $numelemcolumn++;
+            }
+        }
+
+        $listrooms = $DB->get_records('inventory_room', array('buildingid' => $buildingkey, 'isamphi' => 0));
 
         foreach ($listrooms as $key => $value) {
 
@@ -357,6 +510,7 @@ if ($export != true) {
                 $numelemcolumn++;
             }
         }
+
 
         if ($numelemcolumn != 0) {
 
