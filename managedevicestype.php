@@ -91,13 +91,11 @@ $listcategories = $DB->get_records('inventory_devicecategory', array('moduleid' 
 // We display all current categories with buttons to edit or delete them.
 
 $numelemcolonne = 0;
-echo '
-<div id=listCategories>';
+echo '<div id=listCategories>';
 foreach ($listcategories as $key => $value) {
 
     if ($numelemcolonne == 0) {
-        echo "
-        <div class=divCategories>
+        echo "<div class=divCategories>
             <table>";
     }
 

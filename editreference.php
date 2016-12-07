@@ -324,10 +324,9 @@ if ($stop == 1) {
 
     echo get_string('editerror', 'inventory');
 
-    echo "
-    <p>
-        <a href=$courseurl><button>".get_string('redirect', 'inventory')."</button></a>
-    </p>";
+    echo "<p>"
+    . "<a href=$courseurl><button>".get_string('redirect', 'inventory')."</button></a>"
+            . "</p>";
 } else {
 
     $mform->display();

@@ -184,8 +184,7 @@ if ($export != true) {
         $listamphis = $DB->get_records_sql('SELECT * FROM {inventory_room}'
                 . ' WHERE buildingid = ? AND isamphi= ? ORDER BY name ASC',
                 array('buildingid' => $buildingkey, 'isamphi' => 1));
-        
-        
+
         $listroomsandamphis = $DB->get_records('inventory_room', array('buildingid' => $buildingkey));
 
         foreach ($listroomsandamphis as $key => $value) {
@@ -366,7 +365,6 @@ if ($export != true) {
         $listrooms = $DB->get_records_sql('SELECT * FROM {inventory_room}'
                 . ' WHERE buildingid = ? AND isamphi= ? ORDER BY name ASC',
                 array('buildingid' => $buildingkey, 'isamphi' => 0));
-        
 
         foreach ($listrooms as $key => $value) {
 

@@ -105,8 +105,7 @@ if (!empty($options['printintro'])) {
     }
 }
 
-echo"
-<div>";
+echo"<div>";
 
 $currentroom = $DB->get_record('inventory_room', array('id' => $room));
 
@@ -131,8 +130,8 @@ if ($publiccommentary || (has_capability('mod/inventory:edit', $context))) {
     // Display the edit button only if the user is allowed to edit.
 
     if (has_capability('mod/inventory:edit', $context)) {
-        echo "
-        <a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=public'>
+        echo ""
+        . "<a href='editcommentary.php?id=$id&amp;room=$room&amp;mode=public'>
             <button>".get_string('editcommentary', 'inventory')."</button>
         </a>";
     }
@@ -460,7 +459,8 @@ foreach ($listdevices as $key => $currentdevice) {
     if ($manuelurl != "") {
         echo "
                     <div class=boxwithmargin>".
-                    get_string('manuelspecific', 'inventory')." : <a href=$manuelurl>".get_string('manuelspecific', 'inventory')."</a>
+                    get_string('manuelspecific', 'inventory')." : "
+                . "<a href=$manuelurl>".get_string('manuelspecific', 'inventory')."</a>
                     </div>";
     } else if ($manuelrefurl != "") {
 
