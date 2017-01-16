@@ -253,7 +253,7 @@ foreach ($listdevices as $key => $currentdevice) {
 
     if (has_capability('mod/inventory:edit', $context)) {
         echo"<a href='editdevice.php?id=$key&amp;courseid=$course->id&amp;"
-        . "blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+        . "blockid=$p&amp;moduleid=$cm->id&amp;"
         . "roomid=$room&amp;editmode=1&amp;categoryid=$categoryid'>$devicecategory->name</a>";
     } else {
 
@@ -342,7 +342,7 @@ foreach ($listdevices as $key => $currentdevice) {
         echo "
                             <div>
                                 <a href='editdevice.php?id=$key&amp;courseid=$course->id&amp;"
-                                    . "blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+                                    . "blockid=$p&amp;moduleid=$cm->id&amp;"
                                     . "roomid=$room&amp;editmode=1&amp;categoryid=$categoryid'>";
                                 echo '
                                     <img src="../../pix/e/document_properties.png"
@@ -392,11 +392,13 @@ foreach ($listdevices as $key => $currentdevice) {
 
             $valuetable = $DB->get_record('inventory_devicevalue',
                     array('fieldid' => $currentfield->id, 'deviceid' => $currentdevice->id));
-            if ($valuetable->value != "") {
-                echo "
-                <div class=boxwithmargin>
-                    $currentfield->name : $valuetable->value
-                </div>";
+            if (isset($valuetable)) {
+                if ($valuetable->value != "") {
+                    echo "
+                    <div class=boxwithmargin>
+                        $currentfield->name : $valuetable->value
+                    </div>";
+                }
             }
         }
     }
@@ -491,13 +493,13 @@ if (has_capability('mod/inventory:edit', $context)) {
 
     foreach ($listcategories as $category) {
         echo"
-        <a href='editdevice.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+        <a href='editdevice.php?courseid=$course->id&amp;blockid=$p&amp;moduleid=$cm->id&amp;"
                 . "roomid=$room&amp;editmode=0&amp;"
                 . "categoryid=$category->id'><button>".get_string('add', 'inventory')." $category->name</button></a>
         ";
     }
     echo"
-        <a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+        <a href='editdevicetype.php?courseid=$course->id&amp;blockid=$p&amp;"
             . "moduleid=$cm->id&amp;editmode=0&amp;roomid=$room&amp;"
             . "source=listdevices'><button>".get_string('adddevicetype', 'inventory')."</button></a>
         ";

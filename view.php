@@ -167,7 +167,7 @@ foreach ($listebuilding as $key => $value) {
                 <td>';
                 echo "
                     <a href='editbuilding.php?courseid=$course->id&amp;"
-                        . "blockid=$cm->p&amp;moduleid=$cm->id&amp;id=$key&amp;editmode=1'>";
+                        . "blockid=$p&amp;moduleid=$cm->id&amp;id=$key&amp;editmode=1'>";
                     echo '
                         <img src="../../pix/e/document_properties.png" alt="Edit" style="width:20px;height:20px;" />
                     </a>
@@ -219,7 +219,7 @@ echo'
 // They allow us to add a new building and to manage the type of devices.
 
 if (has_capability('mod/inventory:edit', $context)) {
-    echo "<a href='editbuilding.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+    echo "<a href='editbuilding.php?courseid=$course->id&amp;blockid=$p&amp;moduleid=$cm->id&amp;"
             . "id=0&amp;editmode=0'><button>".get_string('addbuilding', 'inventory')."</button></a>
     <a href='managedevicestype.php?id=$id'><button>".get_string('managedevicestype', 'inventory')."</button></a>
     ";

@@ -331,7 +331,7 @@ if ($export != true) {
 
                     echo "
                                 <td>
-                                    <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+                                    <a href='editroom.php?courseid=$course->id&amp;blockid=$p&amp;"
                                         . "moduleid=$cm->id&amp;buildingid=$buildingid&amp;editmode=1&amp;id=$key'>";
                         echo'
                                         <img src="../../pix/e/document_properties.png"
@@ -484,7 +484,7 @@ if ($export != true) {
 
                     echo "
                                 <td>
-                                    <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+                                    <a href='editroom.php?courseid=$course->id&amp;blockid=$p&amp;"
                                         . "moduleid=$cm->id&amp;buildingid=$buildingid&amp;editmode=1&amp;id=$key'>";
                         echo'
                                         <img src="../../pix/e/document_properties.png"
@@ -557,7 +557,7 @@ if ($export != true) {
 
     if ($building != 0 && has_capability('mod/inventory:edit', $context)) {
         echo ""
-        . " <a href='editroom.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+        . " <a href='editroom.php?courseid=$course->id&amp;blockid=$p&amp;"
         .       "moduleid=$cm->id&amp;buildingid=$building&amp;"
         .       "editmode=0'><button>".get_string('addroom', 'inventory')."</button></a>";
     }

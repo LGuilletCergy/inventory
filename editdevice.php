@@ -147,15 +147,17 @@ if ($editmode == 1) {
 
         $currentvalue = $DB->get_record('inventory_devicevalue', array('deviceid' => $id, 'fieldid' => $field->id));
 
-        if ($field->type == "longtext") {
+        if (isset($currentvalue)) {
+            if ($field->type == "longtext") {
 
-            $oldlongtext['text'] = $currentvalue->value;
-            $formfieldname = 'numerofield'.$field->id;
-            $formdata[$formfieldname] = $oldlongtext;
-        } else {
+                $oldlongtext['text'] = $currentvalue->value;
+                $formfieldname = 'numerofield'.$field->id;
+                $formdata[$formfieldname] = $oldlongtext;
+            } else {
 
-            $formfieldname = 'numerofield'.$field->id;
-            $formdata[$formfieldname] = $currentvalue->value;
+                $formfieldname = 'numerofield'.$field->id;
+                $formdata[$formfieldname] = $currentvalue->value;
+            }
         }
     }
 

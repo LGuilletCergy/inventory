@@ -49,6 +49,7 @@ $moduleid = required_param('moduleid', PARAM_INT);
 $id = optional_param('id', 0, PARAM_INT);
 $buildingid = required_param('buildingid', PARAM_INT);
 $editmode = required_param('editmode', PARAM_INT);
+$inpopup = optional_param('inpopup', 0, PARAM_INT);
 
 // Check access.
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {

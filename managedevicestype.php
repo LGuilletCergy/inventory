@@ -114,7 +114,7 @@ foreach ($listcategories as $key => $value) {
             </ul>
         </td>
         <td>
-            <a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;"
+            <a href='editdevicetype.php?courseid=$course->id&amp;blockid=$p&amp;"
                 . "moduleid=$cm->id&amp;editmode=1&amp;categoryid=$key&amp;source=managedevicestype'>";
             echo'
                 <img src="../../pix/e/document_properties.png" alt="Edit category" style="width:20px;height:20px;" />
@@ -148,7 +148,7 @@ echo'
 
 // We add a button to create a new type of device.
 
-echo"<a href='editdevicetype.php?courseid=$course->id&amp;blockid=$cm->p&amp;moduleid=$cm->id&amp;"
+echo"<a href='editdevicetype.php?courseid=$course->id&amp;blockid=$p&amp;moduleid=$cm->id&amp;"
         . "editmode=0&amp;"
         . "source=managedevicestype'><button>".get_string('adddevicetype', 'inventory')."</button></a>";
 
