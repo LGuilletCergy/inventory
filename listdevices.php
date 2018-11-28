@@ -385,9 +385,11 @@ foreach ($listdevices as $key => $currentdevice) {
         ";
     }
 
+
+    $stringdate = date('d/m/Y', $currentdevice->installationdate);
         echo"
         <div class=boxwithmargin>";
-            echo get_string('installationdate', 'inventory'); echo " : $currentdevice->installationdate";
+            echo get_string('installationdate', 'inventory'); echo " : $stringdate";
         echo "
         </div>
         ";
