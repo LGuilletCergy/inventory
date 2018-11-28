@@ -152,3 +152,4 @@ $string['confirmdeletedevicecategory'] = 'Are you REALLY sure you want to delete
 $string['confirmdeletefields'] = 'Are you sure you want to delete these fields from the database ? All devices of this category will lose all the information related to these fields.';
 $string['navbarfailure'] = 'Report the failure of a device';
 $string['navbarfailure'] = 'Report that a device is working';
+$string['installationdate'] = 'Date of installation';

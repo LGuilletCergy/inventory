@@ -153,3 +153,4 @@ $string['confirmdeletedevicecategory'] = 'Etes-vous VRAIMENT sûr de vouloir sup
 $string['confirmdeletefields'] = 'Etes-vous sûr de vouloir supprimer ces champs de la base de données ? Tous les équipements de cette catégorie perdront toutes les informations liées à ces champs.';
 $string['navbarfailure'] = 'Signaler la panne d\'un équipement';
 $string['navbarworking'] = 'Signaler le bon fonctionnement d\'un équipement';
+$string['installationdate'] = 'Date d\'installation';

@@ -384,6 +384,14 @@ foreach ($listdevices as $key => $currentdevice) {
         </div>
         ";
     }
+
+        echo"
+        <div class=boxwithmargin>";
+            echo get_string('installationdate', 'inventory'); echo " : $currentdevice->installationdate";
+        echo "
+        </div>
+        ";
+
     $listefields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 
     foreach ($listefields as $fieldkey => $currentfield) {

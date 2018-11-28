@@ -142,6 +142,8 @@ class device_form extends moodleform {
                 array ('onclick' => "location.href='$deletereferenceurl'"));
         $mform->addGroup($referencearray, 'referencearray', get_string('choosereference', 'inventory'), array(''), false);
 
+        $mform->addElement('date_selector', 'installationdate', get_string('installationdate', 'inventory'));
+
         // We create a field for each type of fields that this category of device have.
 
         $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
@@ -272,7 +274,7 @@ class device_form extends moodleform {
         brandid = brand.options[brand.selectedIndex].value;
         roomid = document.getElementsByName('roomid').item(0).value;
         sesskey = document.getElementsByName('sesskey').item(0).value;
-        
+
         stringeditbrand = document.getElementsByName('stringeditbrand').item(0).value;
         stringdeletebrand = document.getElementsByName('stringdeletebrand').item(0).value;
 

@@ -114,6 +114,7 @@ if ($editmode == 1) {
         $currentreference = $DB->get_record('inventory_reference', array('id' => $currentrecord->refid));
         $brandid = $currentreference->brandid;
         $referenceid = $currentreference->id;
+        $installationdate = $currentrecord->installationdate;
     } else {
 
         $courseurl = new moodle_url('/mod/inventory/listdevices.php', array('id' => $moduleid, 'room' => $roomid));
@@ -133,6 +134,7 @@ $formdata['roomid'] = $roomid;
 $formdata['categoryid'] = $categoryid;
 $formdata['type'] = $DB->get_record('inventory_devicecategory', array('id' => $categoryid))->name;
 $formdata['referenceid'] = 1;
+$formdata['installationdate'] = time();
 
 if ($editmode == 1) {
 
@@ -140,6 +142,7 @@ if ($editmode == 1) {
     $formdata['id'] = $id;
     $formdata['brand'] = $brandid;
     $formdata['reference'] = $referenceid;
+    $formdata['installationdate'] = $installationdate;
 
     $listfields = $DB->get_records('inventory_devicefield', array('categoryid' => $categoryid));
 
@@ -205,6 +208,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $devicedata['roomid'] = $submitteddata->roomid;
         $devicedata['categoryid'] = $categoryid;
         $devicedata['refid'] = $submitteddata->referenceid;
+        $devicedata['installationdate'] = $submitteddata->installationdate;
 
         if ($submitteddata->isworking == 0) {
 
@@ -300,6 +304,7 @@ if ($mform->is_cancelled()) { // First scenario : the form has been canceled.
         $devicedata['roomid'] = $submitteddata->roomid;
         $devicedata['categoryid'] = $categoryid;
         $devicedata['refid'] = $submitteddata->referenceid;
+        $devicedata['installationdate'] = $submitteddata->installationdate;
 
 
         global $USER;
